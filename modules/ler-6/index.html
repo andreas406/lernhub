@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LER 6 – Identität, Miteinander & Zukunft</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.card h2{font-size:18px;margin-bottom:12px}
+.card h3{font-size:15px;color:#3b82f6;margin-bottom:8px}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:active{background:#2563eb}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.hidden{display:none}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🤔 LER Klasse 6</h1>
+<p class="subtitle">Identität, Miteinander & Zukunft – Lebensgestaltung-Ethik-Religionskunde</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('identitaet')">Identität</button>
+  <button class="tab" onclick="showSection('miteinander')">Miteinander</button>
+  <button class="tab" onclick="showSection('gefuehle')">Gefühle</button>
+  <button class="tab" onclick="showSection('weltbilder')">Weltbilder</button>
+  <button class="tab" onclick="showSection('zukunft')">Zukunft</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  identitaet: {
+    title: "Wer bin ich? – Identität",
+    info: `<b>Identität – Was macht mich aus?</b><br>
+    Jeder Mensch ist einzigartig. Deine <b>Identität</b> setzt sich aus vielen Bausteinen zusammen: dein Name, deine Familie, deine Interessen, deine Stärken und Schwächen, deine Erfahrungen und deine Werte.<br><br>
+    <b>Selbstbild und Fremdbild:</b><br>
+    Das <b>Selbstbild</b> ist das Bild, das du von dir selbst hast – wie du dich siehst. Das <b>Fremdbild</b> ist das Bild, das andere von dir haben – wie andere dich sehen. Beide stimmen nicht immer überein. Es ist wichtig, über beide nachzudenken, um sich selbst besser kennenzulernen.<br><br>
+    <b>Stärken und Schwächen:</b> Jeder Mensch hat Stärken und Schwächen. Schwächen sind nichts Schlimmes – sie gehören zum Menschsein dazu. Wer seine Schwächen kennt, kann daran arbeiten. Wer seine Stärken kennt, kann sie gezielt einsetzen.<br><br>
+    <b>Vorbilder:</b> Vorbilder sind Menschen, die uns beeindrucken und an denen wir uns orientieren. Sie können aus der Familie, dem Sport, der Geschichte oder dem Alltag kommen. Wichtig ist, Vorbilder kritisch zu betrachten – niemand ist perfekt.<br><br>
+    <b>Erwachsenwerden:</b> In der Pubertät verändert sich vieles: der Körper, die Gefühle, die Beziehungen. Man beginnt, eigene Meinungen zu bilden und sich von den Eltern abzulösen. Das ist ein normaler und wichtiger Prozess.`,
+    questions: [
+      {q:"Was versteht man unter dem »Selbstbild« eines Menschen?", opts:["Ein Foto, das man von sich selbst macht","Das Bild, das man von sich selbst hat – wie man sich selbst sieht","Die Meinung der Lehrer über einen Schüler","Ein Bild, das man im Kunstunterricht malt"], correct:1, explain:"Das Selbstbild ist die Vorstellung, die ein Mensch von sich selbst hat: seine eigene Einschätzung von Stärken, Schwächen, Aussehen und Charakter. Es kann sich vom Fremdbild (wie andere einen sehen) unterscheiden."},
+      {q:"Warum ist es wichtig, seine eigenen Schwächen zu kennen?", opts:["Damit man sich schlecht fühlt","Damit man andere damit ärgern kann","Weil man dann daran arbeiten und sich weiterentwickeln kann","Schwächen zu kennen ist unwichtig"], correct:2, explain:"Wer seine Schwächen kennt, kann gezielt daran arbeiten und sich verbessern. Schwächen gehören zum Menschsein dazu – sie zu kennen ist ein Zeichen von Selbstreflexion und persönlicher Reife."},
+      {q:"Was macht einen Menschen einzigartig?", opts:["Nur sein Aussehen","Nur seine Schulnoten","Die Kombination aus Erfahrungen, Stärken, Schwächen, Interessen und Werten","Nur sein Name"], correct:2, explain:"Die Einzigartigkeit eines Menschen ergibt sich aus vielen Bausteinen: Erfahrungen, Stärken, Schwächen, Interessen, Werte, Familie, Kultur und Persönlichkeit. Kein Mensch gleicht dem anderen vollständig."},
+      {q:"Warum sollte man Vorbilder auch kritisch betrachten?", opts:["Weil Vorbilder immer schlecht sind","Weil kein Mensch perfekt ist und man nicht alles blind nachahmen sollte","Weil man keine Vorbilder haben darf","Weil nur berühmte Menschen Vorbilder sein können"], correct:1, explain:"Vorbilder können inspirieren, aber niemand ist perfekt. Man sollte sich fragen: Welche Eigenschaften bewundere ich? Was möchte ich übernehmen – und was nicht? Kritisches Nachdenken über Vorbilder stärkt die eigene Urteilsfähigkeit."},
+      {q:"Was passiert in der Pubertät mit der eigenen Identität?", opts:["Nichts verändert sich","Man bildet eigene Meinungen und löst sich stärker von den Eltern ab","Man verliert seine Identität vollständig","Man wird automatisch erwachsen und fertig entwickelt"], correct:1, explain:"In der Pubertät beginnt ein wichtiger Prozess: Man hinterfragt Regeln, bildet eigene Meinungen und Werte und löst sich schrittweise von den Eltern ab. Das ist normal und gehört zur Entwicklung einer eigenständigen Identität."},
+      {q:"Was ist der Unterschied zwischen Selbstbild und Fremdbild?", opts:["Es gibt keinen Unterschied","Selbstbild = wie ich mich sehe, Fremdbild = wie andere mich sehen","Selbstbild = wie ich aussehe, Fremdbild = wie andere aussehen","Selbstbild ist immer richtig, Fremdbild immer falsch"], correct:1, explain:"Das Selbstbild beschreibt, wie man sich selbst einschätzt. Das Fremdbild beschreibt, wie andere einen wahrnehmen. Beide können voneinander abweichen. Beides zu kennen hilft, sich selbst realistischer einzuschätzen."}
+    ]
+  },
+  miteinander: {
+    title: "Miteinander leben",
+    info: `<b>Soziale Beziehungen – Miteinander leben:</b><br>
+    Menschen sind soziale Wesen. Wir brauchen andere Menschen: Familie, Freunde, Mitschüler. Gute Beziehungen machen uns glücklich, schlechte können uns belasten.<br><br>
+    <b>Freundschaft:</b> Echte Freundschaft basiert auf Vertrauen, Ehrlichkeit, gegenseitigem Respekt und der Bereitschaft, füreinander da zu sein. Freunde akzeptieren sich so, wie sie sind.<br><br>
+    <b>Familie:</b> Familien sehen heute sehr verschieden aus: Kleinfamilie, Patchworkfamilie, Alleinerziehende, Großfamilie. Alle Familienformen sind gleichwertig, solange Kinder Liebe, Schutz und Geborgenheit erfahren.<br><br>
+    <b>Mobbing:</b> Mobbing bedeutet, dass eine Person <b>wiederholt und über längere Zeit</b> von anderen absichtlich ausgegrenzt, beleidigt oder verletzt wird. Mobbing ist keine Bagatelle – es verletzt die Würde des Menschen. Wer Mobbing beobachtet, sollte <b>nicht wegschauen</b>, sondern Hilfe holen (Vertrauensperson, Lehrkraft).<br><br>
+    <b>Konfliktlösung:</b> Konflikte gehören zum Zusammenleben dazu. Wichtig ist, wie man sie löst: zuhören, Ich-Botschaften verwenden, Kompromisse suchen, gewaltfrei bleiben.<br><br>
+    <b>UN-Kinderrechtskonvention (1989):</b> Kinder haben besondere Rechte: Recht auf Bildung, Schutz vor Gewalt, Recht auf Spiel und Freizeit, Recht auf Mitbestimmung, Recht auf Gleichbehandlung. Diese Rechte gelten für <b>alle</b> Kinder weltweit.`,
+    questions: [
+      {q:"Was ist das Besondere an Mobbing im Vergleich zu einem normalen Streit?", opts:["Mobbing ist lustiger als ein Streit","Beim Mobbing wird jemand wiederholt und über längere Zeit absichtlich verletzt oder ausgegrenzt","Mobbing passiert nur unter Erwachsenen","Mobbing ist dasselbe wie ein einmaliger Streit"], correct:1, explain:"Mobbing unterscheidet sich von einem normalen Streit: Es geschieht wiederholt, über einen längeren Zeitraum, und es besteht ein Machtungleichgewicht. Das Opfer kann sich allein schwer wehren. Deshalb ist es wichtig, Hilfe zu holen."},
+      {q:"Was solltest du tun, wenn du beobachtest, dass jemand gemobbt wird?", opts:["Mitmachen, damit man nicht selbst Opfer wird","Wegschauen, es geht mich nichts an","Hilfe holen – z. B. eine Vertrauensperson oder Lehrkraft informieren","Das Opfer auslachen"], correct:2, explain:"Wer Mobbing beobachtet, sollte nicht wegschauen! Man sollte sich an eine Vertrauensperson wenden, z. B. Lehrkräfte, Eltern oder Schulsozialarbeiter. Auch dem Opfer zu zeigen, dass es nicht allein ist, kann viel bewirken."},
+      {q:"Was gehört NICHT zu einer echten Freundschaft?", opts:["Vertrauen und Ehrlichkeit","Sich gegenseitig respektieren","Den anderen unter Druck setzen, damit er tut, was man will","Füreinander da sein"], correct:2, explain:"Echte Freundschaft basiert auf Vertrauen, Ehrlichkeit und Respekt. Jemanden unter Druck zu setzen oder zu manipulieren, hat mit Freundschaft nichts zu tun. In einer guten Freundschaft darf jeder so sein, wie er ist."},
+      {q:"Was ist eine »Ich-Botschaft« bei der Konfliktlösung?", opts:["Ich sage dem anderen, was er falsch macht","Ich sage, wie ICH mich fühle und was ICH mir wünsche, statt den anderen anzuklagen","Ich bestimme allein, wie der Konflikt gelöst wird","Ich ignoriere den Konflikt einfach"], correct:1, explain:"Eine Ich-Botschaft beschreibt die eigene Sicht: »Ich fühle mich verletzt, wenn …« statt »Du bist immer gemein!« So fühlt sich der andere weniger angegriffen und man kann besser miteinander reden."},
+      {q:"In welchem Jahr wurde die UN-Kinderrechtskonvention verabschiedet?", opts:["1949","1972","1989","2010"], correct:2, explain:"Die UN-Kinderrechtskonvention wurde 1989 von den Vereinten Nationen verabschiedet. Sie legt fest, dass alle Kinder weltweit besondere Rechte haben, z. B. auf Bildung, Schutz, Freizeit und Mitbestimmung."},
+      {q:"Welches Recht gehört zu den Kinderrechten laut UN-Kinderrechtskonvention?", opts:["Recht auf ein eigenes Handy","Recht auf Bildung und Schutz vor Gewalt","Recht auf unbegrenzte Freizeit","Recht, nie zur Schule gehen zu müssen"], correct:1, explain:"Die UN-Kinderrechtskonvention umfasst u. a. das Recht auf Bildung, Schutz vor Gewalt, Recht auf Gesundheit, Recht auf Spiel und Freizeit sowie das Recht, seine Meinung zu äußern und gehört zu werden."}
+    ]
+  },
+  gefuehle: {
+    title: "Gefühle & Erfahrungen",
+    info: `<b>Gefühle – unsere innere Welt:</b><br>
+    Gefühle (Emotionen) begleiten uns jeden Tag. Es gibt keine »guten« oder »schlechten« Gefühle – alle Gefühle haben ihren Sinn. Wichtig ist, sie zu <b>erkennen</b>, zu <b>benennen</b> und angemessen mit ihnen <b>umzugehen</b>.<br><br>
+    <b>Grundgefühle:</b> Freude, Trauer, Wut, Angst, Ekel, Überraschung. Daneben gibt es viele weitere Gefühle wie Stolz, Scham, Neid, Mitgefühl, Eifersucht oder Sehnsucht.<br><br>
+    <b>Empathie:</b> Empathie bedeutet, sich in die Gefühle und Gedanken eines anderen Menschen hineinversetzen zu können. Man spricht auch von <b>Einfühlungsvermögen</b>. Empathie ist eine wichtige Fähigkeit für das Zusammenleben – sie hilft, andere zu verstehen und Konflikte zu lösen.<br><br>
+    <b>Umgang mit Trauer und Verlust:</b> Trauer ist eine natürliche Reaktion auf den Verlust eines geliebten Menschen, eines Haustiers oder einer Lebenssituation. Jeder trauert anders und braucht unterschiedlich viel Zeit. Wichtig: Trauer zulassen, darüber sprechen, sich Hilfe holen, wenn nötig.<br><br>
+    <b>Was ist Glück?</b> Glück kann vieles bedeuten: ein schöner Moment (Zufallsglück), ein zufriedenes Lebensgefühl (Lebensglück) oder das Gefühl, etwas Sinnvolles zu tun. Glück ist <b>subjektiv</b> – jeder empfindet es anders.<br><br>
+    <b>Resilienz:</b> Resilienz ist die Fähigkeit, schwierige Situationen und Krisen zu bewältigen und gestärkt daraus hervorzugehen. Man nennt es auch <b>seelische Widerstandskraft</b>. Resilienz kann man stärken, z. B. durch gute Beziehungen, Optimismus und die Fähigkeit, Hilfe anzunehmen.`,
+    questions: [
+      {q:"Was bedeutet »Empathie«?", opts:["Die Fähigkeit, besonders schnell zu laufen","Sich in die Gefühle und Gedanken anderer hineinversetzen können","Immer gut gelaunt sein","Keine Gefühle zeigen"], correct:1, explain:"Empathie (Einfühlungsvermögen) ist die Fähigkeit, sich in andere Menschen hineinzuversetzen und ihre Gefühle nachzuempfinden. Empathie hilft, andere zu verstehen, und ist eine wichtige Grundlage für gutes Zusammenleben."},
+      {q:"Gibt es »schlechte« Gefühle, die man am besten gar nicht haben sollte?", opts:["Ja, Wut und Trauer sind schlechte Gefühle und sollten vermieden werden","Ja, nur Freude ist ein richtiges Gefühl","Nein, alle Gefühle haben ihren Sinn – wichtig ist der Umgang damit","Ja, Angst ist immer schlecht und unnötig"], correct:2, explain:"Es gibt keine grundsätzlich schlechten Gefühle. Wut kann zeigen, dass eine Grenze überschritten wurde. Angst kann vor Gefahren schützen. Trauer hilft bei der Verarbeitung von Verlust. Entscheidend ist, wie wir mit unseren Gefühlen umgehen."},
+      {q:"Was bedeutet »Resilienz«?", opts:["Eine ansteckende Krankheit","Die Fähigkeit, Krisen zu bewältigen und daran zu wachsen – seelische Widerstandskraft","Ein anderes Wort für Intelligenz","Die Fähigkeit, nie traurig zu sein"], correct:1, explain:"Resilienz ist die seelische Widerstandskraft. Resiliente Menschen können schwierige Situationen besser bewältigen und gehen oft gestärkt aus Krisen hervor. Man kann Resilienz stärken, z. B. durch gute Beziehungen und Optimismus."},
+      {q:"Warum empfindet nicht jeder Mensch Glück auf die gleiche Weise?", opts:["Weil manche Menschen nie glücklich sein können","Weil Glück subjektiv ist – jeder empfindet es anders","Weil es nur eine Art von Glück gibt","Weil Glück nur von Geld abhängt"], correct:1, explain:"Glück ist subjektiv: Für manche ist es ein schöner Moment mit Freunden, für andere ein Erfolg in der Schule oder einfach Zufriedenheit. Es gibt kein »richtiges« Glück – jeder Mensch hat seine eigene Vorstellung davon."},
+      {q:"Was ist beim Umgang mit Trauer besonders wichtig?", opts:["Man sollte Trauer immer für sich behalten und nie darüber sprechen","Trauer zulassen, darüber sprechen und sich Hilfe holen, wenn nötig","Man sollte so schnell wie möglich aufhören zu trauern","Trauer zeigt, dass man schwach ist"], correct:1, explain:"Trauer ist eine natürliche Reaktion auf Verlust. Es ist wichtig, Trauer zuzulassen und nicht zu unterdrücken. Darüber zu sprechen und sich Hilfe zu holen, ist kein Zeichen von Schwäche, sondern von Stärke."},
+      {q:"Welche der folgenden Gefühle zählen zu den Grundgefühlen?", opts:["Freude, Trauer, Wut und Angst","Nur Freude und Liebe","Neid, Stolz und Eifersucht","Langeweile und Müdigkeit"], correct:0, explain:"Zu den Grundgefühlen (Basisemotionen) zählen Freude, Trauer, Wut, Angst, Ekel und Überraschung. Sie sind angeboren und bei allen Menschen auf der Welt zu finden. Andere Gefühle wie Neid oder Stolz sind komplexere Emotionen."}
+    ]
+  },
+  weltbilder: {
+    title: "Weltbilder & Religionen",
+    info: `<b>Weltbilder – Wie verstehen Menschen die Welt?</b><br>
+    Menschen haben sich schon immer gefragt: Woher kommen wir? Wohin gehen wir? Was ist der Sinn des Lebens? Verschiedene Weltbilder geben unterschiedliche Antworten auf diese Fragen.<br><br>
+    <b>Menschenbilder:</b><br>
+    <b>Humanismus:</b> Der Mensch steht im Mittelpunkt. Jeder Mensch hat Würde und Vernunft. Bildung und Selbstentfaltung sind zentrale Werte. Entstanden in der Renaissance (ca. 15. Jh.).<br>
+    <b>Aufklärung (18. Jh.):</b> »Habe Mut, dich deines eigenen Verstandes zu bedienen!« (Immanuel Kant). Die Vernunft soll den Menschen leiten – nicht blinder Glaube oder Gehorsam.<br><br>
+    <b>Die fünf Weltreligionen im Überblick:</b><br>
+    <b>Christentum:</b> Ca. 2,4 Mrd. Anhänger. Glaube an einen Gott und Jesus Christus. Heilige Schrift: Bibel. Wichtige Feste: Weihnachten, Ostern.<br>
+    <b>Islam:</b> Ca. 1,9 Mrd. Anhänger. Glaube an Allah und den Propheten Mohammed. Heilige Schrift: Koran. Wichtige Feste: Ramadan, Opferfest.<br>
+    <b>Judentum:</b> Ca. 15 Mio. Anhänger. Älteste der drei monotheistischen Religionen. Heilige Schrift: Tora. Wichtige Feste: Schabbat, Jom Kippur.<br>
+    <b>Buddhismus:</b> Ca. 500 Mio. Anhänger. Begründer: Siddhartha Gautama (Buddha). Ziel: Erleuchtung und das Ende des Leidens. Kein Gottesglaube im klassischen Sinn.<br>
+    <b>Hinduismus:</b> Ca. 1,2 Mrd. Anhänger. Viele Götter (z. B. Brahma, Vishnu, Shiva). Glaube an Wiedergeburt (Reinkarnation) und Karma.<br><br>
+    <b>Toleranz:</b> In einer vielfältigen Gesellschaft ist es wichtig, andere Weltanschauungen und Religionen zu respektieren – auch wenn man selbst anders denkt oder glaubt.`,
+    questions: [
+      {q:"Was ist ein zentraler Grundsatz des Humanismus?", opts:["Der Mensch muss gehorchen und darf nicht selbst denken","Jeder Mensch hat Würde und das Recht auf Selbstentfaltung","Nur bestimmte Menschen sind wertvoll","Bildung ist unwichtig"], correct:1, explain:"Der Humanismus stellt den Menschen in den Mittelpunkt: Jeder Mensch hat eine unveräußerliche Würde, Vernunft und das Recht auf Bildung und Selbstentfaltung. Diese Idee entstand in der Renaissance und prägt unsere Gesellschaft bis heute."},
+      {q:"Was meinte der Philosoph Immanuel Kant mit dem Leitspruch der Aufklärung?", opts:["Man soll immer das tun, was andere sagen","Man soll den Mut haben, selbst zu denken und die eigene Vernunft zu nutzen","Man soll aufhören zu lernen","Man soll nur an das glauben, was in Büchern steht"], correct:1, explain:"Kants berühmter Leitspruch »Habe Mut, dich deines eigenen Verstandes zu bedienen!« fordert die Menschen auf, selbst zu denken, kritisch zu hinterfragen und sich nicht blind auf Autoritäten zu verlassen."},
+      {q:"Welche drei Religionen werden als »monotheistisch« (Glaube an einen Gott) bezeichnet?", opts:["Hinduismus, Buddhismus, Christentum","Christentum, Islam, Judentum","Buddhismus, Islam, Hinduismus","Judentum, Hinduismus, Buddhismus"], correct:1, explain:"Christentum, Islam und Judentum sind die drei monotheistischen Weltreligionen – sie glauben an einen einzigen Gott. Das Judentum ist die älteste der drei. Alle drei haben gemeinsame Wurzeln (z. B. Abraham als Stammvater)."},
+      {q:"Was ist das Ziel im Buddhismus?", opts:["Möglichst reich zu werden","Erleuchtung zu erlangen und das Leiden zu überwinden","Möglichst viele Kriege zu gewinnen","Alle anderen Religionen zu bekämpfen"], correct:1, explain:"Im Buddhismus geht es darum, durch Meditation, Mitgefühl und Weisheit die Erleuchtung (Nirvana) zu erreichen und das Leiden zu überwinden. Der Buddhismus wurde von Siddhartha Gautama (Buddha) begründet."},
+      {q:"Was bedeutet »Karma« im Hinduismus?", opts:["Ein beliebtes Gericht aus Indien","Das Prinzip, dass jede Handlung eine Folge hat – Gutes bewirkt Gutes, Schlechtes bewirkt Schlechtes","Ein hinduistischer Feiertag","Der Name eines Gottes"], correct:1, explain:"Karma ist ein zentrales Konzept im Hinduismus: Jede Handlung hat Folgen – gute Taten führen zu gutem Karma, schlechte Taten zu schlechtem. Das Karma beeinflusst die Wiedergeburt (Reinkarnation)."},
+      {q:"Warum ist Toleranz gegenüber anderen Religionen und Weltanschauungen wichtig?", opts:["Weil alle Religionen gleich sind","Weil wir in einer vielfältigen Gesellschaft leben und respektvolles Miteinander nur durch gegenseitige Achtung möglich ist","Weil man sowieso an nichts glauben sollte","Toleranz ist unwichtig – nur die eigene Meinung zählt"], correct:1, explain:"In unserer vielfältigen Gesellschaft leben Menschen mit unterschiedlichen Überzeugungen zusammen. Toleranz bedeutet, andere Meinungen und Glaubensrichtungen zu respektieren, auch wenn man sie nicht teilt. Das ist die Grundlage für ein friedliches Zusammenleben."}
+    ]
+  },
+  zukunft: {
+    title: "Zukunft gestalten",
+    info: `<b>Zukunft – Wie wollen wir leben?</b><br>
+    Jeder Mensch hat Vorstellungen von seiner Zukunft: Was möchte ich werden? Wie möchte ich leben? Was ist mir wichtig? Sich mit der Zukunft zu beschäftigen bedeutet auch, <b>Verantwortung</b> zu übernehmen – für sich selbst und für die Welt.<br><br>
+    <b>Utopie und Dystopie:</b><br>
+    Eine <b>Utopie</b> ist die Vorstellung einer idealen, perfekten Welt (griech. »ou topos« = kein Ort). Beispiel: eine Welt ohne Krieg und Armut.<br>
+    Eine <b>Dystopie</b> ist das Gegenteil: die Vorstellung einer schrecklichen Zukunft, z. B. Umweltzerstörung, Überwachung, Unterdrückung. Dystopien warnen uns und regen zum Nachdenken an.<br><br>
+    <b>Nachhaltigkeit:</b> Nachhaltigkeit bedeutet, so zu leben, dass auch kommende Generationen gute Lebensbedingungen haben. Es geht um drei Bereiche: <b>Ökologie</b> (Umweltschutz), <b>Ökonomie</b> (faire Wirtschaft) und <b>Soziales</b> (Gerechtigkeit).<br><br>
+    <b>Die Goldene Regel (Weltethos):</b> »Was du nicht willst, dass man dir tu, das füg auch keinem anderen zu.« Diese Regel findet sich in fast allen Kulturen und Religionen der Welt. Sie ist eine universelle Grundlage für ein gerechtes Zusammenleben.<br><br>
+    <b>Die UNO (Vereinte Nationen):</b> Die UNO wurde 1945 gegründet, um nach dem Zweiten Weltkrieg den <b>Weltfrieden</b> zu sichern. Heute hat sie 193 Mitgliedstaaten. Ihre Aufgaben: Friedenssicherung, Schutz der Menschenrechte, Bekämpfung von Armut und Hunger, Förderung von Bildung und nachhaltiger Entwicklung.`,
+    questions: [
+      {q:"Was ist eine »Utopie«?", opts:["Eine schreckliche Zukunftsvision","Die Vorstellung einer idealen, perfekten Welt","Ein anderes Wort für Realität","Ein Land in Afrika"], correct:1, explain:"Eine Utopie ist die Vorstellung einer idealen Welt – ein Ort, an dem alles perfekt ist. Das Wort kommt aus dem Griechischen und bedeutet »Nicht-Ort«, weil eine perfekte Welt nur in der Vorstellung existiert. Das Gegenteil ist die Dystopie."},
+      {q:"Was bedeutet Nachhaltigkeit?", opts:["Möglichst viel verbrauchen, solange es reicht","So leben, dass auch zukünftige Generationen gute Lebensbedingungen haben","Nur an heute denken und nicht an morgen","Alles so lassen, wie es ist"], correct:1, explain:"Nachhaltigkeit bedeutet, die Bedürfnisse der heutigen Generation zu erfüllen, ohne die Möglichkeiten zukünftiger Generationen zu gefährden. Dazu gehören Umweltschutz (Ökologie), faire Wirtschaft (Ökonomie) und soziale Gerechtigkeit."},
+      {q:"Was besagt die »Goldene Regel«, die in fast allen Kulturen zu finden ist?", opts:["Wer Gold hat, hat immer Recht","Was du nicht willst, dass man dir tu, das füg auch keinem anderen zu","Immer zuerst an sich selbst denken","Nur der Stärkere hat Recht"], correct:1, explain:"Die Goldene Regel ist ein universelles ethisches Prinzip: Behandle andere so, wie du selbst behandelt werden möchtest. Sie findet sich in fast allen Religionen und Kulturen und bildet eine Grundlage für gerechtes Zusammenleben (Weltethos)."},
+      {q:"Wann und warum wurde die UNO gegründet?", opts:["1918 – um den Handel zu fördern","1945 – um nach dem Zweiten Weltkrieg den Weltfrieden zu sichern","1989 – um die Kinderrechte durchzusetzen","2001 – um das Internet zu verwalten"], correct:1, explain:"Die UNO (Vereinte Nationen) wurde 1945 nach dem Zweiten Weltkrieg gegründet, um dauerhaften Frieden zu sichern und internationale Zusammenarbeit zu fördern. Heute gehören ihr 193 Staaten an."},
+      {q:"Was ist eine »Dystopie«?", opts:["Ein besonders schöner Traum","Eine Vorstellung von einer schrecklichen, negativen Zukunft, die als Warnung dient","Ein Synonym für Demokratie","Ein wissenschaftliches Experiment"], correct:1, explain:"Eine Dystopie ist das Gegenteil einer Utopie: Sie beschreibt eine düstere, bedrohliche Zukunft, z. B. Umweltzerstörung oder totale Überwachung. Dystopien in Büchern und Filmen sollen uns warnen und zum Nachdenken anregen, damit wir solche Entwicklungen verhindern."},
+      {q:"Welche drei Bereiche gehören zur Nachhaltigkeit?", opts:["Sport, Musik und Kunst","Ökologie (Umwelt), Ökonomie (Wirtschaft) und Soziales (Gerechtigkeit)","Politik, Militär und Wirtschaft","Schule, Familie und Freizeit"], correct:1, explain:"Nachhaltigkeit ruht auf drei Säulen: Ökologie (Schutz der Umwelt und natürlichen Ressourcen), Ökonomie (faire und verantwortungsvolle Wirtschaft) und Soziales (Gerechtigkeit und gute Lebensbedingungen für alle Menschen). Nur wenn alle drei Bereiche beachtet werden, ist echte Nachhaltigkeit möglich."}
+    ]
+  }
+};
+
+let currentSection = 'identitaet';
+let sectionState = {};
+
+function initState(key) {
+  if (!sectionState[key]) sectionState[key] = {current: 0, score: 0, answered: []};
+}
+
+function showSection(key) {
+  currentSection = key;
+  initState(key);
+  const tabs = document.querySelectorAll('.tab');
+  const keys = Object.keys(sections);
+  tabs.forEach((t,i) => t.classList.toggle('active', keys[i] === key));
+  render();
+}
+
+function render() {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const el = document.getElementById('content');
+
+  if (st.current >= s.questions.length) {
+    const pct = Math.round(st.score / s.questions.length * 100);
+    let icon = pct === 100 ? '🎉' : pct >= 60 ? '👏' : '💪';
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px">
+        <div style="font-size:48px;margin-bottom:12px">${icon}</div>
+        <h2>${pct === 100 ? 'Perfekt!' : pct >= 60 ? 'Gut gemacht!' : 'Weiter üben!'}</h2>
+        <p style="color:#64748b;margin:8px 0 20px">${st.score} von ${s.questions.length} richtig (${pct}%)</p>
+        <button class="btn" onclick="resetSection()">Nochmal</button>
+      </div>`;
+    return;
+  }
+
+  const q = s.questions[st.current];
+  el.innerHTML = `
+    <div class="card">
+      <div class="info">${s.info}</div>
+    </div>
+    <div class="score-bar">
+      <span>${s.title}</span>
+      <span>Frage ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} richtig</span></span>
+    </div>
+    <div class="progress-dots">${s.questions.map((_,i) => {
+      let cls = i < st.current ? (st.answered[i] ? 'done' : 'wrong-dot') : i === st.current ? 'current' : '';
+      return `<div class="dot ${cls}"></div>`;
+    }).join('')}</div>
+    <div class="card">
+      <div class="question">${q.q}</div>
+      <div class="options">${q.opts.map((o,i) => `<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+    </div>`;
+}
+
+function answer(idx) {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const q = s.questions[st.current];
+  const correct = idx === q.correct;
+  if (correct) st.score++;
+  st.answered.push(correct);
+
+  document.querySelectorAll('.opt').forEach((o,i) => {
+    o.classList.add('disabled');
+    if (i === q.correct) o.classList.add('correct');
+    if (i === idx && !correct) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.textContent = correct ? '✓ Richtig! ' + q.explain : '✗ ' + q.explain;
+
+  setTimeout(() => { st.current++; render(); }, 1800);
+}
+
+function resetSection() {
+  sectionState[currentSection] = {current:0, score:0, answered:[]};
+  render();
+}
+
+showSection('identitaet');
+</script>
+</body>
+</html>

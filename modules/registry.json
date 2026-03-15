@@ -1,5 +1,47 @@
 [
   {
+    "id": "deutsch-6",
+    "name": "Deutsch Klasse 6",
+    "description": "Satzglieder, Zeitformen, Wortarten, Satzbau, Balladen & Rechtschreibung",
+    "icon": "📖",
+    "path": "modules/deutsch-6/index.html"
+  },
+  {
+    "id": "mathe-6",
+    "name": "Mathe Klasse 6",
+    "description": "Winkel, Flächen, Volumen, Daten/Zufall & Dreisatz",
+    "icon": "📐",
+    "path": "modules/mathe-6/index.html"
+  },
+  {
+    "id": "englisch-6",
+    "name": "English Year 6",
+    "description": "Simple Past, Irregular Verbs, going-to-future, Comparison & Reading",
+    "icon": "🇬🇧",
+    "path": "modules/englisch-6/index.html"
+  },
+  {
+    "id": "nawi-6",
+    "name": "NaWi Klasse 6",
+    "description": "Ernährung, Verdauung, Suchtprävention, Stromkreise & Maschinen",
+    "icon": "🔬",
+    "path": "modules/nawi-6/index.html"
+  },
+  {
+    "id": "gewi-6",
+    "name": "GeWi Klasse 6",
+    "description": "Europa, EU, Demokratie, Tourismus & Deutschland",
+    "icon": "🌍",
+    "path": "modules/gewi-6/index.html"
+  },
+  {
+    "id": "ler-6",
+    "name": "LER Klasse 6",
+    "description": "Identität, Miteinander, Gefühle, Weltbilder & Zukunft",
+    "icon": "🤔",
+    "path": "modules/ler-6/index.html"
+  },
+  {
     "id": "stadtentwicklung",
     "name": "Stadtentwicklung",
     "description": "Antons Lernplan: Standortfaktoren, Phasen, Funktionen & Potsdam",
@@ -17,7 +59,7 @@
     "id": "mentaltraining",
     "name": "Mental stark auf dem Platz",
     "description": "Mentaltraining für junge Sportler",
-    "icon": "🧠",
+    "icon": "💪",
     "path": "modules/mentaltraining/index.html"
   },
   {

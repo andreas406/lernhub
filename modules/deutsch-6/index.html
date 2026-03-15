@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deutsch 6 – Grammatik, Balladen & Aufsatz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.card h2{font-size:18px;margin-bottom:12px}
+.card h3{font-size:15px;color:#3b82f6;margin-bottom:8px}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:active{background:#2563eb}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.fill-input{width:200px;padding:10px 14px;border:2px solid #e2e8f0;border-radius:8px;font-size:16px;font-family:inherit;margin-right:8px}
+.fill-input.correct{border-color:#22c55e;background:#f0fdf4}
+.fill-input.wrong{border-color:#ef4444;background:#fef2f2}
+.example{background:#fefce8;border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.6;margin:8px 0;border-left:4px solid #eab308}
+.poem{background:#f5f3ff;border-radius:10px;padding:16px;font-style:italic;line-height:1.8;font-size:15px;margin-bottom:14px;border-left:4px solid #8b5cf6}
+.hidden{display:none}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>📖 Deutsch Klasse 6</h1>
+<p class="subtitle">Grammatik, Balladen & Argumentieren – Niveaustufe D</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('satzglieder')">Satzglieder</button>
+  <button class="tab" onclick="showSection('zeitformen')">Zeitformen</button>
+  <button class="tab" onclick="showSection('wortarten')">Wortarten</button>
+  <button class="tab" onclick="showSection('satzbau')">Satzbau</button>
+  <button class="tab" onclick="showSection('balladen')">Balladen</button>
+  <button class="tab" onclick="showSection('rechtschreibung')">Rechtschreibung</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  satzglieder: {
+    title: "Satzglieder bestimmen",
+    info: `<b>Die vier wichtigsten Satzglieder:</b><br>
+    <b>Subjekt</b> (Wer/Was?) – <b>Prädikat</b> (Was tut?) – <b>Objekt</b> (Wen/Wem/Wessen?) – <b>Adverbiale</b> (Wo/Wann/Warum/Wie?)<br><br>
+    <b>Proben:</b> Umstellprobe (Satzglied an Position 1), Weglassprobe (kann man es streichen?), Austauschprobe (durch ein Wort ersetzen), Erweiterungsprobe (durch Zusätze ergänzen).<br><br>
+    <b>Adverbiale Bestimmungen:</b> Ort (Wo?), Zeit (Wann?), Grund (Warum?), Art und Weise (Wie?)`,
+    questions: [
+      {q:"»Der Hund bellt laut.« – Was ist »Der Hund«?", opts:["Prädikat","Objekt","Subjekt","Adverbiale"], correct:2, explain:"Frage: Wer bellt? → Der Hund = Subjekt"},
+      {q:"»Er schenkt seiner Schwester ein Buch.« – Was ist »seiner Schwester«?", opts:["Subjekt","Dativobjekt","Akkusativobjekt","Adverbiale"], correct:1, explain:"Frage: Wem schenkt er? → seiner Schwester = Dativobjekt"},
+      {q:"»Vor Angst rannte sie nach Hause.« – Was ist »Vor Angst«?", opts:["Adverbiale des Ortes","Adverbiale des Grundes","Adverbiale der Art","Subjekt"], correct:1, explain:"Frage: Warum rannte sie? → Vor Angst = Adverbiale des Grundes (kausal)"},
+      {q:"»Sie singt wunderschön.« – Was ist »wunderschön«?", opts:["Subjekt","Akkusativobjekt","Adverbiale der Art/Weise","Prädikat"], correct:2, explain:"Frage: Wie singt sie? → wunderschön = Adverbiale der Art und Weise (modal)"},
+      {q:"»Das Buch liegt auf dem Tisch.« – Was ist »auf dem Tisch«?", opts:["Adverbiale des Ortes","Dativobjekt","Akkusativobjekt","Subjekt"], correct:0, explain:"Frage: Wo liegt das Buch? → auf dem Tisch = Adverbiale des Ortes (lokal)"},
+      {q:"»Gestern hat sie einen Brief geschrieben.« – Was ist »einen Brief«?", opts:["Dativobjekt","Subjekt","Akkusativobjekt","Prädikat"], correct:2, explain:"Frage: Was hat sie geschrieben? → einen Brief = Akkusativobjekt"},
+      {q:"Welche Probe beweist, dass etwas ein Satzglied ist?", opts:["Weglassprobe","Umstellprobe","Betonungsprobe","Austauschprobe"], correct:1, explain:"Umstellprobe: Nur was als Ganzes an Position 1 stehen kann, ist ein Satzglied."},
+      {q:"»Wegen des Regens blieben wir zu Hause.« – Welches Satzglied ist »wegen des Regens«?", opts:["Adverbiale der Zeit","Adverbiale des Grundes","Genitivobjekt","Adverbiale des Ortes"], correct:1, explain:"Warum blieben wir zu Hause? → Wegen des Regens = kausal"}
+    ]
+  },
+  zeitformen: {
+    title: "Zeitformen des Verbs",
+    info: `<b>6 Zeitformen im Aktiv:</b><br>
+    <b>Präsens:</b> ich gehe (jetzt)<br>
+    <b>Präteritum:</b> ich ging (Erzählung)<br>
+    <b>Perfekt:</b> ich bin gegangen (mündlich, Vergangenheit)<br>
+    <b>Plusquamperfekt:</b> ich war gegangen (Vorvergangenheit)<br>
+    <b>Futur I:</b> ich werde gehen (Zukunft)<br>
+    <b>Futur II:</b> ich werde gegangen sein (abgeschlossene Zukunft)<br><br>
+    <b>Merke:</b> Plusquamperfekt = was <i>vor</i> der Vergangenheit passierte (»Nachdem er gegessen <u>hatte</u>, ging er.«)`,
+    questions: [
+      {q:"»Sie hat das Buch gelesen.« – Welche Zeitform?", opts:["Präteritum","Perfekt","Plusquamperfekt","Präsens"], correct:1, explain:"hat + gelesen = Perfekt (haben/sein + Partizip II)"},
+      {q:"»Er war schon eingeschlafen, als sie kam.« – »war eingeschlafen« ist …?", opts:["Perfekt","Präteritum","Plusquamperfekt","Futur II"], correct:2, explain:"war + Partizip II = Plusquamperfekt (Vorvergangenheit)"},
+      {q:"»Die Kinder spielten im Garten.« – Welche Zeitform?", opts:["Präsens","Perfekt","Präteritum","Plusquamperfekt"], correct:2, explain:"spielten = Präteritum (einfache Vergangenheit, typisch für Erzählungen)"},
+      {q:"»Morgen werde ich den Test schreiben.« – Welche Zeitform?", opts:["Präsens","Futur I","Futur II","Perfekt"], correct:1, explain:"werde + Infinitiv = Futur I (Zukunft)"},
+      {q:"Bilde das Plusquamperfekt von »laufen« (er): ", opts:["er ist gelaufen","er war gelaufen","er hatte gelaufen","er lief"], correct:1, explain:"laufen → er war gelaufen (sein + Partizip II, weil Bewegungsverb)"},
+      {q:"»Nachdem sie gegessen hatte, ging sie los.« – Welche Zeitform hat »gegessen hatte«?", opts:["Perfekt","Plusquamperfekt","Präteritum","Futur II"], correct:1, explain:"hatte + gegessen = Plusquamperfekt (passierte VOR dem Losgehen)"},
+      {q:"Welche Zeitform nutzt man typischerweise beim Erzählen?", opts:["Perfekt","Plusquamperfekt","Präsens","Präteritum"], correct:3, explain:"In schriftlichen Erzählungen wird das Präteritum verwendet."},
+      {q:"»Bis morgen werde ich die Aufgabe erledigt haben.« – Zeitform?", opts:["Futur I","Perfekt","Futur II","Plusquamperfekt"], correct:2, explain:"werde + Partizip II + haben = Futur II (abgeschlossene Zukunft)"}
+    ]
+  },
+  wortarten: {
+    title: "Wortarten erkennen",
+    info: `<b>Wichtige Wortarten auf Niveaustufe D:</b><br>
+    <b>Konjunktionen:</b> verbinden Sätze/Satzteile (und, aber, weil, dass, obwohl, nachdem)<br>
+    <b>Pronomen:</b> Personalpronomen (ich, du…), Possessivpronomen (mein, dein…), Demonstrativpronomen (dieser, jener), Relativpronomen (der/die/das, welcher)<br><br>
+    <b>Wortbildung:</b> Wortstamm + Präfix (vor-lesen) + Suffix (les-bar). Nominalisierung erkennst du an Nomensignalen: Artikel (das Lesen), Pronomen (sein Lachen), Adjektiv (lautes Rufen).`,
+    questions: [
+      {q:"»Obwohl es regnete, gingen wir spazieren.« – Was ist »obwohl«?", opts:["Adverb","Präposition","Konjunktion","Pronomen"], correct:2, explain:"»obwohl« verbindet Haupt- und Nebensatz = unterordnende Konjunktion"},
+      {q:"»Das ist der Junge, der gestern kam.« – Was ist das zweite »der«?", opts:["Artikel","Demonstrativpronomen","Personalpronomen","Relativpronomen"], correct:3, explain:"»der gestern kam« = Relativsatz → »der« ist ein Relativpronomen"},
+      {q:"»Dieser Weg ist kürzer.« – Was ist »Dieser«?", opts:["Artikel","Personalpronomen","Possessivpronomen","Demonstrativpronomen"], correct:3, explain:"»Dieser« zeigt auf etwas Bestimmtes = Demonstrativpronomen"},
+      {q:"»Das laute Rufen störte die Nachbarn.« – »Rufen« ist hier ein …?", opts:["Verb","Nominalisierung (Nomen)","Adjektiv","Adverb"], correct:1, explain:"Nomensignal: »das« + Adjektiv »laute« → »Rufen« ist nominalisiert = Nomen"},
+      {q:"Im Wort »un-les-bar« – was ist »un-«?", opts:["Suffix","Wortstamm","Endung","Präfix"], correct:3, explain:"»un-« steht VOR dem Stamm = Präfix (verändert die Bedeutung ins Gegenteil)"},
+      {q:"»Sie gab ihm ihren Stift.« – Was ist »ihren«?", opts:["Personalpronomen","Demonstrativpronomen","Possessivpronomen","Relativpronomen"], correct:2, explain:"»ihren« zeigt Besitz an = Possessivpronomen"},
+      {q:"Welche Konjunktion leitet einen Nebensatz ein?", opts:["und","aber","weil","oder"], correct:2, explain:"»weil« = unterordnende Konjunktion (Verb am Ende). »und/aber/oder« = nebenordnend."}
+    ]
+  },
+  satzbau: {
+    title: "Satzarten & Satzgefüge",
+    info: `<b>Satzarten:</b><br>
+    <b>Hauptsatz (HS):</b> Verb steht an 2. Stelle (»Er geht nach Hause.«)<br>
+    <b>Nebensatz (NS):</b> Verb steht am Ende, eingeleitet durch Konjunktion/Relativpronomen (»…weil er müde ist.«)<br>
+    <b>Satzreihe:</b> HS + HS, verbunden durch und/aber/oder<br>
+    <b>Satzgefüge:</b> HS + NS (»Ich freue mich, weil du kommst.«)<br>
+    <b>Relativsatz:</b> Nebensatz mit Relativpronomen (»Das Buch, das ich lese, ist spannend.«)`,
+    questions: [
+      {q:"»Er liest und sie schreibt.« – Welche Satzverbindung?", opts:["Satzgefüge","Relativsatz","Satzreihe","Nebensatz"], correct:2, explain:"Zwei Hauptsätze mit »und« verbunden = Satzreihe"},
+      {q:"»Ich bleibe zu Hause, weil es regnet.« – Welche Satzverbindung?", opts:["Satzreihe","Satzgefüge","Doppelter Hauptsatz","Infinitivgruppe"], correct:1, explain:"Hauptsatz + Nebensatz (»weil«) = Satzgefüge"},
+      {q:"Wo steht das Verb im Nebensatz?", opts:["An 1. Stelle","An 2. Stelle","Am Ende","Vor der Konjunktion"], correct:2, explain:"Im Nebensatz steht das konjugierte Verb am Ende (Verbletztstellung)."},
+      {q:"»Der Film, den wir sahen, war toll.« – Was ist »den wir sahen«?", opts:["Hauptsatz","Satzreihe","Relativsatz","Infinitivsatz"], correct:2, explain:"Eingeleitet durch Relativpronomen »den« = Relativsatz"},
+      {q:"»Obwohl er müde war, arbeitete er weiter.« – Was steht an Position 1 im Hauptsatz?", opts:["Das Subjekt","Das Verb","Der Nebensatz","Ein Adverb"], correct:1, explain:"Nach einem vorangestellten Nebensatz steht das Verb des HS direkt an Position 1 (Inversion)."},
+      {q:"Welches Wort leitet KEINEN Nebensatz ein?", opts:["dass","weil","und","obwohl"], correct:2, explain:"»und« ist eine nebenordnende Konjunktion = verbindet Hauptsätze, leitet keinen Nebensatz ein."}
+    ]
+  },
+  balladen: {
+    title: "Balladen analysieren",
+    info: `<b>Was ist eine Ballade?</b><br>
+    Eine Ballade vereint Merkmale aus drei Gattungen: <b>Epik</b> (erzählt eine Geschichte), <b>Lyrik</b> (Strophen, Reime, Rhythmus) und <b>Dramatik</b> (Dialoge, Spannung).<br><br>
+    <b>Typische Merkmale:</b> Strophenform, Reim (Paarreim aabb, Kreuzreim abab), dramatischer Höhepunkt, oft düstere/spannende Handlung, häufig mit übernatürlichen Elementen.<br><br>
+    <b>Wichtige Balladen für Klasse 6:</b> »Der Erlkönig« (Goethe), »Der Zauberlehrling« (Goethe), »Die Bürgschaft« (Schiller), »John Maynard« (Fontane)`,
+    questions: [
+      {q:"Eine Ballade vereint drei literarische Gattungen. Welche?", opts:["Epik, Lyrik, Dramatik","Roman, Gedicht, Drama","Märchen, Sage, Fabel","Krimi, Lyrik, Komödie"], correct:0, explain:"Ballade = »Urei der Dichtung« – sie erzählt (Epik), hat Verse/Reime (Lyrik) und Spannung/Dialoge (Dramatik)."},
+      {q:"Wer schrieb »Der Erlkönig«?", opts:["Schiller","Fontane","Goethe","Brecht"], correct:2, explain:"Johann Wolfgang von Goethe schrieb »Erlkönig« (1782)."},
+      {q:"Was ist ein Kreuzreim?", opts:["aabb","abab","abba","abcd"], correct:1, explain:"Kreuzreim: abab – die Reimzeilen überkreuzen sich (1. reimt auf 3., 2. auf 4.)"},
+      {q:"Welches Merkmal gehört zur DRAMATIK in einer Ballade?", opts:["Strophen und Verse","Dialoge und Spannung","Erzählung einer Geschichte","Reimschema"], correct:1, explain:"Dialoge (wörtliche Rede) und Spannungsaufbau sind dramatische Elemente."},
+      {q:"In »John Maynard« von Fontane – was ist John Maynards Rolle?", opts:["Kapitän","Passagier","Steuermann","Leuchtturmwärter"], correct:2, explain:"John Maynard ist der Steuermann, der das brennende Schiff ans rettende Ufer lenkt und dabei stirbt."},
+      {q:"Was ist ein Paarreim?", opts:["abab","abba","aabb","abcd"], correct:2, explain:"Paarreim: aabb – immer zwei aufeinanderfolgende Zeilen reimen sich."}
+    ]
+  },
+  rechtschreibung: {
+    title: "Rechtschreibung & Wortbildung",
+    info: `<b>Schwerpunkte Niveaustufe D:</b><br>
+    <b>Getrennt-/Zusammenschreibung:</b> Verb + Verb getrennt (spazieren gehen), Nomen + Verb getrennt (Rad fahren), aber: zusammen wenn neue Bedeutung (teilnehmen, stattfinden).<br>
+    <b>Nominalisierung:</b> Wird ein Wort zum Nomen, schreibt man es groß → Nomensignale: Artikel (das Laufen), Pronomen (sein Versagen), Adjektiv (schnelles Laufen).<br>
+    <b>Fremdwörter:</b> Häufige Schreibungen: ph→f (Foto), th (Theorie), rh (Rhythmus)`,
+    questions: [
+      {q:"Welche Schreibung ist richtig?", opts:["Rad fahren","radfahren","Radfahren","rad Fahren"], correct:0, explain:"Nomen + Verb wird getrennt geschrieben: Rad fahren. (Aber: das Radfahren = Nominalisierung)"},
+      {q:"»Beim … kam er ins Schwitzen.« – Groß oder klein?", opts:["beim laufen","beim Laufen"], correct:1, explain:"»beim« = bei dem → Artikel-Signal → Nominalisierung → großschreiben: beim Laufen"},
+      {q:"Welches Wort ist richtig geschrieben?", opts:["Rhytmus","Rythmus","Rhythmus","Rhytmuss"], correct:2, explain:"Rhythmus – Fremdwort aus dem Griechischen mit »rh« und »th«"},
+      {q:"»Sie konnte gut … .« – Getrennt oder zusammen?", opts:["schwimmen gehen","schwimmengehen"], correct:0, explain:"Verb + Verb wird getrennt geschrieben: schwimmen gehen"},
+      {q:"»Er hat an dem Wettbewerb … .« – Richtig ist:", opts:["teil genommen","teilgenommen"], correct:1, explain:"teilnehmen ist ein trennbares Verb → Partizip: teilgenommen (zusammen)"},
+      {q:"»Ihr lautes … weckte alle auf.« – Richtig ist:", opts:["lachen","Lachen"], correct:1, explain:"»Ihr« (Possessivpronomen) + »lautes« (Adjektiv) = doppeltes Nomensignal → Lachen = großschreiben"}
+    ]
+  }
+};
+
+let currentSection = 'satzglieder';
+let sectionState = {};
+
+function initState(key) {
+  if (!sectionState[key]) sectionState[key] = {current: 0, score: 0, answered: []};
+}
+
+function showSection(key) {
+  currentSection = key;
+  initState(key);
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', t.textContent.toLowerCase().replace(/[^a-zäöü]/g,'').includes(key.substring(0,4)));
+  });
+  const tabs = document.querySelectorAll('.tab');
+  const keys = Object.keys(sections);
+  tabs.forEach((t,i) => t.classList.toggle('active', keys[i] === key));
+  render();
+}
+
+function render() {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const el = document.getElementById('content');
+
+  if (st.current >= s.questions.length) {
+    const pct = Math.round(st.score / s.questions.length * 100);
+    let icon = pct === 100 ? '🎉' : pct >= 60 ? '👏' : '💪';
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px">
+        <div style="font-size:48px;margin-bottom:12px">${icon}</div>
+        <h2>${pct === 100 ? 'Perfekt!' : pct >= 60 ? 'Gut gemacht!' : 'Weiter üben!'}</h2>
+        <p style="color:#64748b;margin:8px 0 20px">${st.score} von ${s.questions.length} richtig (${pct}%)</p>
+        <button class="btn" onclick="resetSection()">Nochmal</button>
+      </div>`;
+    return;
+  }
+
+  const q = s.questions[st.current];
+  el.innerHTML = `
+    <div class="card">
+      <div class="info">${s.info}</div>
+    </div>
+    <div class="score-bar">
+      <span>${s.title}</span>
+      <span>Frage ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} richtig</span></span>
+    </div>
+    <div class="progress-dots">${s.questions.map((_,i) => {
+      let cls = i < st.current ? (st.answered[i] ? 'done' : 'wrong-dot') : i === st.current ? 'current' : '';
+      return `<div class="dot ${cls}"></div>`;
+    }).join('')}</div>
+    <div class="card">
+      <div class="question">${q.q}</div>
+      <div class="options">${q.opts.map((o,i) => `<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+    </div>`;
+}
+
+function answer(idx) {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const q = s.questions[st.current];
+  const correct = idx === q.correct;
+  if (correct) st.score++;
+  st.answered.push(correct);
+
+  document.querySelectorAll('.opt').forEach((o,i) => {
+    o.classList.add('disabled');
+    if (i === q.correct) o.classList.add('correct');
+    if (i === idx && !correct) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.textContent = correct ? '✓ Richtig! ' + q.explain : '✗ ' + q.explain;
+
+  setTimeout(() => { st.current++; render(); }, 1800);
+}
+
+function resetSection() {
+  sectionState[currentSection] = {current:0, score:0, answered:[]};
+  render();
+}
+
+showSection('satzglieder');
+</script>
+</body>
+</html>

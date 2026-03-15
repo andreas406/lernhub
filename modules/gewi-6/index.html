@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeWi 6 – Europa, Demokratie & Tourismus</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.card h2{font-size:18px;margin-bottom:12px}
+.card h3{font-size:15px;color:#3b82f6;margin-bottom:8px}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:active{background:#2563eb}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.hidden{display:none}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🌍 GeWi Klasse 6</h1>
+<p class="subtitle">Europa, Demokratie & Tourismus – 2. Halbjahr</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('europa')">Europa</button>
+  <button class="tab" onclick="showSection('eu')">EU</button>
+  <button class="tab" onclick="showSection('demokratie')">Demokratie</button>
+  <button class="tab" onclick="showSection('tourismus')">Tourismus</button>
+  <button class="tab" onclick="showSection('deutschland')">Deutschland</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  europa: {
+    title: "Kontinent Europa",
+    info: `<b>Europa – unser Kontinent:</b><br>
+    Europa ist einer der sieben Kontinente und liegt auf der Nordhalbkugel. Im Osten bildet das <b>Uralgebirge</b> die Grenze zu Asien, im Süden trennt das <b>Mittelmeer</b> Europa von Afrika.<br><br>
+    <b>Meere rund um Europa:</b> Atlantischer Ozean (Westen), Mittelmeer (Süden), Nordsee und Ostsee (Norden), Schwarzes Meer (Südosten).<br><br>
+    <b>Wichtige Gebirge:</b> Alpen (höchster Berg: Mont Blanc, 4.808 m), Pyrenäen, Karpaten, Skandinavisches Gebirge, Ural.<br>
+    <b>Große Flüsse:</b> Wolga (längster Fluss Europas), Donau (fließt durch 10 Länder), Rhein, Elbe, Loire.<br><br>
+    <b>Klimazonen Europas (von Nord nach Süd):</b><br>
+    <b>Polare Zone:</b> Sehr kalt, lange Winter, Tundra (Nordskandinavien, Island).<br>
+    <b>Gemäßigte Zone:</b> Vier Jahreszeiten, Laub- und Mischwälder (Mitteleuropa, z. B. Deutschland).<br>
+    <b>Subtropische Zone:</b> Heiße, trockene Sommer, milde Winter, Hartlaubgewächse (Mittelmeerraum, z. B. Spanien, Italien, Griechenland).`,
+    questions: [
+      {q:"Welches Gebirge bildet die Grenze zwischen Europa und Asien?", opts:["Alpen","Pyrenäen","Ural","Karpaten"], correct:2, explain:"Das Uralgebirge in Russland gilt als natürliche Grenze zwischen Europa und Asien. Es erstreckt sich über etwa 2.400 km von Nord nach Süd."},
+      {q:"Welches Meer trennt Europa von Afrika?", opts:["Nordsee","Ostsee","Schwarzes Meer","Mittelmeer"], correct:3, explain:"Das Mittelmeer liegt zwischen Europa im Norden und Afrika im Süden. An der engsten Stelle, der Straße von Gibraltar, sind es nur 14 km."},
+      {q:"Wie heißt der höchste Berg der Alpen?", opts:["Zugspitze","Matterhorn","Mont Blanc","Mount Everest"], correct:2, explain:"Der Mont Blanc (4.808 m) in den französisch-italienischen Alpen ist der höchste Berg der Alpen und Westeuropas. Die Zugspitze (2.962 m) ist Deutschlands höchster Berg."},
+      {q:"Welcher Fluss ist der längste in Europa?", opts:["Donau","Rhein","Elbe","Wolga"], correct:3, explain:"Die Wolga in Russland ist mit ca. 3.530 km der längste Fluss Europas. Die Donau (2.850 km) ist der zweitlängste und fließt durch 10 Länder."},
+      {q:"In welcher Klimazone liegt Deutschland?", opts:["Polare Zone","Subtropische Zone","Gemäßigte Zone","Tropische Zone"], correct:2, explain:"Deutschland liegt in der gemäßigten Klimazone mit vier deutlichen Jahreszeiten. Typisch sind Laub- und Mischwälder, mäßig warme Sommer und kühle Winter."},
+      {q:"Was ist typisch für die subtropische Zone im Mittelmeerraum?", opts:["Lange, kalte Winter und kurze Sommer","Heiße, trockene Sommer und milde Winter","Ganzjährig Schnee und Eis","Regenwald und tropische Hitze"], correct:1, explain:"Der Mittelmeerraum (z. B. Spanien, Italien, Griechenland) hat heiße, trockene Sommer und milde, feuchte Winter. Typische Pflanzen sind Olivenbäume, Zypressen und Hartlaubgewächse."},
+      {q:"Durch wie viele Länder fließt die Donau?", opts:["3","5","10","15"], correct:2, explain:"Die Donau fließt durch 10 Länder – von Deutschland über Österreich, die Slowakei, Ungarn, Kroatien, Serbien, Rumänien, Bulgarien, Moldawien bis zur Ukraine ins Schwarze Meer."}
+    ]
+  },
+  eu: {
+    title: "Die Europäische Union",
+    info: `<b>Die Europäische Union (EU):</b><br>
+    Die EU ist ein Zusammenschluss europäischer Staaten, der nach dem Zweiten Weltkrieg gegründet wurde, um <b>Frieden und Zusammenarbeit</b> zu sichern.<br><br>
+    <b>Geschichte:</b> 1957 schlossen sich 6 Staaten zur Europäischen Wirtschaftsgemeinschaft (EWG) zusammen: Deutschland, Frankreich, Italien, Belgien, Niederlande, Luxemburg. Seit 1993 heißt der Verbund <b>Europäische Union</b>. Heute hat die EU <b>27 Mitgliedstaaten</b> (seit dem Brexit 2020 ohne Großbritannien).<br><br>
+    <b>Wichtige EU-Organe:</b><br>
+    <b>Europäisches Parlament:</b> Wird von den Bürgern direkt gewählt, beschließt Gesetze mit.<br>
+    <b>Europäische Kommission:</b> Schlägt neue Gesetze vor und überwacht deren Einhaltung (»Regierung der EU«).<br>
+    <b>Rat der EU (Ministerrat):</b> Vertreter der Regierungen der Mitgliedstaaten, entscheidet über Gesetze.<br><br>
+    <b>Vorteile der EU:</b><br>
+    <b>Euro:</b> Gemeinsame Währung in 20 Ländern – kein Geldwechseln nötig.<br>
+    <b>Freizügigkeit:</b> EU-Bürger dürfen in jedem EU-Land leben, arbeiten und studieren.<br>
+    <b>Schengen-Raum:</b> Reisen ohne Grenzkontrollen zwischen 27 europäischen Staaten.<br>
+    <b>Frieden:</b> Seit Gründung der EU gab es keinen Krieg zwischen den Mitgliedstaaten.`,
+    questions: [
+      {q:"Wie viele Mitgliedstaaten hat die EU heute (Stand 2025)?", opts:["15","20","27","50"], correct:2, explain:"Die EU hat derzeit 27 Mitgliedstaaten. Seit dem Austritt Großbritanniens (Brexit) im Jahr 2020 sind es nicht mehr 28, sondern 27 Länder."},
+      {q:"Wann und warum wurde die Vorläuferorganisation der EU gegründet?", opts:["1918 – wegen des Ersten Weltkriegs","1957 – um nach dem Zweiten Weltkrieg Frieden zu sichern","1990 – nach dem Mauerfall","2002 – wegen der Euro-Einführung"], correct:1, explain:"1957 gründeten 6 Staaten die Europäische Wirtschaftsgemeinschaft (EWG). Ziel war es, nach dem Zweiten Weltkrieg durch wirtschaftliche Zusammenarbeit dauerhaften Frieden in Europa zu schaffen."},
+      {q:"Welches EU-Organ wird direkt von den Bürgern gewählt?", opts:["Die Europäische Kommission","Der Rat der EU","Das Europäische Parlament","Der Europäische Gerichtshof"], correct:2, explain:"Das Europäische Parlament ist die einzige direkt von den EU-Bürgern gewählte Institution. Die Wahl findet alle 5 Jahre statt. Das Parlament entscheidet mit über EU-Gesetze."},
+      {q:"Was bedeutet »Freizügigkeit« in der EU?", opts:["Man darf kostenlos Bus fahren","EU-Bürger dürfen in jedem EU-Land leben und arbeiten","Man muss keine Steuern zahlen","Jeder bekommt eine Freizeitkarte"], correct:1, explain:"Freizügigkeit ist ein Grundrecht in der EU: Jeder EU-Bürger darf in jedem Mitgliedstaat wohnen, arbeiten, studieren und sich frei bewegen – ohne besondere Genehmigung."},
+      {q:"Was ist der Schengen-Raum?", opts:["Ein Freizeitpark in Luxemburg","Ein Gebiet ohne Grenzkontrollen zwischen teilnehmenden Staaten","Eine europäische Währungsunion","Ein Militärbündnis"], correct:1, explain:"Im Schengen-Raum kann man ohne Passkontrollen über Grenzen reisen. Benannt ist er nach dem Ort Schengen in Luxemburg, wo 1985 das Abkommen unterzeichnet wurde."},
+      {q:"Welche 6 Staaten gründeten 1957 die EWG?", opts:["Deutschland, Frankreich, Italien, Belgien, Niederlande, Luxemburg","Deutschland, Frankreich, Großbritannien, Spanien, Portugal, Italien","Alle skandinavischen Länder","Deutschland, Österreich, Schweiz, Frankreich, Italien, Spanien"], correct:0, explain:"Die 6 Gründerstaaten waren: Deutschland, Frankreich, Italien, Belgien, die Niederlande und Luxemburg. Diese Länder werden auch die »Gründerväter« der EU genannt."},
+      {q:"Warum ist der Euro ein Vorteil für die EU-Bürger?", opts:["Weil er die schönsten Geldscheine hat","Weil man beim Reisen in Euro-Länder kein Geld wechseln muss","Weil alle Waren billiger sind","Weil es nur noch Münzen gibt"], correct:1, explain:"Der Euro ist die gemeinsame Währung in 20 EU-Ländern. Wer in ein anderes Euro-Land reist, muss kein Geld umtauschen. Das spart Kosten und vereinfacht den Handel."}
+    ]
+  },
+  demokratie: {
+    title: "Demokratie & Mitbestimmung",
+    info: `<b>Was ist Demokratie?</b><br>
+    Das Wort kommt aus dem Griechischen: <b>demos</b> = Volk, <b>kratia</b> = Herrschaft → <b>Volksherrschaft</b>. Die erste Demokratie entstand im antiken <b>Athen</b> (ca. 500 v. Chr.) – allerdings durften dort nur freie Männer abstimmen, keine Frauen, Sklaven oder Fremde.<br><br>
+    <b>Merkmale unserer Demokratie heute:</b><br>
+    <b>Freie, geheime Wahlen:</b> Alle Bürger ab 18 dürfen wählen (Wahlrecht).<br>
+    <b>Gewaltenteilung:</b> Legislative (Bundestag = Gesetze machen), Exekutive (Regierung = Gesetze umsetzen), Judikative (Gerichte = Recht sprechen).<br>
+    <b>Grundrechte:</b> Meinungsfreiheit, Religionsfreiheit, Versammlungsfreiheit, Gleichheit vor dem Gesetz (im Grundgesetz, Art. 1–19).<br>
+    <b>Meinungs- und Pressefreiheit:</b> Jeder darf seine Meinung frei äußern, Medien berichten unabhängig.<br><br>
+    <b>Mitbestimmung in der Schule:</b><br>
+    Klassensprecher/in, Schülervertretung (SV), Schulkonferenz – auch Kinder haben ein Recht auf Mitbestimmung!<br><br>
+    <b>Kinderrechte:</b> Seit 1989 gibt es die <b>UN-Kinderrechtskonvention</b>: Recht auf Bildung, Schutz vor Gewalt, Recht auf Spiel und Freizeit, Recht auf Meinungsäußerung.`,
+    questions: [
+      {q:"Was bedeutet das Wort »Demokratie«?", opts:["Alleinherrschaft","Herrschaft der Reichen","Volksherrschaft","Militärherrschaft"], correct:2, explain:"Demokratie kommt aus dem Griechischen: demos = Volk, kratia = Herrschaft. Demokratie bedeutet also »Herrschaft des Volkes« – das Volk bestimmt, wer regiert."},
+      {q:"Wo entstand die erste Demokratie?", opts:["Im Römischen Reich","Im antiken Athen","In den USA","In Frankreich"], correct:1, explain:"Die erste Demokratie entstand um 500 v. Chr. im antiken Athen (Griechenland). Allerdings durften dort nur freie, erwachsene Männer abstimmen – Frauen, Sklaven und Fremde waren ausgeschlossen."},
+      {q:"Was versteht man unter Gewaltenteilung?", opts:["Die Polizei kontrolliert alles","Die Macht wird auf drei unabhängige Gewalten aufgeteilt","Der Bundeskanzler darf alles allein entscheiden","Gewalt wird unter allen Bürgern aufgeteilt"], correct:1, explain:"Gewaltenteilung bedeutet: Die Staatsgewalt wird auf drei Bereiche verteilt – Legislative (Gesetze machen), Exekutive (Gesetze umsetzen), Judikative (Recht sprechen). So wird Machtmissbrauch verhindert."},
+      {q:"Was ist die Aufgabe der Legislative (gesetzgebenden Gewalt)?", opts:["Gesetze umsetzen und die Polizei leiten","Gesetze beschließen (z. B. im Bundestag)","Recht sprechen und Urteile fällen","Die Armee befehligen"], correct:1, explain:"Die Legislative (gesetzgebende Gewalt) beschließt Gesetze. In Deutschland ist das vor allem der Bundestag. Die Abgeordneten werden vom Volk gewählt und vertreten dessen Interessen."},
+      {q:"Ab welchem Alter darf man in Deutschland bei der Bundestagswahl wählen?", opts:["14 Jahre","16 Jahre","18 Jahre","21 Jahre"], correct:2, explain:"Das aktive Wahlrecht bei der Bundestagswahl hat man ab 18 Jahren. Bei manchen Kommunal- und Landtagswahlen darf man bereits ab 16 wählen."},
+      {q:"Seit wann gibt es die UN-Kinderrechtskonvention?", opts:["1949","1968","1989","2005"], correct:2, explain:"Die UN-Kinderrechtskonvention wurde 1989 von den Vereinten Nationen verabschiedet. Sie legt fest, dass Kinder weltweit besondere Rechte haben: auf Bildung, Schutz, Spiel, Gesundheit und Mitbestimmung."},
+      {q:"Wie können Schüler in der Schule mitbestimmen?", opts:["Gar nicht – Kinder haben kein Mitbestimmungsrecht","Durch Klassensprecher, Schülervertretung und Schulkonferenz","Nur wenn sie 18 sind","Indem sie den Unterricht selbst gestalten"], correct:1, explain:"Schüler wählen Klassensprecher/innen, die ihre Interessen vertreten. Die Schülervertretung (SV) und die Schulkonferenz bieten weitere Möglichkeiten der Mitbestimmung. Das ist gelebte Demokratie!"}
+    ]
+  },
+  tourismus: {
+    title: "Tourismus & Reisen",
+    info: `<b>Geschichte des Reisens:</b><br>
+    Früher reisten nur wenige Menschen (Kaufleute, Pilger, Adlige). Ab dem 19. Jahrhundert ermöglichte die <b>Eisenbahn</b> mehr Menschen das Reisen. Nach dem Zweiten Weltkrieg begann der <b>Massentourismus</b>: Billigflüge, Pauschalreisen und steigende Löhne machten Urlaub für viele erschwinglich.<br><br>
+    <b>Arten des Tourismus:</b><br>
+    <b>Massentourismus:</b> Viele Touristen an einem Ort (z. B. Mallorca, Rimini). Bringt Geld, kann aber Umwelt und Kultur belasten.<br>
+    <b>Sanfter (nachhaltiger) Tourismus:</b> Rücksicht auf Natur, Kultur und Einheimische. Kleine Unterkünfte, regionale Produkte, umweltfreundliche Anreise.<br><br>
+    <b>Auswirkungen des Tourismus:</b><br>
+    <b>Wirtschaft (+):</b> Arbeitsplätze (Hotels, Restaurants, Reisebüros), Einnahmen für die Region.<br>
+    <b>Wirtschaft (–):</b> Abhängigkeit vom Tourismus, schlecht bezahlte Saisonjobs.<br>
+    <b>Umwelt (–):</b> Fluglärm, CO₂-Ausstoß, Müll, Wasserverbrauch, Naturzerstörung (Skipisten, Hotelbauten).<br>
+    <b>Kultur (+/–):</b> Kulturaustausch, aber auch Verlust lokaler Traditionen (»Disneyfizierung«).<br><br>
+    <b>Nachhaltiges Reisen:</b> Mit der Bahn statt dem Flugzeug, regionale Produkte kaufen, Müll vermeiden, Natur respektieren.`,
+    questions: [
+      {q:"Was ermöglichte im 19. Jahrhundert erstmals breiteren Bevölkerungsschichten das Reisen?", opts:["Das Flugzeug","Das Automobil","Die Eisenbahn","Das Kreuzfahrtschiff"], correct:2, explain:"Die Eisenbahn revolutionierte im 19. Jahrhundert das Reisen. Erstmals konnten viele Menschen schnell und relativ günstig weite Strecken zurücklegen."},
+      {q:"Was versteht man unter Massentourismus?", opts:["Wenn nur wenige, reiche Menschen reisen","Wenn sehr viele Touristen einen Ort besuchen","Wenn man allein durch die Natur wandert","Wenn man nur im eigenen Land Urlaub macht"], correct:1, explain:"Massentourismus bedeutet, dass sehr viele Touristen gleichzeitig an einen Ort reisen – oft mit Pauschalreisen und Billigflügen. Beliebte Ziele sind z. B. Mallorca oder die türkische Riviera."},
+      {q:"Welcher positive wirtschaftliche Effekt hat Tourismus für eine Region?", opts:["Höherer CO₂-Ausstoß","Mehr Müll auf den Straßen","Arbeitsplätze und Einnahmen für die Einheimischen","Verlust lokaler Traditionen"], correct:2, explain:"Tourismus schafft Arbeitsplätze in Hotels, Restaurants, Geschäften und Reisebüros. Die Einnahmen durch Touristen stärken die Wirtschaft der Region."},
+      {q:"Welches ist ein Problem des Massentourismus für die Umwelt?", opts:["Zu viele Bäume werden gepflanzt","CO₂-Ausstoß durch Flüge, Müll und Wasserverbrauch","Die Luft wird sauberer","Es gibt zu wenig Hotels"], correct:1, explain:"Massentourismus belastet die Umwelt: Flugzeuge stoßen viel CO₂ aus, Hotelbauten zerstören Natur, der Wasserverbrauch steigt und es entsteht viel Müll."},
+      {q:"Was bedeutet »sanfter Tourismus«?", opts:["Tourismus nur für ältere Menschen","Reisen mit Rücksicht auf Natur, Kultur und Einheimische","Reisen ohne Koffer","Nur Strandurlaub machen"], correct:1, explain:"Sanfter (nachhaltiger) Tourismus bedeutet: umweltfreundlich reisen, lokale Kultur respektieren, kleine Unterkünfte nutzen, regionale Produkte kaufen und die Natur schonen."},
+      {q:"Welches Verkehrsmittel ist für nachhaltiges Reisen am besten geeignet?", opts:["Flugzeug","Kreuzfahrtschiff","Bahn","SUV"], correct:2, explain:"Die Bahn hat pro Person und Kilometer den geringsten CO₂-Ausstoß. Für nachhaltiges Reisen sollte man auf Kurzstreckenflüge verzichten und lieber die Bahn nehmen."},
+      {q:"Was bedeutet »Disneyfizierung« im Zusammenhang mit Tourismus?", opts:["Dass überall Freizeitparks gebaut werden","Dass lokale Kultur und Traditionen für Touristen künstlich inszeniert werden","Dass Kinder kostenlos reisen dürfen","Dass Disney-Filme in Hotels gezeigt werden"], correct:1, explain:"»Disneyfizierung« beschreibt, wie lokale Kultur für Touristen vereinfacht oder künstlich inszeniert wird – die echten Traditionen gehen dabei oft verloren. Die Orte wirken wie eine Kulisse."}
+    ]
+  },
+  deutschland: {
+    title: "Deutschland – Bundesländer & Landschaften",
+    info: `<b>Deutschland – Bundesrepublik mit 16 Bundesländern:</b><br>
+    Deutschland ist ein <b>föderaler Staat</b>: Die Macht ist zwischen dem Bund (Bundesregierung) und den 16 Bundesländern aufgeteilt. Jedes Bundesland hat eine eigene Landesregierung, ein eigenes Parlament und z. B. eigene Regelungen für Schule und Polizei.<br><br>
+    <b>Die 16 Bundesländer:</b> Baden-Württemberg, Bayern, Berlin, Brandenburg, Bremen, Hamburg, Hessen, Mecklenburg-Vorpommern, Niedersachsen, Nordrhein-Westfalen, Rheinland-Pfalz, Saarland, Sachsen, Sachsen-Anhalt, Schleswig-Holstein, Thüringen.<br>
+    <b>Hauptstadt:</b> Berlin (zugleich Bundesland und größte Stadt Deutschlands).<br><br>
+    <b>Die 4 Großlandschaften (von Nord nach Süd):</b><br>
+    <b>1. Norddeutsches Tiefland:</b> Flach, Küsten (Nord-/Ostsee), Marsch, Geest, Seenplatten. Landwirtschaft, Windenergie.<br>
+    <b>2. Mittelgebirge:</b> Hügelig, 500–1.500 m hoch. Harz, Erzgebirge, Schwarzwald, Thüringer Wald, Rheinisches Schiefergebirge.<br>
+    <b>3. Alpenvorland:</b> Hügeliges Voralpengebiet, viele Seen (Bodensee, Chiemsee), fruchtbare Böden, Milchwirtschaft.<br>
+    <b>4. Alpen:</b> Hochgebirge im Süden Bayerns. Höchster Berg: <b>Zugspitze</b> (2.962 m).<br><br>
+    <b>Wichtige Flüsse:</b> Rhein, Elbe, Donau, Weser, Oder (Grenzfluss zu Polen).`,
+    questions: [
+      {q:"Wie viele Bundesländer hat Deutschland?", opts:["10","13","16","20"], correct:2, explain:"Deutschland hat 16 Bundesländer. Drei davon sind sogenannte Stadtstaaten: Berlin, Hamburg und Bremen. Brandenburg ist das Bundesland, in dem ihr wohnt."},
+      {q:"Was bedeutet »Föderalismus« in Deutschland?", opts:["Der Bundeskanzler bestimmt alles allein","Die Macht ist zwischen Bund und Ländern aufgeteilt","Alle Länder haben die gleichen Gesetze","Deutschland wird von der EU regiert"], correct:1, explain:"Föderalismus bedeutet, dass die Macht zwischen der Bundesregierung und den 16 Landesregierungen aufgeteilt ist. Die Länder regeln z. B. Schule und Polizei selbst."},
+      {q:"Welche Großlandschaft liegt ganz im Norden Deutschlands?", opts:["Die Alpen","Das Mittelgebirge","Das Alpenvorland","Das Norddeutsche Tiefland"], correct:3, explain:"Das Norddeutsche Tiefland erstreckt sich entlang der Nord- und Ostseeküste. Es ist flach, hat Marschland, Geest und Seenplatten. Hier wird viel Landwirtschaft betrieben und Windenergie erzeugt."},
+      {q:"Wie heißt der höchste Berg Deutschlands?", opts:["Feldberg","Brocken","Zugspitze","Mont Blanc"], correct:2, explain:"Die Zugspitze in den bayerischen Alpen ist mit 2.962 m der höchste Berg Deutschlands. Der Brocken (1.141 m) ist der höchste Berg im Harz (Mittelgebirge), der Mont Blanc gehört zu Frankreich/Italien."},
+      {q:"Welcher Fluss bildet die Grenze zwischen Deutschland und Polen?", opts:["Rhein","Elbe","Donau","Oder"], correct:3, explain:"Die Oder (und ihr Nebenfluss die Neiße) bilden die Grenze zwischen Deutschland und Polen. Diese Grenze wurde 1990 im Zwei-plus-Vier-Vertrag endgültig anerkannt."},
+      {q:"In welche Großlandschaft gehört der Schwarzwald?", opts:["Norddeutsches Tiefland","Mittelgebirge","Alpenvorland","Alpen"], correct:1, explain:"Der Schwarzwald in Baden-Württemberg ist ein Mittelgebirge (höchster Punkt: Feldberg, 1.493 m). Weitere Mittelgebirge sind z. B. der Harz, das Erzgebirge und der Thüringer Wald."},
+      {q:"Welche drei deutschen Bundesländer sind Stadtstaaten?", opts:["Bayern, Hessen, Sachsen","Berlin, Hamburg, Bremen","Brandenburg, Thüringen, Saarland","Niedersachsen, NRW, Baden-Württemberg"], correct:1, explain:"Berlin, Hamburg und Bremen sind Stadtstaaten – sie sind gleichzeitig Stadt und Bundesland. Berlin ist zudem die Hauptstadt und mit ca. 3,7 Millionen Einwohnern die größte Stadt Deutschlands."}
+    ]
+  }
+};
+
+let currentSection = 'europa';
+let sectionState = {};
+
+function initState(key) {
+  if (!sectionState[key]) sectionState[key] = {current: 0, score: 0, answered: []};
+}
+
+function showSection(key) {
+  currentSection = key;
+  initState(key);
+  const tabs = document.querySelectorAll('.tab');
+  const keys = Object.keys(sections);
+  tabs.forEach((t,i) => t.classList.toggle('active', keys[i] === key));
+  render();
+}
+
+function render() {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const el = document.getElementById('content');
+
+  if (st.current >= s.questions.length) {
+    const pct = Math.round(st.score / s.questions.length * 100);
+    let icon = pct === 100 ? '🎉' : pct >= 60 ? '👏' : '💪';
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px">
+        <div style="font-size:48px;margin-bottom:12px">${icon}</div>
+        <h2>${pct === 100 ? 'Perfekt!' : pct >= 60 ? 'Gut gemacht!' : 'Weiter üben!'}</h2>
+        <p style="color:#64748b;margin:8px 0 20px">${st.score} von ${s.questions.length} richtig (${pct}%)</p>
+        <button class="btn" onclick="resetSection()">Nochmal</button>
+      </div>`;
+    return;
+  }
+
+  const q = s.questions[st.current];
+  el.innerHTML = `
+    <div class="card">
+      <div class="info">${s.info}</div>
+    </div>
+    <div class="score-bar">
+      <span>${s.title}</span>
+      <span>Frage ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} richtig</span></span>
+    </div>
+    <div class="progress-dots">${s.questions.map((_,i) => {
+      let cls = i < st.current ? (st.answered[i] ? 'done' : 'wrong-dot') : i === st.current ? 'current' : '';
+      return `<div class="dot ${cls}"></div>`;
+    }).join('')}</div>
+    <div class="card">
+      <div class="question">${q.q}</div>
+      <div class="options">${q.opts.map((o,i) => `<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+    </div>`;
+}
+
+function answer(idx) {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const q = s.questions[st.current];
+  const correct = idx === q.correct;
+  if (correct) st.score++;
+  st.answered.push(correct);
+
+  document.querySelectorAll('.opt').forEach((o,i) => {
+    o.classList.add('disabled');
+    if (i === q.correct) o.classList.add('correct');
+    if (i === idx && !correct) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.textContent = correct ? '✓ Richtig! ' + q.explain : '✗ ' + q.explain;
+
+  setTimeout(() => { st.current++; render(); }, 1800);
+}
+
+function resetSection() {
+  sectionState[currentSection] = {current:0, score:0, answered:[]};
+  render();
+}
+
+showSection('europa');
+</script>
+</body>
+</html>

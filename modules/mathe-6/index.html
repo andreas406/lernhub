@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe 6 – Geometrie, Daten & Proportionalität</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+.formula{background:#fefce8;border-radius:8px;padding:10px 14px;font-size:15px;font-weight:600;margin:8px 0;border-left:4px solid #eab308;font-family:monospace}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🔢 Mathe Klasse 6</h1>
+<p class="subtitle">Geometrie, Daten/Zufall & Proportionalität – 2. Halbjahr</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('winkel')">Winkel</button>
+  <button class="tab" onclick="showSection('flaechen')">Flächen</button>
+  <button class="tab" onclick="showSection('volumen')">Volumen</button>
+  <button class="tab" onclick="showSection('daten')">Daten</button>
+  <button class="tab" onclick="showSection('dreisatz')">Dreisatz</button>
+</div>
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  winkel: {
+    title: "Winkel",
+    info: `<b>Winkelarten:</b><br>
+    <b>Spitzer Winkel:</b> 0° < α < 90°<br>
+    <b>Rechter Winkel:</b> α = 90°<br>
+    <b>Stumpfer Winkel:</b> 90° < α < 180°<br>
+    <b>Gestreckter Winkel:</b> α = 180°<br>
+    <b>Überstumpfer Winkel:</b> 180° < α < 360°<br>
+    <b>Vollwinkel:</b> α = 360°<br><br>
+    <div class="formula">Nebenwinkel: α + β = 180° · Scheitelwinkel sind gleich groß</div>`,
+    questions: [
+      {q:"Ein Winkel von 47° ist ein …", opts:["rechter Winkel","stumpfer Winkel","spitzer Winkel","gestreckter Winkel"], correct:2, explain:"47° < 90° → spitzer Winkel"},
+      {q:"Ein Winkel von 135° ist ein …", opts:["spitzer Winkel","rechter Winkel","stumpfer Winkel","überstumpfer Winkel"], correct:2, explain:"90° < 135° < 180° → stumpfer Winkel"},
+      {q:"Wie groß ist der Nebenwinkel zu α = 65°?", opts:["295°","25°","115°","65°"], correct:2, explain:"Nebenwinkel: 180° - 65° = 115°"},
+      {q:"Zwei Geraden schneiden sich. Winkel α = 72°. Wie groß ist der Scheitelwinkel?", opts:["108°","72°","144°","36°"], correct:1, explain:"Scheitelwinkel sind gleich groß → 72°"},
+      {q:"Ein Winkel von 210° ist ein …", opts:["stumpfer Winkel","gestreckter Winkel","überstumpfer Winkel","Vollwinkel"], correct:2, explain:"180° < 210° < 360° → überstumpfer Winkel"},
+      {q:"Die Winkelsumme im Dreieck beträgt …", opts:["180°","360°","90°","270°"], correct:0, explain:"In jedem Dreieck gilt: α + β + γ = 180°"},
+      {q:"Ein Dreieck hat die Winkel 50° und 70°. Wie groß ist der dritte Winkel?", opts:["60°","40°","80°","50°"], correct:0, explain:"180° - 50° - 70° = 60°"}
+    ]
+  },
+  flaechen: {
+    title: "Flächen & Umfang",
+    info: `<b>Formeln:</b><br>
+    <div class="formula">Rechteck: A = a · b &nbsp;|&nbsp; U = 2·a + 2·b</div>
+    <div class="formula">Quadrat: A = a² &nbsp;|&nbsp; U = 4·a</div>
+    <div class="formula">Dreieck: A = (g · h) / 2</div>
+    <b>Zusammengesetzte Figuren:</b> In Teilfiguren zerlegen, Einzelflächen berechnen, addieren (oder subtrahieren).`,
+    questions: [
+      {q:"Rechteck: a = 8 cm, b = 5 cm. Fläche = ?", opts:["13 cm²","26 cm²","40 cm²","80 cm²"], correct:2, explain:"A = a · b = 8 · 5 = 40 cm²"},
+      {q:"Rechteck: a = 8 cm, b = 5 cm. Umfang = ?", opts:["13 cm","26 cm","40 cm","20 cm"], correct:1, explain:"U = 2·a + 2·b = 2·8 + 2·5 = 16 + 10 = 26 cm"},
+      {q:"Quadrat: a = 7 cm. Fläche = ?", opts:["28 cm²","14 cm²","49 cm²","21 cm²"], correct:2, explain:"A = a² = 7² = 49 cm²"},
+      {q:"Dreieck: g = 10 cm, h = 6 cm. Fläche = ?", opts:["60 cm²","30 cm²","16 cm²","15 cm²"], correct:1, explain:"A = (g · h) / 2 = (10 · 6) / 2 = 30 cm²"},
+      {q:"5 m² = ? cm²", opts:["500 cm²","5.000 cm²","50.000 cm²","50 cm²"], correct:2, explain:"1 m² = 10.000 cm² → 5 m² = 50.000 cm²"},
+      {q:"Ein L-förmiges Grundstück: großes Rechteck 10×6 m, kleines ausgeschnittenes Stück 4×3 m. Fläche?", opts:["48 m²","60 m²","72 m²","42 m²"], correct:0, explain:"Großes Rechteck: 10·6 = 60 m². Minus Ausschnitt: 4·3 = 12 m². A = 60 - 12 = 48 m²"},
+      {q:"Ein Rechteck hat A = 36 cm² und a = 9 cm. Wie lang ist b?", opts:["4 cm","27 cm","6 cm","3 cm"], correct:0, explain:"A = a · b → b = A / a = 36 / 9 = 4 cm"}
+    ]
+  },
+  volumen: {
+    title: "Volumen von Quadern",
+    info: `<div class="formula">Quader: V = a · b · c</div>
+    <div class="formula">Würfel: V = a³</div>
+    <b>Einheiten:</b> 1 cm³ = 1 ml · 1 dm³ = 1 l · 1 m³ = 1.000 l<br>
+    <b>Umrechnung:</b> 1 m³ = 1.000 dm³ = 1.000.000 cm³`,
+    questions: [
+      {q:"Quader: a = 5 cm, b = 3 cm, c = 4 cm. Volumen = ?", opts:["12 cm³","35 cm³","60 cm³","24 cm³"], correct:2, explain:"V = 5 · 3 · 4 = 60 cm³"},
+      {q:"Würfel: a = 6 cm. Volumen = ?", opts:["36 cm³","216 cm³","18 cm³","72 cm³"], correct:1, explain:"V = a³ = 6³ = 216 cm³"},
+      {q:"3 dm³ = ? Liter", opts:["30 l","0,3 l","3 l","300 l"], correct:2, explain:"1 dm³ = 1 Liter → 3 dm³ = 3 l"},
+      {q:"Ein Aquarium: 80 cm × 40 cm × 30 cm. Wie viele Liter passen rein?", opts:["96 l","960 l","9,6 l","96.000 l"], correct:0, explain:"V = 80·40·30 = 96.000 cm³ = 96 dm³ = 96 l"},
+      {q:"2,5 m³ = ? dm³", opts:["25 dm³","250 dm³","2.500 dm³","25.000 dm³"], correct:2, explain:"1 m³ = 1.000 dm³ → 2,5 m³ = 2.500 dm³"},
+      {q:"Ein Quader hat V = 120 cm³, a = 6 cm, b = 5 cm. Wie hoch ist c?", opts:["2 cm","3 cm","4 cm","10 cm"], correct:2, explain:"c = V / (a·b) = 120 / (6·5) = 120/30 = 4 cm"}
+    ]
+  },
+  daten: {
+    title: "Daten & Zufall",
+    info: `<b>Kennwerte:</b><br>
+    <div class="formula">Mittelwert = Summe aller Werte / Anzahl der Werte</div>
+    <b>Median:</b> Werte sortieren → der mittlere Wert (bei gerader Anzahl: Mittelwert der beiden mittleren)<br>
+    <div class="formula">Spannweite = größter Wert − kleinster Wert</div>
+    <b>Diagramme:</b> Säulen-, Balken- und Kreisdiagramm für die Darstellung von Daten.`,
+    questions: [
+      {q:"Werte: 3, 5, 7, 9, 11. Mittelwert = ?", opts:["5","7","9","35"], correct:1, explain:"(3+5+7+9+11)/5 = 35/5 = 7"},
+      {q:"Werte: 3, 5, 7, 9, 11. Median = ?", opts:["5","7","9","6"], correct:1, explain:"Sortiert: 3,5,7,9,11. Mittlerer Wert (3. von 5) = 7"},
+      {q:"Werte: 2, 4, 8, 12. Median = ?", opts:["4","6","8","5"], correct:1, explain:"Sortiert: 2,4,8,12. Zwei mittlere: 4 und 8. Median = (4+8)/2 = 6"},
+      {q:"Werte: 3, 5, 7, 9, 11. Spannweite = ?", opts:["5","6","8","11"], correct:2, explain:"Spannweite = 11 - 3 = 8"},
+      {q:"Noten einer Klasse: 1,1,2,2,2,3,3,4. Mittelwert = ?", opts:["2","2,25","2,5","3"], correct:1, explain:"(1+1+2+2+2+3+3+4)/8 = 18/8 = 2,25"},
+      {q:"Welches Diagramm eignet sich am besten für Anteile (z.B. Lieblingsfarben)?", opts:["Liniendiagramm","Säulendiagramm","Kreisdiagramm","Punktdiagramm"], correct:2, explain:"Kreisdiagramm zeigt Anteile am Ganzen (= 100%) am besten."}
+    ]
+  },
+  dreisatz: {
+    title: "Proportionalität & Dreisatz",
+    info: `<b>Direkte Proportionalität:</b> Je mehr → desto mehr (Doppelte Menge = doppelter Preis)<br>
+    <b>Dreisatz in 3 Schritten:</b><br>
+    1. Gegebenes Verhältnis aufschreiben<br>
+    2. Auf 1 herunterrechnen (÷)<br>
+    3. Auf die gesuchte Menge hochrechnen (×)<br><br>
+    <div class="formula">Beispiel: 3 Brötchen kosten 1,50 €. Was kosten 7?<br>
+    3 → 1,50 € &nbsp;|&nbsp; 1 → 0,50 € &nbsp;|&nbsp; 7 → 3,50 €</div>`,
+    questions: [
+      {q:"5 Hefte kosten 8,00 €. Was kosten 3 Hefte?", opts:["3,00 €","4,80 €","6,00 €","2,40 €"], correct:1, explain:"1 Heft = 8/5 = 1,60 €. 3 Hefte = 3 × 1,60 = 4,80 €"},
+      {q:"Ein Auto fährt 150 km in 2 Stunden. Wie weit in 5 Stunden?", opts:["300 km","375 km","750 km","250 km"], correct:1, explain:"1 Stunde = 150/2 = 75 km. 5 Stunden = 5 × 75 = 375 km"},
+      {q:"4 Äpfel kosten 2,80 €. Was kosten 10 Äpfel?", opts:["7,00 €","5,60 €","14,00 €","28,00 €"], correct:0, explain:"1 Apfel = 2,80/4 = 0,70 €. 10 Äpfel = 10 × 0,70 = 7,00 €"},
+      {q:"Welche Zuordnung ist direkt proportional?", opts:["Alter → Schuhgröße","Anzahl Arbeiter → benötigte Zeit","Kilometer → Benzinverbrauch","Temperatur → Uhrzeit"], correct:2, explain:"Mehr Kilometer = mehr Benzin → direkt proportional"},
+      {q:"12 Stifte kosten 9,60 €. Was kosten 8 Stifte?", opts:["6,40 €","7,20 €","4,80 €","8,00 €"], correct:0, explain:"1 Stift = 9,60/12 = 0,80 €. 8 Stifte = 8 × 0,80 = 6,40 €"},
+      {q:"3 kg Mehl kosten 2,10 €. Wie viel kg bekommt man für 4,90 €?", opts:["5 kg","7 kg","6 kg","8 kg"], correct:1, explain:"1 kg = 2,10/3 = 0,70 €. 4,90/0,70 = 7 kg"}
+    ]
+  }
+};
+
+let currentSection='winkel', sectionState={};
+function initState(k){if(!sectionState[k])sectionState[k]={current:0,score:0,answered:[]}}
+function showSection(k){
+  currentSection=k;initState(k);
+  const keys=Object.keys(sections);
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',keys[i]===k));
+  render();
+}
+function render(){
+  const s=sections[currentSection],st=sectionState[currentSection],el=document.getElementById('content');
+  if(st.current>=s.questions.length){
+    const pct=Math.round(st.score/s.questions.length*100);
+    el.innerHTML=`<div class="card" style="text-align:center;padding:40px 20px">
+      <div style="font-size:48px;margin-bottom:12px">${pct===100?'🎉':pct>=60?'👏':'💪'}</div>
+      <h2>${pct===100?'Perfekt!':pct>=60?'Gut gemacht!':'Weiter üben!'}</h2>
+      <p style="color:#64748b;margin:8px 0 20px">${st.score} von ${s.questions.length} richtig (${pct}%)</p>
+      <button class="btn" onclick="resetSection()">Nochmal</button></div>`;return;
+  }
+  const q=s.questions[st.current];
+  el.innerHTML=`
+    <div class="card"><div class="info">${s.info}</div></div>
+    <div class="score-bar"><span>${s.title}</span><span>Frage ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} richtig</span></span></div>
+    <div class="progress-dots">${s.questions.map((_,i)=>{let c=i<st.current?(st.answered[i]?'done':'wrong-dot'):i===st.current?'current':'';return`<div class="dot ${c}"></div>`}).join('')}</div>
+    <div class="card"><div class="question">${q.q}</div>
+    <div class="options">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+    <div class="feedback" id="fb"></div></div>`;
+}
+function answer(idx){
+  const s=sections[currentSection],st=sectionState[currentSection],q=s.questions[st.current],correct=idx===q.correct;
+  if(correct)st.score++;st.answered.push(correct);
+  document.querySelectorAll('.opt').forEach((o,i)=>{o.classList.add('disabled');if(i===q.correct)o.classList.add('correct');if(i===idx&&!correct)o.classList.add('wrong')});
+  const fb=document.getElementById('fb');fb.className=`feedback show ${correct?'correct':'wrong'}`;fb.textContent=(correct?'✓ Richtig! ':'✗ ')+q.explain;
+  setTimeout(()=>{st.current++;render()},1800);
+}
+function resetSection(){sectionState[currentSection]={current:0,score:0,answered:[]};render()}
+showSection('winkel');
+</script>
+</body>
+</html>

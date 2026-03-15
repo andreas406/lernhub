@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English 6 – Grammar & Vocabulary</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+.grammar-box{background:#fefce8;border-radius:8px;padding:10px 14px;font-size:14px;line-height:1.6;margin:8px 0;border-left:4px solid #eab308}
+.en{color:#3b82f6;font-weight:600}
+.de{color:#64748b;font-style:italic}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🇬🇧 English Year 6</h1>
+<p class="subtitle">Simple Past, going-to-future, Comparison & Reading – A1</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('simplepast')">Simple Past</button>
+  <button class="tab" onclick="showSection('irregular')">Irregular Verbs</button>
+  <button class="tab" onclick="showSection('future')">going-to-future</button>
+  <button class="tab" onclick="showSection('comparison')">Comparison</button>
+  <button class="tab" onclick="showSection('reading')">Reading</button>
+</div>
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  simplepast: {
+    title: "Simple Past",
+    info: `<b>Simple Past</b> – für abgeschlossene Handlungen in der Vergangenheit.<br><br>
+    <div class="grammar-box">
+    <b>Regelmäßig:</b> Verb + <b>-ed</b> → played, walked, visited<br>
+    <b>Verneinung:</b> did not (didn't) + Grundform → She <b>didn't play</b>.<br>
+    <b>Frage:</b> Did + Subjekt + Grundform? → <b>Did</b> she <b>play</b>?<br>
+    <b>Signalwörter:</b> yesterday, last week/month/year, ago, in 2020
+    </div>`,
+    questions: [
+      {q:"She ___ (play) football yesterday.", opts:["played","plaied","plays","playing"], correct:0, explain:"play + ed = played (regelmäßig)"},
+      {q:"They ___ (not/visit) the museum last week.", opts:["not visited","didn't visited","didn't visit","don't visit"], correct:2, explain:"Verneinung: didn't + Grundform → didn't visit"},
+      {q:"___ you ___ (watch) the film last night?", opts:["Did … watched","Did … watch","Do … watch","Were … watch"], correct:1, explain:"Frage: Did + Subjekt + Grundform → Did you watch?"},
+      {q:"He ___ (stop) the car suddenly.", opts:["stoped","stopped","stopt","stops"], correct:1, explain:"stop → stopped (Konsonant verdoppelt nach kurzem Vokal + -ed)"},
+      {q:"We ___ (travel) to London two years ago.", opts:["travelled","traveling","travel","did travel"], correct:0, explain:"travel + led = travelled (britisches Englisch, Konsonantenverdopplung)"},
+      {q:"She ___ (not/like) the food at the restaurant.", opts:["didn't liked","not liked","didn't like","doesn't like"], correct:2, explain:"Verneinung: didn't + Grundform → didn't like"},
+      {q:"Welches Signalwort passt NICHT zum Simple Past?", opts:["yesterday","last Monday","right now","three days ago"], correct:2, explain:"'right now' = jetzt → Present Progressive, nicht Simple Past"}
+    ]
+  },
+  irregular: {
+    title: "Irregular Verbs",
+    info: `<b>Unregelmäßige Verben</b> bilden das Simple Past NICHT mit -ed.<br>
+    Man muss sie auswendig lernen!<br><br>
+    <div class="grammar-box">
+    go → <b>went</b> · see → <b>saw</b> · eat → <b>ate</b> · drink → <b>drank</b><br>
+    come → <b>came</b> · take → <b>took</b> · make → <b>made</b> · give → <b>gave</b><br>
+    write → <b>wrote</b> · read → <b>read</b> · run → <b>ran</b> · swim → <b>swam</b><br>
+    buy → <b>bought</b> · think → <b>thought</b> · bring → <b>brought</b> · get → <b>got</b>
+    </div>`,
+    questions: [
+      {q:"go → ?", opts:["goed","went","goned","wented"], correct:1, explain:"go → went → gone"},
+      {q:"She ___ (see) a beautiful bird in the garden.", opts:["seed","seen","saw","sawed"], correct:2, explain:"see → saw → seen"},
+      {q:"We ___ (eat) pizza for dinner last night.", opts:["eated","eat","eaten","ate"], correct:3, explain:"eat → ate → eaten"},
+      {q:"He ___ (buy) a new bike yesterday.", opts:["buyed","bought","buied","boughted"], correct:1, explain:"buy → bought → bought"},
+      {q:"They ___ (swim) in the lake last summer.", opts:["swimmed","swum","swam","swimming"], correct:2, explain:"swim → swam → swum"},
+      {q:"I ___ (think) it was a great idea.", opts:["thinked","thought","thinkt","thanked"], correct:1, explain:"think → thought → thought"},
+      {q:"She ___ (write) a letter to her friend.", opts:["writed","wroten","wrote","writing"], correct:2, explain:"write → wrote → written"},
+      {q:"He ___ (run) five kilometres this morning.", opts:["runned","runed","ran","run"], correct:2, explain:"run → ran → run"}
+    ]
+  },
+  future: {
+    title: "going-to-future",
+    info: `<b>going-to-future</b> – für Pläne und Absichten (was du vorhast).<br><br>
+    <div class="grammar-box">
+    <b>Bildung:</b> am/is/are + <b>going to</b> + Verb<br>
+    <b>+</b> I <b>am going to</b> visit London.<br>
+    <b>−</b> She <b>isn't going to</b> play tennis.<br>
+    <b>?</b> <b>Are</b> you <b>going to</b> study tonight?<br><br>
+    <b>Signalwörter:</b> tomorrow, next week, tonight, soon
+    </div>`,
+    questions: [
+      {q:"I ___ visit my grandma tomorrow.", opts:["am going to","is going to","going to","are going to"], correct:0, explain:"I + am going to + Verb → I am going to visit"},
+      {q:"She ___ (not) travel this summer.", opts:["isn't going to","aren't going to","not going to","don't going to"], correct:0, explain:"She + isn't going to + Verb"},
+      {q:"___ they ___ (play) football next weekend?", opts:["Do … going to play","Are … going to play","Is … going to play","Going … to play"], correct:1, explain:"Frage: Are + they + going to + Verb?"},
+      {q:"He ___ buy a new phone soon.", opts:["are going to","is going to","am going to","be going to"], correct:1, explain:"He + is going to + Verb"},
+      {q:"We ___ (not/have) a test tomorrow.", opts:["aren't going to have","isn't going to have","don't going to have","not going to have"], correct:0, explain:"We + aren't going to + have"},
+      {q:"Wann benutzt man going-to-future?", opts:["Für Gewohnheiten","Für Pläne und Absichten","Für gerade passierendes","Für die Vergangenheit"], correct:1, explain:"going-to-future = etwas, das man plant oder vorhat (intentions)"}
+    ]
+  },
+  comparison: {
+    title: "Comparison of Adjectives",
+    info: `<b>Steigerung von Adjektiven:</b><br><br>
+    <div class="grammar-box">
+    <b>Kurze Adj. (1 Silbe):</b> tall → tall<b>er</b> → tall<b>est</b><br>
+    <b>Adj. auf -y:</b> happy → happ<b>ier</b> → happ<b>iest</b><br>
+    <b>Lange Adj. (2+ Silben):</b> beautiful → <b>more</b> beautiful → <b>most</b> beautiful<br>
+    <b>Unregelmäßig:</b> good → <b>better</b> → <b>best</b> · bad → <b>worse</b> → <b>worst</b>
+    </div>
+    <b>Vergleich:</b> A is <b>taller than</b> B. · A is <b>the tallest</b>.`,
+    questions: [
+      {q:"tall → taller → ?", opts:["tallest","most tall","more tall","taller"], correct:0, explain:"Kurzes Adjektiv: tall → taller → tallest"},
+      {q:"My bag is ___ (heavy) than yours.", opts:["more heavy","heavier","heavyer","most heavy"], correct:1, explain:"heavy → heavier (y wird zu ier)"},
+      {q:"This is the ___ (interesting) book I've ever read.", opts:["interestingest","more interesting","most interesting","interesting"], correct:2, explain:"Langes Adjektiv: most interesting (Superlativ mit most)"},
+      {q:"good → better → ?", opts:["goodest","most good","best","more good"], correct:2, explain:"Unregelmäßig: good → better → best"},
+      {q:"My sister is ___ (old) than me.", opts:["more old","oldest","older","most old"], correct:2, explain:"old → older (kurzes Adjektiv + er)"},
+      {q:"This is the ___ (bad) film I've ever seen.", opts:["baddest","worse","most bad","worst"], correct:3, explain:"Unregelmäßig: bad → worse → worst"},
+      {q:"London is ___ (expensive) than Berlin.", opts:["expensiver","more expensive","most expensive","expensiveer"], correct:1, explain:"Langes Adjektiv: more expensive (Komparativ mit more)"}
+    ]
+  },
+  reading: {
+    title: "Reading Comprehension",
+    info: `<b>Lesestrategien:</b><br>
+    <b>Skimming:</b> Schnell überfliegen → Hauptthema finden<br>
+    <b>Scanning:</b> Gezielt nach bestimmten Informationen suchen<br>
+    <b>Unbekannte Wörter:</b> Aus dem Kontext erschließen!<br><br>
+    <div class="grammar-box">Lies den folgenden Text und beantworte die Fragen:</div>
+    <div style="background:#f5f3ff;padding:14px;border-radius:8px;margin-top:8px;border-left:4px solid #8b5cf6">
+    <b>A Day in London</b><br>
+    Last Saturday, Tom and his family visited London. They took the train from Brighton. It took about one hour. First, they went to the Tower of London. Tom thought it was amazing because he loves history. Then they walked along the River Thames to the London Eye. Tom's little sister was scared, but Tom loved the view from the top. After that, they had fish and chips for lunch near Big Ben. In the afternoon, they visited the Natural History Museum. Tom's favourite part was the dinosaur exhibition. They were very tired when they got home at 8 o'clock.</div>`,
+    questions: [
+      {q:"How did Tom's family travel to London?", opts:["By car","By bus","By train","By plane"], correct:2, explain:"'They took the train from Brighton.'"},
+      {q:"Why did Tom think the Tower of London was amazing?", opts:["Because it was free","Because he loves history","Because his sister liked it","Because it was new"], correct:1, explain:"'Tom thought it was amazing because he loves history.'"},
+      {q:"How did Tom's sister feel about the London Eye?", opts:["Excited","Happy","Bored","Scared"], correct:3, explain:"'Tom's little sister was scared'"},
+      {q:"What did they eat for lunch?", opts:["Pizza","Sandwiches","Fish and chips","Burger"], correct:2, explain:"'they had fish and chips for lunch near Big Ben'"},
+      {q:"What was Tom's favourite part of the museum?", opts:["The shop","The dinosaur exhibition","The garden","The paintings"], correct:1, explain:"'Tom's favourite part was the dinosaur exhibition.'"},
+      {q:"What time did they get home?", opts:["6 o'clock","7 o'clock","8 o'clock","9 o'clock"], correct:2, explain:"'They were very tired when they got home at 8 o'clock.'"}
+    ]
+  }
+};
+
+let currentSection='simplepast',sectionState={};
+function initState(k){if(!sectionState[k])sectionState[k]={current:0,score:0,answered:[]}}
+function showSection(k){
+  currentSection=k;initState(k);
+  const keys=Object.keys(sections);
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',keys[i]===k));
+  render();
+}
+function render(){
+  const s=sections[currentSection],st=sectionState[currentSection],el=document.getElementById('content');
+  if(st.current>=s.questions.length){
+    const pct=Math.round(st.score/s.questions.length*100);
+    el.innerHTML=`<div class="card" style="text-align:center;padding:40px 20px">
+      <div style="font-size:48px;margin-bottom:12px">${pct===100?'🎉':pct>=60?'👏':'💪'}</div>
+      <h2>${pct===100?'Perfect!':pct>=60?'Well done!':'Keep practising!'}</h2>
+      <p style="color:#64748b;margin:8px 0 20px">${st.score} of ${s.questions.length} correct (${pct}%)</p>
+      <button class="btn" onclick="resetSection()">Try again</button></div>`;return;
+  }
+  const q=s.questions[st.current];
+  el.innerHTML=`
+    <div class="card"><div class="info">${s.info}</div></div>
+    <div class="score-bar"><span>${s.title}</span><span>Q ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} ✓</span></span></div>
+    <div class="progress-dots">${s.questions.map((_,i)=>{let c=i<st.current?(st.answered[i]?'done':'wrong-dot'):i===st.current?'current':'';return`<div class="dot ${c}"></div>`}).join('')}</div>
+    <div class="card"><div class="question">${q.q}</div>
+    <div class="options">${q.opts.map((o,i)=>`<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+    <div class="feedback" id="fb"></div></div>`;
+}
+function answer(idx){
+  const s=sections[currentSection],st=sectionState[currentSection],q=s.questions[st.current],correct=idx===q.correct;
+  if(correct)st.score++;st.answered.push(correct);
+  document.querySelectorAll('.opt').forEach((o,i)=>{o.classList.add('disabled');if(i===q.correct)o.classList.add('correct');if(i===idx&&!correct)o.classList.add('wrong')});
+  const fb=document.getElementById('fb');fb.className=`feedback show ${correct?'correct':'wrong'}`;fb.textContent=(correct?'✓ Correct! ':'✗ ')+q.explain;
+  setTimeout(()=>{st.current++;render()},1800);
+}
+function resetSection(){sectionState[currentSection]={current:0,score:0,answered:[]};render()}
+showSection('simplepast');
+</script>
+</body>
+</html>

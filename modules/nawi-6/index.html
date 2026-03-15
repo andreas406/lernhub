@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NaWi 6 – Körper, Gesundheit & Technik</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:700px;margin:0 auto;padding:20px}
+h1{font-size:26px;margin-bottom:4px}
+.subtitle{color:#64748b;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:6px;margin-bottom:24px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:20px;border:2px solid #e2e8f0;background:white;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:#3b82f6;color:white;border-color:#3b82f6}
+.card{background:white;border-radius:14px;padding:20px;margin-bottom:16px;border:1px solid #e2e8f0}
+.card h2{font-size:18px;margin-bottom:12px}
+.card h3{font-size:15px;color:#3b82f6;margin-bottom:8px}
+.info{background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:14px;font-size:14px;line-height:1.6;border-left:4px solid #3b82f6}
+.question{font-size:16px;font-weight:600;margin-bottom:14px;line-height:1.4}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.opt{padding:12px 16px;background:#f1f5f9;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;font-size:15px;transition:all .15s;font-family:inherit;text-align:left;width:100%}
+.opt:hover{border-color:#3b82f6}
+.opt.correct{border-color:#22c55e;background:#f0fdf4}
+.opt.wrong{border-color:#ef4444;background:#fef2f2}
+.opt.disabled{pointer-events:none;opacity:.6}
+.feedback{padding:12px;border-radius:10px;margin-bottom:14px;font-size:14px;font-weight:500;display:none}
+.feedback.show{display:block}
+.feedback.correct{background:#f0fdf4;color:#166534}
+.feedback.wrong{background:#fef2f2;color:#991b1b}
+.btn{padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:active{background:#2563eb}
+.score-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:16px;font-size:14px}
+.score-val{font-weight:700;color:#3b82f6}
+.hidden{display:none}
+.progress-dots{display:flex;gap:4px;margin-bottom:16px}
+.dot{width:8px;height:8px;border-radius:50%;background:#e2e8f0}
+.dot.done{background:#22c55e}.dot.current{background:#3b82f6}.dot.wrong-dot{background:#ef4444}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🔬 NaWi Klasse 6</h1>
+<p class="subtitle">Körper, Gesundheit, Sexualerziehung & Technik – 2. Halbjahr</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="showSection('ernaehrung')">Ernährung</button>
+  <button class="tab" onclick="showSection('verdauung')">Verdauung</button>
+  <button class="tab" onclick="showSection('sucht')">Suchtprävention</button>
+  <button class="tab" onclick="showSection('strom')">Stromkreise</button>
+  <button class="tab" onclick="showSection('maschinen')">Einfache Maschinen</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<script>
+const sections = {
+  ernaehrung: {
+    title: "Ernährung & Nährstoffe",
+    info: `<b>Die 6 Nährstoffgruppen:</b><br>
+    <b>Kohlenhydrate:</b> Hauptenergielieferant (Brot, Nudeln, Kartoffeln, Zucker). 1 g ≈ 17 kJ.<br>
+    <b>Fette (Lipide):</b> Energiespeicher, Schutz der Organe, Wärmeisolation. 1 g ≈ 39 kJ (höchster Energiegehalt!).<br>
+    <b>Eiweiße (Proteine):</b> Baustoff für Muskeln, Organe, Immunsystem. 1 g ≈ 17 kJ.<br>
+    <b>Vitamine:</b> Reglerstoffe (z. B. Vitamin C für Immunabwehr, Vitamin D für Knochen).<br>
+    <b>Mineralstoffe:</b> z. B. Calcium (Knochen/Zähne), Eisen (Blutbildung).<br>
+    <b>Wasser:</b> Lösungs- und Transportmittel, Temperaturregulation.<br><br>
+    <b>Ernährungspyramide:</b> Basis = Wasser/Getränke → Gemüse/Obst → Getreideprodukte → Milchprodukte → Fleisch/Fisch → Fette/Süßes (Spitze = wenig).`,
+    questions: [
+      {q:"Welcher Nährstoff hat den höchsten Energiegehalt pro Gramm?", opts:["Kohlenhydrate","Eiweiße","Fette","Vitamine"], correct:2, explain:"Fette liefern mit ca. 39 kJ pro Gramm mehr als doppelt so viel Energie wie Kohlenhydrate oder Eiweiße (je ca. 17 kJ/g)."},
+      {q:"Was steht in der Ernährungspyramide ganz unten (= davon soll man am meisten zu sich nehmen)?", opts:["Fleisch und Fisch","Süßigkeiten und Fette","Getränke (v. a. Wasser)","Milchprodukte"], correct:2, explain:"Die Basis der Ernährungspyramide bilden Getränke – vor allem Wasser. Davon braucht der Körper am meisten (ca. 1,5–2 Liter pro Tag)."},
+      {q:"Welche Aufgabe haben Eiweiße (Proteine) hauptsächlich im Körper?", opts:["Sie liefern die meiste Energie","Sie sind Baustoffe für Zellen und Muskeln","Sie schützen vor Sonnenbrand","Sie speichern Wasser"], correct:1, explain:"Eiweiße sind vor allem Baustoffe: Sie werden für den Aufbau von Muskeln, Organen, Enzymen und Antikörpern benötigt."},
+      {q:"Vitamin C ist wichtig für …", opts:["starke Knochen","die Blutgerinnung","die Immunabwehr (Abwehrkräfte)","die Verdauung von Fetten"], correct:2, explain:"Vitamin C stärkt das Immunsystem und schützt den Körper vor Krankheitserregern. Es kommt z. B. in Zitrusfrüchten, Paprika und Brokkoli vor."},
+      {q:"Welcher Mineralstoff ist besonders wichtig für den Aufbau von Knochen und Zähnen?", opts:["Eisen","Jod","Calcium","Magnesium"], correct:2, explain:"Calcium ist der wichtigste Mineralstoff für Knochen und Zähne. Es steckt vor allem in Milchprodukten, grünem Gemüse und Mineralwasser."},
+      {q:"Kohlenhydrate stecken vor allem in …", opts:["Butter und Öl","Brot, Nudeln und Kartoffeln","Fleisch und Fisch","Vitamintabletten"], correct:1, explain:"Kohlenhydrate sind der Hauptenergielieferant und kommen vor allem in Getreideprodukten (Brot, Nudeln, Reis), Kartoffeln und Zucker vor."},
+      {q:"Warum steht Süßes und Fettiges ganz oben in der Ernährungspyramide?", opts:["Weil es am wichtigsten ist","Weil man es am meisten essen soll","Weil man davon nur wenig essen soll","Weil es am teuersten ist"], correct:2, explain:"Die Spitze der Pyramide zeigt: Süßigkeiten, Chips und fettreiche Snacks sollten nur in kleinen Mengen gegessen werden, da sie viel Energie, aber wenig Nährstoffe liefern."}
+    ]
+  },
+  verdauung: {
+    title: "Verdauung – Weg der Nahrung",
+    info: `<b>Der Weg der Nahrung durch den Körper:</b><br>
+    <b>1. Mund:</b> Zähne zerkleinern die Nahrung (mechanisch). Speichel enthält das Enzym Amylase → beginnt Stärke in Zucker zu spalten (chemisch).<br>
+    <b>2. Speiseröhre:</b> Transport zum Magen durch Muskelbewegungen (Peristaltik).<br>
+    <b>3. Magen:</b> Magensaft (Salzsäure + Enzyme) zersetzt vor allem Eiweiße. Salzsäure tötet Bakterien ab.<br>
+    <b>4. Dünndarm:</b> Hauptort der Verdauung und Nährstoffaufnahme! Galle (aus der Leber) spaltet Fette, Bauchspeicheldrüse liefert Enzyme. Die Darmzotten vergrößern die Oberfläche enorm → Nährstoffe gelangen ins Blut (<b>Resorption</b>).<br>
+    <b>5. Dickdarm:</b> Wasser wird zurückgewonnen, unverdauliche Reste werden eingedickt → Ausscheidung als Kot.`,
+    questions: [
+      {q:"Welches Enzym im Speichel beginnt bereits im Mund, Stärke zu spalten?", opts:["Pepsin","Lipase","Amylase","Insulin"], correct:2, explain:"Die Amylase im Speichel spaltet Stärke (ein Kohlenhydrat) in kleinere Zuckerbausteine. Die chemische Verdauung beginnt also schon im Mund!"},
+      {q:"Welches Organ ist der Hauptort der Nährstoffaufnahme?", opts:["Magen","Dickdarm","Speiseröhre","Dünndarm"], correct:3, explain:"Im Dünndarm findet der größte Teil der Verdauung und die Aufnahme der Nährstoffe ins Blut statt. Die Darmzotten vergrößern die Oberfläche dafür enorm."},
+      {q:"Warum hat der Dünndarm Zotten (fingerförmige Ausstülpungen)?", opts:["Um Bakterien abzutöten","Um die Oberfläche zu vergrößern und mehr Nährstoffe aufzunehmen","Um die Nahrung zu zerkleinern","Um Wasser zu speichern"], correct:1, explain:"Die Darmzotten vergrößern die innere Oberfläche des Dünndarms auf ca. 200 m². Dadurch können viel mehr Nährstoffe ins Blut aufgenommen werden (Resorption)."},
+      {q:"Was passiert im Magen?", opts:["Fette werden durch Galle gespalten","Stärke wird in Zucker umgewandelt","Eiweiße werden durch Salzsäure und Enzyme zersetzt","Wasser wird dem Nahrungsbrei entzogen"], correct:2, explain:"Im Magen zersetzen Salzsäure und das Enzym Pepsin vor allem Eiweiße. Die Salzsäure tötet außerdem Bakterien in der Nahrung ab."},
+      {q:"Welche Aufgabe hat der Dickdarm?", opts:["Nährstoffe ins Blut aufnehmen","Eiweiße spalten","Wasser entziehen und Reste eindicken","Fette durch Galle zerkleinern"], correct:2, explain:"Im Dickdarm wird dem Nahrungsbrei Wasser entzogen. Die unverdaulichen Reste werden eingedickt und als Kot ausgeschieden."},
+      {q:"Die Galle wird in der Leber hergestellt und hilft bei der Verdauung von …", opts:["Kohlenhydraten","Eiweißen","Fetten","Vitaminen"], correct:2, explain:"Die Gallenflüssigkeit (Galle) emulgiert Fette – sie zerteilt große Fetttropfen in winzige Tröpfchen, damit Enzyme (Lipasen) sie besser spalten können."},
+      {q:"Wie heißt der Vorgang, bei dem Nährstoffe aus dem Dünndarm ins Blut gelangen?", opts:["Peristaltik","Resorption","Fermentation","Photosynthese"], correct:1, explain:"Resorption ist die Aufnahme der Nährstoffe durch die Darmzotten ins Blut. Von dort werden sie zu allen Körperzellen transportiert."}
+    ]
+  },
+  sucht: {
+    title: "Suchtprävention",
+    info: `<b>Was ist Sucht?</b><br>
+    Sucht ist eine krankhafte Abhängigkeit. Man unterscheidet:<br>
+    <b>Stoffgebundene Sucht:</b> Abhängigkeit von einer Substanz (Alkohol, Nikotin, andere Drogen).<br>
+    <b>Stoffungebundene Sucht:</b> Abhängigkeit von einem Verhalten (Spielsucht, Handysucht, Kaufsucht).<br><br>
+    <b>Die Suchtspirale:</b> Genuss → Gewöhnung → Missbrauch → Abhängigkeit (seelisch und/oder körperlich).<br><br>
+    <b>Alkohol:</b> Zellgift – schädigt Leber, Gehirn, Nerven. Bereits geringe Mengen sind für Jugendliche besonders gefährlich, da sich das Gehirn noch entwickelt.<br>
+    <b>Nikotin:</b> Macht sehr schnell abhängig, verengt Blutgefäße, erhöht Krebsrisiko (Lunge, Mund, Kehlkopf). Teer lagert sich in der Lunge ab.<br><br>
+    <b>Hilfsangebote:</b> Suchtberatungsstellen, Telefonseelsorge, Vertrauenslehrer/innen, Kinder- und Jugendtelefon (116 111).`,
+    questions: [
+      {q:"Was versteht man unter »stoffgebundener Sucht«?", opts:["Abhängigkeit von einem Verhalten (z. B. Spielsucht)","Abhängigkeit von einer Substanz (z. B. Alkohol, Nikotin)","Sucht, die nur Erwachsene betrifft","Sucht nach bestimmten Lebensmitteln"], correct:1, explain:"Stoffgebundene Sucht bedeutet Abhängigkeit von einer Substanz – also einem Stoff wie Alkohol, Nikotin oder anderen Drogen."},
+      {q:"Welche Reihenfolge beschreibt die Suchtspirale richtig?", opts:["Abhängigkeit → Genuss → Gewöhnung → Missbrauch","Genuss → Gewöhnung → Missbrauch → Abhängigkeit","Missbrauch → Genuss → Abhängigkeit → Gewöhnung","Gewöhnung → Missbrauch → Genuss → Abhängigkeit"], correct:1, explain:"Die Suchtspirale verläuft: Genuss (anfangs angenehm) → Gewöhnung (man braucht mehr) → Missbrauch (trotz negativer Folgen) → Abhängigkeit (man kann nicht mehr aufhören)."},
+      {q:"Welches Organ wird durch übermäßigen Alkoholkonsum am stärksten geschädigt?", opts:["Die Niere","Das Herz","Die Leber","Die Lunge"], correct:2, explain:"Die Leber ist das Organ, das Alkohol abbaut. Bei regelmäßigem Konsum wird sie stark belastet und kann dauerhaft geschädigt werden (Fettleber, Leberzirrhose)."},
+      {q:"Warum ist Alkohol für Jugendliche besonders gefährlich?", opts:["Weil Jugendliche schneller einschlafen","Weil sich das Gehirn noch in der Entwicklung befindet","Weil Jugendliche keine Leber haben","Weil Alkohol bei Jugendlichen besser schmeckt"], correct:1, explain:"Das Gehirn entwickelt sich bis etwa zum 25. Lebensjahr. Alkohol kann diese Entwicklung stören und zu dauerhaften Schäden an Gedächtnis und Konzentrationsfähigkeit führen."},
+      {q:"Was bewirkt Nikotin im Körper?", opts:["Es weitet die Blutgefäße und senkt den Blutdruck","Es macht schnell abhängig und verengt die Blutgefäße","Es stärkt das Immunsystem","Es fördert die Lungenentwicklung"], correct:1, explain:"Nikotin macht sehr schnell süchtig, verengt die Blutgefäße (schlechte Durchblutung) und erhöht den Blutdruck. Der Teer im Rauch lagert sich in der Lunge ab und erhöht das Krebsrisiko."},
+      {q:"Welches ist ein Beispiel für eine stoffungebundene Sucht?", opts:["Alkoholsucht","Nikotinsucht","Spielsucht","Drogensucht"], correct:2, explain:"Spielsucht ist stoffungebunden – die Abhängigkeit entsteht durch ein Verhalten, nicht durch eine Substanz. Auch Handy-, Kauf- oder Internetsucht gehören dazu."},
+      {q:"An welche Telefonnummer können sich Kinder und Jugendliche in Krisensituationen wenden?", opts:["110","112","116 111","0800 123 456"], correct:2, explain:"Das Kinder- und Jugendtelefon ist unter 116 111 erreichbar – kostenlos und anonym. Dort kann man über Sorgen, Ängste und Probleme sprechen."}
+    ]
+  },
+  strom: {
+    title: "Stromkreise & elektrischer Strom",
+    info: `<b>Der einfache Stromkreis:</b><br>
+    Ein geschlossener Stromkreis besteht aus: <b>Energiequelle</b> (Batterie), <b>Verbraucher</b> (Lampe, Motor), <b>Leitungen</b> und ggf. einem <b>Schalter</b>. Strom fließt nur, wenn der Stromkreis <b>geschlossen</b> ist.<br><br>
+    <b>Leiter und Nichtleiter:</b> Metalle (Kupfer, Eisen, Aluminium) leiten Strom gut = <b>Leiter</b>. Plastik, Glas, Holz, Gummi leiten nicht = <b>Isolatoren</b>.<br><br>
+    <b>Reihenschaltung:</b> Verbraucher hintereinander geschaltet. Fällt einer aus, sind alle aus. Strom überall gleich, Spannung teilt sich auf.<br>
+    <b>Parallelschaltung:</b> Verbraucher nebeneinander geschaltet. Fällt einer aus, funktionieren die anderen weiter. Spannung überall gleich.<br><br>
+    <b>Wirkungen des elektrischen Stroms:</b><br>
+    <b>Wärmewirkung:</b> Herdplatte, Toaster, Föhn<br>
+    <b>Lichtwirkung:</b> Glühlampe, LED<br>
+    <b>Magnetische Wirkung:</b> Elektromagnet, E-Motor, Klingel<br><br>
+    <b>Sicherheit:</b> Steckdose (230 V) ist lebensgefährlich! Niemals in Steckdosen fassen, beschädigte Kabel melden, Wasser leitet Strom!`,
+    questions: [
+      {q:"Was muss ein Stromkreis sein, damit Strom fließen kann?", opts:["Offen","Geschlossen","Parallel geschaltet","Kurzgeschlossen"], correct:1, explain:"Strom kann nur fließen, wenn der Stromkreis geschlossen ist – also eine vollständige, ununterbrochene Verbindung von der Energiequelle durch den Verbraucher und zurück besteht."},
+      {q:"Welches Material ist ein guter elektrischer Leiter?", opts:["Gummi","Holz","Kupfer","Plastik"], correct:2, explain:"Kupfer ist ein sehr guter elektrischer Leiter (Metall). Deshalb werden Stromkabel meist aus Kupfer hergestellt. Gummi, Holz und Plastik sind Isolatoren."},
+      {q:"In einer Reihenschaltung mit drei Lampen fällt eine Lampe aus. Was passiert?", opts:["Die anderen beiden leuchten heller","Nur die benachbarte Lampe geht aus","Alle Lampen gehen aus","Nichts ändert sich"], correct:2, explain:"In einer Reihenschaltung gibt es nur einen Stromweg. Wenn eine Lampe ausfällt, ist der Stromkreis unterbrochen und alle Lampen gehen aus."},
+      {q:"Welche Schaltung wird in der Weihnachtsbaumbeleuchtung oft NICHT verwendet, weil bei einer defekten Lampe alle ausgehen?", opts:["Parallelschaltung","Reihenschaltung","Wechselschaltung","Mischschaltung"], correct:1, explain:"In der Reihenschaltung sind alle Verbraucher hintereinander geschaltet. Fällt eine Lampe aus, ist der Kreis unterbrochen. Deshalb nutzt man heute meist Parallelschaltungen."},
+      {q:"Ein Toaster nutzt welche Wirkung des elektrischen Stroms?", opts:["Magnetische Wirkung","Lichtwirkung","Wärmewirkung","Chemische Wirkung"], correct:2, explain:"Der Toaster wandelt elektrische Energie in Wärme um, um Brot zu rösten. Das ist die Wärmewirkung des Stroms."},
+      {q:"Warum sind Stromkabel mit Plastik ummantelt?", opts:["Weil Plastik den Strom besser leitet","Weil Plastik ein Isolator ist und vor Stromschlägen schützt","Weil Plastik billiger als Kupfer ist","Weil Plastik die Kabel hübscher macht"], correct:1, explain:"Plastik ist ein Isolator – es leitet keinen Strom. Die Ummantelung schützt Menschen vor Stromschlägen bei Berührung des Kabels."},
+      {q:"Die Spannung an der Steckdose in Deutschland beträgt …", opts:["12 Volt","50 Volt","230 Volt","1000 Volt"], correct:2, explain:"Die Netzspannung in Deutschland beträgt 230 Volt. Das ist lebensgefährlich! Deshalb darf man niemals in Steckdosen fassen oder mit beschädigten Kabeln hantieren."}
+    ]
+  },
+  maschinen: {
+    title: "Einfache Maschinen",
+    info: `<b>Einfache Maschinen</b> erleichtern das Arbeiten, indem sie Kräfte umlenken oder verringern.<br><br>
+    <b>Hebel:</b><br>
+    <b>Zweiseitiger Hebel:</b> Drehpunkt in der Mitte, Kraft und Last auf verschiedenen Seiten (z. B. Wippe, Schere, Zange).<br>
+    <b>Einseitiger Hebel:</b> Drehpunkt am Rand, Kraft und Last auf derselben Seite (z. B. Nussknacker, Schubkarre).<br>
+    <b>Hebelgesetz:</b> Kraft × Kraftarm = Last × Lastarm<br><br>
+    <b>Rollen:</b><br>
+    <b>Feste Rolle:</b> Ändert nur die Richtung der Kraft (man zieht nach unten statt nach oben). Keine Kraftersparnis.<br>
+    <b>Lose Rolle:</b> Halbiert die benötigte Kraft, aber man muss doppelt so weit ziehen.<br>
+    <b>Flaschenzug:</b> Kombination aus festen und losen Rollen → größere Kraftersparnis.<br><br>
+    <b>Goldene Regel der Mechanik:</b> Was man an Kraft spart, muss man an Weg zusetzen. Kraft × Weg = konstant (Arbeit bleibt gleich).`,
+    questions: [
+      {q:"Was besagt die »Goldene Regel der Mechanik«?", opts:["Maschinen erzeugen Energie aus dem Nichts","Was man an Kraft spart, muss man an Weg zusetzen","Schwere Lasten kann man nicht bewegen","Je größer die Kraft, desto kürzer der Weg und die Arbeit"], correct:1, explain:"Die Goldene Regel der Mechanik: Keine Maschine kann Arbeit sparen. Was man an Kraft spart, muss man an Weg zusetzen. Arbeit (= Kraft × Weg) bleibt immer gleich."},
+      {q:"Welches ist ein Beispiel für einen zweiseitigen Hebel?", opts:["Schubkarre","Nussknacker","Wippe","Pinzette"], correct:2, explain:"Bei der Wippe liegt der Drehpunkt in der Mitte, Kraft und Last wirken auf verschiedenen Seiten – das ist ein zweiseitiger Hebel. Schere und Zange funktionieren ebenso."},
+      {q:"Was bewirkt eine feste Rolle?", opts:["Sie halbiert die nötige Kraft","Sie verdoppelt die Kraft","Sie ändert nur die Richtung der Kraft","Sie spart Arbeit ein"], correct:2, explain:"Eine feste Rolle ändert nur die Zugrichtung: Man zieht nach unten, die Last geht nach oben. Die nötige Kraft bleibt gleich – es gibt keine Kraftersparnis."},
+      {q:"Eine lose Rolle halbiert die Kraft. Was ist der Nachteil?", opts:["Sie ist sehr schwer","Man muss doppelt so weit ziehen","Sie funktioniert nur mit Wasser","Die Last wird schwerer"], correct:1, explain:"Bei einer losen Rolle muss man nur die halbe Kraft aufwenden, zieht das Seil aber doppelt so weit. Die Arbeit (Kraft × Weg) bleibt gleich – Goldene Regel der Mechanik!"},
+      {q:"Wie lautet das Hebelgesetz?", opts:["Kraft + Kraftarm = Last + Lastarm","Kraft × Kraftarm = Last × Lastarm","Kraft – Last = Kraftarm – Lastarm","Kraft ÷ Kraftarm = Last ÷ Lastarm"], correct:1, explain:"Hebelgesetz: Kraft × Kraftarm = Last × Lastarm. Je länger der Kraftarm im Verhältnis zum Lastarm, desto weniger Kraft braucht man."},
+      {q:"Eine Schubkarre ist ein Beispiel für einen …", opts:["zweiseitigen Hebel","einseitigen Hebel","Flaschenzug","feste Rolle"], correct:1, explain:"Bei der Schubkarre liegt der Drehpunkt am Rad (Rand). Kraft (Griffe) und Last (Mulde) befinden sich auf derselben Seite – das ist ein einseitiger Hebel."},
+      {q:"Ein Flaschenzug besteht aus …", opts:["nur festen Rollen","nur losen Rollen","einer Kombination aus festen und losen Rollen","Hebeln und Zahnrädern"], correct:2, explain:"Ein Flaschenzug kombiniert feste Rollen (Richtungsänderung) und lose Rollen (Kraftersparnis). Je mehr lose Rollen, desto weniger Kraft braucht man – aber der Zugweg wird länger."}
+    ]
+  }
+};
+
+let currentSection = 'ernaehrung';
+let sectionState = {};
+
+function initState(key) {
+  if (!sectionState[key]) sectionState[key] = {current: 0, score: 0, answered: []};
+}
+
+function showSection(key) {
+  currentSection = key;
+  initState(key);
+  const tabs = document.querySelectorAll('.tab');
+  const keys = Object.keys(sections);
+  tabs.forEach((t,i) => t.classList.toggle('active', keys[i] === key));
+  render();
+}
+
+function render() {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const el = document.getElementById('content');
+
+  if (st.current >= s.questions.length) {
+    const pct = Math.round(st.score / s.questions.length * 100);
+    let icon = pct === 100 ? '🎉' : pct >= 60 ? '👏' : '💪';
+    el.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px">
+        <div style="font-size:48px;margin-bottom:12px">${icon}</div>
+        <h2>${pct === 100 ? 'Perfekt!' : pct >= 60 ? 'Gut gemacht!' : 'Weiter üben!'}</h2>
+        <p style="color:#64748b;margin:8px 0 20px">${st.score} von ${s.questions.length} richtig (${pct}%)</p>
+        <button class="btn" onclick="resetSection()">Nochmal</button>
+      </div>`;
+    return;
+  }
+
+  const q = s.questions[st.current];
+  el.innerHTML = `
+    <div class="card">
+      <div class="info">${s.info}</div>
+    </div>
+    <div class="score-bar">
+      <span>${s.title}</span>
+      <span>Frage ${st.current+1}/${s.questions.length} · <span class="score-val">${st.score} richtig</span></span>
+    </div>
+    <div class="progress-dots">${s.questions.map((_,i) => {
+      let cls = i < st.current ? (st.answered[i] ? 'done' : 'wrong-dot') : i === st.current ? 'current' : '';
+      return `<div class="dot ${cls}"></div>`;
+    }).join('')}</div>
+    <div class="card">
+      <div class="question">${q.q}</div>
+      <div class="options">${q.opts.map((o,i) => `<button class="opt" onclick="answer(${i})">${o}</button>`).join('')}</div>
+      <div class="feedback" id="fb"></div>
+    </div>`;
+}
+
+function answer(idx) {
+  const s = sections[currentSection];
+  const st = sectionState[currentSection];
+  const q = s.questions[st.current];
+  const correct = idx === q.correct;
+  if (correct) st.score++;
+  st.answered.push(correct);
+
+  document.querySelectorAll('.opt').forEach((o,i) => {
+    o.classList.add('disabled');
+    if (i === q.correct) o.classList.add('correct');
+    if (i === idx && !correct) o.classList.add('wrong');
+  });
+  const fb = document.getElementById('fb');
+  fb.className = `feedback show ${correct ? 'correct' : 'wrong'}`;
+  fb.textContent = correct ? '✓ Richtig! ' + q.explain : '✗ ' + q.explain;
+
+  setTimeout(() => { st.current++; render(); }, 1800);
+}
+
+function resetSection() {
+  sectionState[currentSection] = {current:0, score:0, answered:[]};
+  render();
+}
+
+showSection('ernaehrung');
+</script>
+</body>
+</html>
