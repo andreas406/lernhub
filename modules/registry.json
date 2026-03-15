@@ -86,5 +86,13 @@
     "icon": "💪",
     "path": "modules/mentaltraining/index.html",
     "category": "fussball"
+  },
+  {
+    "id": "fussball-sommer",
+    "name": "Fußball-Übungen bis Sommer",
+    "description": "Trainingsplan mit Übungen für Technik, Fitness & Mentalstärke",
+    "icon": "⚽",
+    "path": "modules/fussball-sommer/index.html",
+    "category": "fussball"
   }
 ]

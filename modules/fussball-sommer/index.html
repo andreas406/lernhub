@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentaltraining – Grimm Brothers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root {
+  --bg: #0a0f1a; --surface: #131b2e; --surface-2: #1a2540; --surface-3: #213058;
+  --border: rgba(255,255,255,0.06); --text: #e8ecf4; --text-muted: #8896b0; --text-dim: #5a6a85;
+  --accent: #22c55e; --accent-glow: rgba(34,197,94,0.15); --accent-2: #3b82f6;
+  --accent-3: #f59e0b; --accent-4: #ef4444; --accent-5: #a855f7; --accent-6: #06b6d4;
+  --radius: 16px; --radius-sm: 10px; --radius-xs: 6px;
+  --richard: #3b82f6; --anton: #06b6d4;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.65; -webkit-font-smoothing:antialiased; min-height:100dvh; overflow-x:hidden; }
+::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--surface-3); border-radius:10px; }
+.view { display:none; min-height:100dvh; } .view.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* SELECT SCREEN */
+.select-screen { display:flex; align-items:center; justify-content:center; min-height:100dvh; padding:20px;
+  background: radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.08), transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.05), transparent 50%), var(--bg); }
+.select-card { background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:48px 40px; max-width:600px; width:100%; position:relative; overflow:hidden; }
+.select-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--richard),var(--anton)); }
+.select-title { font-size:1.8em; font-weight:900; text-align:center; margin-bottom:8px; background:linear-gradient(135deg,#fff,var(--text)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.select-sub { text-align:center; color:var(--text-muted); margin-bottom:32px; }
+.player-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.player-card { background:var(--surface-2); border:2px solid var(--border); border-radius:var(--radius); padding:28px 20px; text-align:center; cursor:pointer; transition:all 0.25s; }
+.player-card:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.12); }
+.player-card .p-emoji { font-size:3em; margin-bottom:12px; display:block; }
+.player-card .p-name { font-size:1.2em; font-weight:800; }
+.player-card .p-info { font-size:0.8em; color:var(--text-muted); margin-top:4px; }
+.player-card .p-badge { display:inline-block; font-size:0.7em; font-weight:700; padding:4px 12px; border-radius:50px; margin-top:10px; }
+.player-card.richard:hover, .player-card.richard.active { border-color:var(--richard); background:rgba(59,130,246,0.08); }
+.player-card.richard .p-badge { background:rgba(59,130,246,0.15); color:var(--richard); }
+.player-card.anton:hover, .player-card.anton.active { border-color:var(--anton); background:rgba(6,182,212,0.08); }
+.player-card.anton .p-badge { background:rgba(6,182,212,0.15); color:var(--anton); }
+
+/* DASHBOARD */
+.dash-header { padding:40px 20px 24px; text-align:center; }
+.dash-header.richard-h { background:linear-gradient(180deg, rgba(59,130,246,0.08), transparent); }
+.dash-header.anton-h { background:linear-gradient(180deg, rgba(6,182,212,0.08), transparent); }
+.dash-greeting { font-size:0.9em; color:var(--text-muted); margin-bottom:4px; }
+.dash-title { font-size:1.6em; font-weight:800; }
+.dash-sub { font-size:0.85em; color:var(--text-dim); margin-top:4px; }
+.dash-stats { display:flex; justify-content:center; gap:24px; margin-top:16px; }
+.dash-stat-num { font-size:1.4em; font-weight:800; color:var(--accent); }
+.dash-stat-label { font-size:0.75em; color:var(--text-muted); }
+.progress-bar-wrap { width:100%; max-width:400px; height:6px; background:var(--surface-3); border-radius:10px; margin:12px auto 4px; overflow:hidden; }
+.progress-bar-fill { height:100%; border-radius:10px; transition:width 0.5s; background:linear-gradient(90deg,var(--accent),var(--accent-2)); }
+.dash-container { max-width:800px; margin:0 auto; padding:0 16px 40px; }
+.section-label { font-size:0.75em; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--text-dim); margin:28px 0 14px; display:flex; align-items:center; gap:8px; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.switch-player { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:50px; background:var(--surface-2); border:1px solid var(--border); color:var(--text-muted); font-size:0.8em; font-weight:600; cursor:pointer; font-family:inherit; margin-top:12px; transition:all 0.2s; }
+.switch-player:hover { color:var(--text); border-color:rgba(255,255,255,0.12); }
+
+/* WEEK CARDS */
+.week-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:12px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:16px; position:relative; overflow:hidden; }
+.week-card:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-1px); }
+.week-card.current::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); }
+.week-card-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5em; flex-shrink:0; }
+.week-card-content { flex:1; min-width:0; }
+.week-card-num { font-size:0.7em; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; }
+.week-card-title { font-size:1.05em; font-weight:700; }
+.week-card-desc { font-size:0.82em; color:var(--text-muted); margin-top:2px; }
+.week-card-badge { font-size:0.65em; font-weight:700; padding:3px 8px; border-radius:50px; background:var(--accent-glow); color:var(--accent); white-space:nowrap; }
+.week-card-check { width:28px; height:28px; border-radius:50%; border:2px solid var(--surface-3); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.8em; transition:all 0.2s; }
+.week-card.completed .week-card-check { background:var(--accent); border-color:var(--accent); color:#000; }
+.week-card.completed { opacity:0.6; }
+
+/* DETAIL VIEW */
+.detail-header { padding:20px 16px 0; position:sticky; top:0; z-index:10; background:var(--bg); }
+.detail-back { display:inline-flex; align-items:center; gap:6px; color:var(--text-muted); font-size:0.85em; font-weight:600; background:none; border:none; cursor:pointer; font-family:inherit; padding:8px 12px; border-radius:var(--radius-xs); transition:color 0.2s; }
+.detail-back:hover { color:var(--text); }
+.detail-hero { padding:24px 20px 32px; text-align:center; }
+.detail-hero-icon { font-size:3em; margin-bottom:12px; }
+.detail-hero-num { font-size:0.75em; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:2px; }
+.detail-hero-title { font-size:1.8em; font-weight:900; margin:4px 0; }
+.detail-hero-sub { color:var(--text-muted); font-size:0.95em; }
+.detail-container { max-width:720px; margin:0 auto; padding:0 16px 60px; }
+.content-block { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:16px; }
+.content-block h3 { font-size:1.15em; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.content-block p { margin-bottom:10px; font-size:0.93em; color:var(--text-muted); line-height:1.7; }
+.content-block p strong { color:var(--text); }
+.content-block ul { margin:8px 0 0 20px; } .content-block li { margin-bottom:8px; font-size:0.93em; color:var(--text-muted); } .content-block li strong { color:var(--text); }
+.box-exercise { background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.15); border-radius:var(--radius); padding:20px; margin:16px 0; }
+.box-exercise .box-label { font-size:0.72em; font-weight:700; color:var(--accent-2); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.box-tip { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.15); border-radius:var(--radius); padding:20px; margin:16px 0; }
+.box-tip .box-label { font-size:0.72em; font-weight:700; color:var(--accent-3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.box-challenge { background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.15); border-radius:var(--radius); padding:20px; margin:16px 0; }
+.box-challenge .box-label { font-size:0.72em; font-weight:700; color:var(--accent-5); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.box-routine { background:rgba(34,197,94,0.06); border:1px solid rgba(34,197,94,0.12); border-radius:var(--radius); padding:20px; margin:16px 0; }
+.box-routine .box-label { font-size:0.72em; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.box-football { background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.12); border-radius:var(--radius); padding:20px; margin:16px 0; }
+.box-football .box-label { font-size:0.72em; font-weight:700; color:var(--accent-3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:8px; }
+.quiz-option { background:var(--surface-2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px 18px; margin:8px 0; cursor:pointer; transition:all 0.2s; font-size:0.93em; }
+.quiz-option:hover { border-color:rgba(255,255,255,0.12); }
+.quiz-option.correct { border-color:var(--accent); background:rgba(34,197,94,0.1); }
+.quiz-option.wrong { border-color:var(--accent-4); background:rgba(239,68,68,0.1); }
+.checklist-item { display:flex; align-items:center; gap:12px; padding:12px 14px; margin:6px 0; background:var(--surface-2); border-radius:10px; cursor:pointer; transition:all 0.2s; }
+.checklist-item:hover { background:var(--surface-3); }
+.checklist-item input { width:20px; height:20px; accent-color:var(--accent); }
+.checklist-item span { font-size:0.9em; }
+.complete-btn { width:100%; padding:16px; border-radius:var(--radius); background:var(--accent); color:#0a0f1a; font-weight:800; font-size:1em; border:none; cursor:pointer; font-family:inherit; margin-top:20px; transition:all 0.2s; }
+.complete-btn:hover { filter:brightness(1.1); }
+.complete-btn.done { background:var(--surface-3); color:var(--text-muted); cursor:default; }
+
+/* TOOLS */
+.tools-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:800px; margin:0 auto; padding:0 16px 100px; }
+.tool-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px 20px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.tool-card:hover { border-color:rgba(255,255,255,0.1); transform:translateY(-2px); }
+.tool-card .tool-icon { font-size:2em; margin-bottom:8px; }
+.tool-card .tool-name { font-weight:700; font-size:0.9em; }
+.tool-card .tool-desc { font-size:0.78em; color:var(--text-muted); margin-top:4px; }
+.tool-modal { display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
+.tool-modal.active { display:flex; }
+.tool-modal-inner { background:var(--surface); border:1px solid var(--border); border-radius:24px; padding:36px 32px; max-width:480px; width:100%; max-height:90dvh; overflow-y:auto; position:relative; }
+.tool-modal-close { position:absolute; top:16px; right:16px; background:var(--surface-2); border:none; color:var(--text-muted); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1.1em; display:flex; align-items:center; justify-content:center; }
+.breath-circle { width:160px; height:160px; border-radius:50%; margin:0 auto 16px; background:radial-gradient(circle,rgba(34,197,94,0.3),rgba(34,197,94,0.05)); border:2px solid rgba(34,197,94,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.95em; color:var(--accent); transition:transform 4s ease-in-out; }
+.breath-circle.inhale { transform:scale(1.4); } .breath-circle.exhale { transform:scale(1); }
+.breath-btn { margin-top:16px; padding:10px 24px; border-radius:50px; background:var(--accent-glow); border:1px solid rgba(34,197,94,0.3); color:var(--accent); font-weight:600; cursor:pointer; font-family:inherit; }
+.input-field { width:100%; padding:14px 18px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); color:var(--text); font-size:1em; font-family:inherit; outline:none; transition:border-color 0.2s; }
+.input-field:focus { border-color:var(--accent); }
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 28px; border-radius:50px; font-size:1em; font-weight:700; font-family:inherit; border:none; cursor:pointer; transition:all 0.2s; margin-top:12px; }
+.btn-primary { background:var(--accent); color:#0a0f1a; } .btn-primary:hover { filter:brightness(1.1); }
+.btn-full { width:100%; }
+
+/* FOOTER */
+.footer-nav { position:fixed; bottom:0; left:0; right:0; background:rgba(10,15,26,0.9); backdrop-filter:blur(20px); border-top:1px solid var(--border); display:flex; justify-content:center; gap:40px; padding:12px 20px calc(12px + env(safe-area-inset-bottom)); z-index:50; }
+.footer-nav-item { text-align:center; cursor:pointer; background:none; border:none; font-family:inherit; color:var(--text-dim); transition:color 0.2s; }
+.footer-nav-item.active { color:var(--accent); }
+.footer-nav-item .nav-icon { font-size:1.3em; display:block; }
+.footer-nav-item .nav-label { font-size:0.65em; font-weight:600; margin-top:2px; }
+@media(max-width:600px) {
+  .select-card { padding:32px 24px; } .select-title { font-size:1.4em; }
+  .player-grid { grid-template-columns:1fr; } .detail-hero-title { font-size:1.4em; }
+  .tools-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<!-- VIEW: PLAYER SELECT -->
+<div class="view active" id="view-select">
+<div class="select-screen">
+<div class="select-card">
+  <div style="font-size:2.5em;text-align:center;margin-bottom:16px">⚽🧠</div>
+  <div class="select-title">Fußball × Mentaltraining</div>
+  <div class="select-sub">Wähle deinen persönlichen Trainingsplan</div>
+  <div class="player-grid">
+    <div class="player-card richard" onclick="selectPlayer('richard')">
+      <span class="p-emoji">⚡</span>
+      <div class="p-name">Richard</div>
+      <div class="p-info">Offensivspieler · 15–19 J.</div>
+      <div class="p-info">SV Babelsberg → Hertha BSC</div>
+      <span class="p-badge">10 Wochen</span>
+    </div>
+    <div class="player-card anton" onclick="selectPlayer('anton')">
+      <span class="p-emoji">🛡️</span>
+      <div class="p-name">Anton</div>
+      <div class="p-info">Abwehrspieler · U12</div>
+      <div class="p-info">SV Babelsberg · Kreisauswahl</div>
+      <span class="p-badge">17 Wochen</span>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- VIEW: DASHBOARD -->
+<div class="view" id="view-dashboard">
+  <div class="dash-header" id="dashHeader">
+    <button class="switch-player" onclick="showSelect()">↩ Spieler wechseln</button>
+    <div class="dash-greeting" id="dashGreeting"></div>
+    <div class="dash-title" id="dashTitle"></div>
+    <div class="dash-sub" id="dashSub"></div>
+    <div class="dash-stats">
+      <div><div class="dash-stat-num" id="statDone">0</div><div class="dash-stat-label">Abgeschlossen</div></div>
+      <div><div class="dash-stat-num" id="statTotal">0</div><div class="dash-stat-label">Wochen</div></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="dashProg" style="width:0%"></div></div>
+  </div>
+  <div class="dash-container" id="weekList"></div>
+  <div style="height:80px"></div>
+</div>
+
+<!-- VIEW: DETAIL -->
+<div class="view" id="view-detail">
+  <div class="detail-header"><button class="detail-back" onclick="showDash()">← Übersicht</button></div>
+  <div class="detail-hero" id="detailHero"></div>
+  <div class="detail-container" id="detailContent"></div>
+  <div style="height:80px"></div>
+</div>
+
+<!-- VIEW: TOOLS -->
+<div class="view" id="view-tools">
+  <div class="dash-header"><div class="dash-greeting">Deine Werkzeuge</div><div class="dash-title">Schnellzugriff</div></div>
+  <div class="tools-grid" id="toolsGrid"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer-nav" id="footerNav" style="display:none">
+  <button class="footer-nav-item active" onclick="navTo('dashboard',this)"><span class="nav-icon">🏠</span><span class="nav-label">Wochen</span></button>
+  <button class="footer-nav-item" onclick="navTo('tools',this)"><span class="nav-icon">⚡</span><span class="nav-label">Tools</span></button>
+  <button class="footer-nav-item" onclick="showSelect()"><span class="nav-icon">🔄</span><span class="nav-label">Wechseln</span></button>
+</div>
+
+<!-- MODALS -->
+<div class="tool-modal" id="modal-breath">
+<div class="tool-modal-inner">
+  <button class="tool-modal-close" onclick="closeModal('breath')">×</button>
+  <div style="text-align:center">
+    <div class="breath-circle" id="breathCircle">Bereit?</div>
+    <div id="breathLabel" style="font-size:0.85em;color:var(--text-muted)">Drücke Start für 5 Runden Box-Breathing</div>
+    <button class="breath-btn" id="breathBtn" onclick="startBreathing()">▶ Start</button>
+  </div>
+</div>
+</div>
+<div class="tool-modal" id="modal-power">
+<div class="tool-modal-inner">
+  <button class="tool-modal-close" onclick="closeModal('power')">×</button>
+  <div style="text-align:center"><div style="font-size:2.5em;margin-bottom:12px">💪</div><h3 style="margin-bottom:16px">Deine Power-Sätze</h3></div>
+  <div id="powerList" style="text-align:left"></div>
+  <div style="margin-top:16px"><input class="input-field" id="powerInput" placeholder="Neuen Power-Satz hinzufügen..."><button class="btn btn-primary btn-full" onclick="addPower()">Hinzufügen</button></div>
+</div>
+</div>
+<div class="tool-modal" id="modal-focus">
+<div class="tool-modal-inner">
+  <button class="tool-modal-close" onclick="closeModal('focus')">×</button>
+  <div style="text-align:center">
+    <div style="font-size:2.5em;margin-bottom:12px">🎯</div>
+    <h3 style="margin-bottom:8px">60-Sekunden Fokus-Challenge</h3>
+    <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:20px">Schließ die Augen, zähle deine Atemzüge.</p>
+    <div id="focusTimer" style="font-size:3em;font-weight:900;color:var(--accent);margin:20px 0">60</div>
+    <button class="breath-btn" id="focusBtn" onclick="startFocus()">▶ Start</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ===== STATE =====
+let player = null;
+let state = { richard: { completed: [], powers: [] }, anton: { completed: [], powers: [] } };
+try { const s = JSON.parse(sessionStorage.getItem('grimm_state')); if(s) state = {...state,...s}; } catch(e){}
+function save() { sessionStorage.setItem('grimm_state', JSON.stringify(state)); }
+
+function getPS() { return state[player]; }
+
+// ===== DATA =====
+const DATA = {
+richard: {
+  name: 'Richard', age: '15–19', role: 'Offensivspieler',
+  path: 'SV Babelsberg 03 → Hertha BSC', plan: '10 Wochen · März–Mai 2026',
+  color: 'var(--richard)',
+  strengths: ['Kreativität & Spielintelligenz','Starker Linksfuss','Variabilität','Spielfähigkeit','Entwicklungspotenzial'],
+  devField: 'Spiel gegen den Ball',
+  weeks: [
+    { id:'r1', num:'Woche 1', date:'3.–9. März', icon:'⚽', fb:'Gegenpressing nach Ballverlust', fbDesc:'Sofort nachsetzen – in 2–3 Sek. Druck auf den Ballführer.', mental:'Was ist Mentalstärke?', mentalDesc:'Die 4 Säulen: Selbstvertrauen, Konzentration, Druck, Lernbereitschaft.',
+      fbContent:'<p><strong>Dein Hauptziel:</strong> Sobald du den Ball verlierst, sofort nachsetzen! Nicht stehen bleiben, nicht ärgern.</p><p>Im Training: Zähle innerlich mit, wie oft du nach einem Ballverlust den Ball zurückerobern konntest.</p><p><strong>Tipp:</strong> Es geht nicht darum, jeden Ball zurückzugewinnen – sondern darum, dass du die BEREITSCHAFT zeigst, sofort umzuschalten.</p>',
+      mentalContent:'<p><em>Dein Kopf ist dein stärkster Muskel.</em> Mentalstärke bedeutet, Gedanken und Gefühle so zu steuern, dass sie dir helfen.</p><p><strong>Die 4 Säulen:</strong></p><ul><li><strong>Selbstvertrauen</strong> – Du glaubst an dich</li><li><strong>Konzentration</strong> – Du bist voll bei der Sache</li><li><strong>Umgang mit Druck</strong> – Du bleibst cool</li><li><strong>Lernbereitschaft</strong> – Du siehst Fehler als Chance</li></ul>',
+      exercise:'Selbstcheck: Wie mental stark fühlst du dich gerade, auf einer Skala von 1–10? In welcher Situation fühlst du dich am stärksten?',
+      routine:['Morgens: Merksatz laut vorlesen','Vor dem Training: 4 Säulen – welche brauchst du?','Nach dem Training: War ich mental stark?','Abends: Merksatz nochmal lesen'],
+      tip:'Mentalstärke ist kein Talent – es ist Training. Jeder kann es lernen!' },
+    { id:'r2', num:'Woche 2', date:'10.–16. März', icon:'💨', fb:'Defensivposition ohne Ball finden', fbDesc:'Wo muss ich stehen? Orientierung zwischen Ball und Gegenspieler.', mental:'Umgang mit Druck', mentalDesc:'Umschalt-Sätze, Fokus-Wort, Power-Atem.',
+      fbContent:'<p>Diese Woche: deine Positionierung wenn der GEGNER den Ball hat. Frag dich: <strong>Wo muss ich stehen, um den Passweg zu schließen?</strong></p><p>Orientiere dich zwischen Ball und Gegenspieler.</p><p><strong>Challenge:</strong> Im Training 3x eine Situation erkennen, in der du einen Pass abfängst weil du richtig positioniert warst.</p>',
+      mentalContent:'<p><em>Druck entsteht durch Gedanken wie «Ich muss jetzt treffen!»</em> Diese Gedanken sind normal – aber du kannst sie umschalten.</p><p><strong>Umschalt-Sätze:</strong> «Ich darf nicht versagen» → «Ich gebe mein Bestes!» | «Alle schauen auf mich» → «Cool, ich darf zeigen was ich kann!»</p><p><strong>Fokus-Wort:</strong> Wähle EIN Wort: «Los!», «Ruhe!», «Power!»</p><p><strong>Power-Atem:</strong> 4 Sek. einatmen, 1 Sek. halten, 6 Sek. ausatmen. 3x wiederholen.</p>',
+      exercise:'Wähle dein Fokus-Wort und schreibe 3 Umschalt-Sätze auf.',
+      routine:['Morgens: Umschalt-Sätze durchlesen','Vor dem Training: 3x Power-Atem + Fokus-Wort','Im Training: Fokus-Wort bei Druck wiederholen','Abends: 3x Power-Atem'],
+      tip:'Druck ist dein Freund – er zeigt dir, dass es wichtig ist!' },
+    { id:'r3', num:'Woche 3', date:'17.–23. März', icon:'🔥', fb:'10-Sekunden-Regel + Rücklaufbewegungen', fbDesc:'Nach Fehler: 10 Sek. ärgern, dann nächste Aktion!', mental:'Fehler sind deine Freunde', mentalDesc:'10-Sekunden-Regel, Fehler-Tagebuch, Fehler-Spirale durchbrechen.',
+      fbContent:'<p><strong>Zwei Dinge:</strong> (1) Nach einem Fehler darfst du dich 10 Sekunden ärgern – dann Schluss! Sofort nächste Aktion! (2) Nach JEDER Offensivaktion bewusst in die Rücklaufbewegung investieren.</p><p>Kopf und Beine arbeiten zusammen! Wenn du dich ärgerst, fehlt die Rücklaufbewegung.</p>',
+      mentalContent:'<p><em>Im Profifussball gehen 9 von 10 Torschüssen daneben – völlig normal!</em></p><p><strong>Die 10-Sekunden-Regel:</strong> Du darfst dich 10 Sekunden richtig ärgern. Dann: Strich drunter! Wie ein Radiergummi – weg damit.</p><p><strong>Fehler-Tagebuch:</strong> 3 Fragen nach jedem Training: (1) Was ist passiert? (2) Was lerne ich daraus? (3) Was mache ich besser?</p><p><strong>Die Fehler-Spirale durchbrechen:</strong> Fehler → Ärger → Unsicherheit → nächster Fehler. Dein Tool: 10-Sekunden-Regel + sofort nachsetzen!</p>',
+      exercise:'Starte dein Fehler-Tagebuch: Notiere deinen heutigen Fehler und was du daraus lernst.',
+      routine:['Morgens: «Fehler sind Trainingseinheiten für meinen Kopf»','Im Training: 10-Sekunden-Regel bei JEDEM Fehler','Nach dem Training: Fehler-Tagebuch (3 Fragen)','Abends: 3x Power-Atem + Fokus-Wort'],
+      tip:'Fehler sind keine Niederlagen – sie sind Trainingseinheiten für deinen Kopf!' },
+    { id:'r4', num:'Woche 4', date:'24.–30. März', icon:'💪', fb:'Abschluss-Stärke + schwacher Fuss', fbDesc:'Linken Fuss nutzen + 15 Min. rechter Fuss pro Tag.', mental:'Selbstvertrauen aufbauen', mentalDesc:'Top-5-Stärken, Highlight-Technik, 3 Power-Sätze.',
+      fbContent:'<p>Dein linker Fuss ist deine Waffe – nutze ihn! Suche in jeder Trainingsübung den Abschluss. Gleichzeitig: <strong>15 Minuten pro Tag rechter Fuss</strong> (Passen, Ballkontrolle, Schüsse).</p><p>Bei Hertha testen die Trainer, ob du beidfüßig spielen kannst. Mit zwei guten Füßen bist du doppelt gefährlich.</p><p><strong>Tipp:</strong> Stell dir vor dem Abschluss kurz vor, wo du hinschießen willst. Mit Plan abschließen.</p>',
+      mentalContent:'<p><em>Selbstvertrauen ist wie ein Akku – manchmal voll, manchmal fast leer. Du kannst ihn aktiv aufladen!</em></p><p><strong>Top-5-Stärken:</strong> Schreib JETZT deine 5 größten Stärken auf. Häng die Liste neben dein Bett!</p><p><strong>Highlight-Technik:</strong> Schließ die Augen, erinnere dich an deinen besten Moment. Sieh es vor dir, spür die Freude. 1 Minute jeden Abend.</p><p><strong>3 Power-Sätze:</strong> z.B. «Ich werde besser mit jeder Aktion», «Ich bin vorbereitet», «Ich liebe Herausforderungen»</p>',
+      exercise:'Schreibe deine Top-5-Stärken und 3 Power-Sätze auf. Nutze das Power-Sätze-Tool!',
+      routine:['Morgens: 3 Power-Sätze + Top-5-Stärken','Vor dem Training: Power-Atem + Fokus-Wort','Im Training: «Ja, das bin ich!» nach guter Aktion','Abends: 1 Minute Highlight-Moment visualisieren'],
+      tip:'Selbstvertrauen kommt nicht von allein – du baust es jeden Tag auf!' },
+    { id:'r5', num:'Woche 5', date:'31. März – 6. Apr.', icon:'🎯', fb:'Laufwege ohne Ball + Pressing-Timing', fbDesc:'Spielintelligenz zeigen, clevere Räume schaffen.', mental:'Konzentration & Fokus', mentalDesc:'Aufmerksamkeits-Scheinwerfer, Fokus-Trigger, 60-Sek-Challenge.',
+      fbContent:'<p>Kreativität heisst nicht nur Dribbling! Laufe dich klug frei, biete dich an, schaffe Räume. Stell dir ein Schachbrett vor – wo musst du stehen?</p><p><strong>Defensiv:</strong> Achte auf das TIMING deines Pressings. Nicht blindlings anlaufen, sondern den richtigen Moment abwarten.</p><p><strong>Challenge:</strong> 3x durch cleveres Freilaufen eine Torchance kreieren.</p>',
+      mentalContent:'<p><em>Dein Kopf ist genau da, wo deine Füße sind. Auf dem Platz, im Moment, bei der Aktion.</em></p><p><strong>Aufmerksamkeits-Scheinwerfer:</strong> Ball, Mitspieler, Raum, Gegner – worauf leuchtet er? Wenn er auf «Angst vor Fehlern» leuchtet: umschalten!</p><p><strong>Fokus-Trigger:</strong> Wähle eine Geste als Reset-Knopf (Hände klatschen, Trikot zupfen). Gedanken abschweifen → Fokus-Trigger → Scheinwerfer zurück!</p><p><strong>60-Sekunden-Challenge:</strong> Augen zu, nur Atemzüge zählen. Wie viele ohne Ablenkung?</p>',
+      exercise:'Wähle deinen Fokus-Trigger und teste die 60-Sekunden-Challenge im Tools-Bereich!',
+      routine:['Morgens: Power-Sätze + 60-Sek-Atemübung','Vor dem Training: Fokus-Trigger + Power-Atem','Im Training: Scheinwerfer auf Ball/Mitspieler/Raum','Abends: 60-Sek-Challenge + Power-Atem'],
+      tip:'Dein Kopf kann nur auf eine Sache richtig fokussieren. Lenke deinen Scheinwerfer!' },
+    { id:'r6', num:'Woche 6', date:'7.–13. Apr.', icon:'🌊', fb:'Mut zeigen + Defensiv-Umschaltung', fbDesc:'2 mutige Aktionen pro Training + sofort umschalten.', mental:'Im Flow spielen', mentalDesc:'Flow-Bedingungen, Flow-Killer, 15-Minuten-Challenge.',
+      fbContent:'<p>Wage mindestens <strong>2 MUTIGE Aktionen</strong> pro Training! Ein Übersteiger, ein risikoreicher Pass in die Tiefe. Kreativität ist deine Stärke – zeig sie!</p><p>ABER: Nach jeder Offensivaktion sofort umschalten! Mutig nach vorne UND diszipliniert zurück.</p><p>Unter 3 Sekunden solltest du wieder in Defensivposition sein.</p>',
+      mentalContent:'<p><em>Flow ist der Zustand, in dem alles automatisch läuft – du triffst die richtigen Entscheidungen, bist schnell und mutig.</em></p><p><strong>Flow entsteht wenn:</strong> (1) Aufgabe passt zum Können, (2) Volle Konzentration, (3) Spass am Spiel, (4) Keine Angst vor Fehlern.</p><p><strong>Flow-Killer:</strong> Zu viel nachdenken, über Fehler ärgern, Angst vor dem Ergebnis, sich vergleichen.</p><p><strong>15-Min-Challenge:</strong> Nächstes Training: 15 Minuten KEINE negativen Gedanken. Einfach spielen!</p>',
+      exercise:'Wann warst du zuletzt im Flow? Was war anders als sonst? Schreib es auf!',
+      routine:['Morgens: «Ich spiele heute frei und mutig»','Vor dem Training: Power-Atem + Fokus-Wort + Trigger','Im Training: 15-Min-Challenge ohne negative Gedanken','Abends: Besten Flow-Moment visualisieren'],
+      tip:'Flow entsteht, wenn du aufhörst nachzudenken und anfängst zu spielen!' },
+    { id:'r7', num:'Woche 7', date:'14.–20. Apr.', icon:'🔄', fb:'Beidfüßigkeit + Umschalten in unter 3 Sek.', fbDesc:'Beide Füße bewusst einsetzen, Umschaltverhalten zählen.', mental:'Umgang mit Rückschlägen', mentalDesc:'Comeback-Formel (Fühlen → Verstehen → Handeln).',
+      fbContent:'<p>Setze BEWUSST beide Füße ein – bei Ballkontrolle, beim Passen, auch mal beim Schuss. Es muss nicht perfekt sein – aber zeig den Willen!</p><p><strong>Defensive:</strong> Wie schnell bist du nach Ballbesitz-Wechsel wieder in Position? Ziel: Unter 3 Sekunden.</p><p>Stell dir vor, ein Hertha-Trainer beobachtet nur dein Umschaltverhalten.</p>',
+      mentalContent:'<p><em>Du wirst nicht aufgestellt. Dein Team verliert hoch. Diese Momente kommen – für jeden.</em></p><p><strong>Die Comeback-Formel:</strong></p><ul><li><strong>1 – FÜHLEN:</strong> Lass die Gefühle zu. Es ist okay, frustriert zu sein.</li><li><strong>2 – VERSTEHEN:</strong> Was genau ist passiert? Was kannst du beeinflussen?</li><li><strong>3 – HANDELN:</strong> Was ist der nächste KLEINE Schritt?</li></ul><p><strong>Merksatz:</strong> «Nicht der Fall definiert dich, sondern wie du wieder aufstehst.»</p>',
+      exercise:'Denk an deinen letzten Rückschlag und gehe die 3 Schritte schriftlich durch.',
+      routine:['Morgens: Power-Sätze + Merksatz','Im Training: Comeback-Formel bei Rückschlägen','Nach dem Training: Fehler-Tagebuch + 1 positive Sache','Abends: Power-Atem + Highlight-Moment'],
+      tip:'Nicht der Fall definiert dich, sondern wie du wieder aufstehst.' },
+    { id:'r8', num:'Woche 8', date:'21.–27. Apr.', icon:'🗣️', fb:'Kommunikation + starke Körpersprache', fbDesc:'10 ermutigende Sachen pro Training! Kopf hoch, Brust raus.', mental:'Kommunikation im Team', mentalDesc:'3 Arten der Kommunikation, Fake it till you make it.',
+      fbContent:'<p>Die besten Teams reden STÄNDIG auf dem Platz. Diese Woche: Werde zum Lautsprecher!</p><p>Gib <strong>Infos</strong> («Ich bin frei!», «Zeit!»), <strong>mach Mut</strong> («Stark gemacht!», «Weiter so!»), und achte auf deine <strong>Körpersprache</strong>.</p><p>Kopf IMMER oben, Brust raus, Blickkontakt – auch wenn du dich schlecht fühlst!</p><p><strong>Challenge:</strong> 10 ermutigende Dinge zu Mitspielern pro Training. Zähle mit!</p>',
+      mentalContent:'<p><em>Auf dem Platz reden ist ein Zeichen von Führung. Hertha sucht Spieler, die das Team besser machen.</em></p><p><strong>3 Arten:</strong></p><ul><li><strong>Infos:</strong> «Ich bin frei!», «Zeit!», «Rückraum!»</li><li><strong>Mut machen:</strong> «Stark gemacht!», «Kein Ding, nächster Ball!»</li><li><strong>Körpersprache:</strong> Daumen hoch, Blickkontakt, aufrechte Haltung</li></ul><p><strong>Fake it till you make it:</strong> Auch wenn du dich schlecht fühlst – Kopf hoch, Brust raus, laut coachen. Dein Körper sendet positive Signale an dein Gehirn!</p>',
+      exercise:'Zähle heute: Wie oft hast du Mitspieler ermutigt? Ziel: 10!',
+      routine:['Morgens: «Ich mache heute meine Mitspieler besser»','Im Training: 10 ermutigende Sätze + starke Körpersprache','Nach Training: Habe ich jemanden besser gemacht?','Abends: Box-Breathing (5 Runden)'],
+      tip:'Sei der Spieler, der andere besser macht!' },
+    { id:'r9', num:'Woche 9', date:'28. Apr. – 4. Mai', icon:'🎯', fb:'Ziele für Hertha-Training + Defensiv-Intensität', fbDesc:'PROZESS-Ziel pro Tag. Jede Übung = Probetraining.', mental:'Ziele setzen + Matchday-Ritual', mentalDesc:'Ziele-Dreieck, Matchday-Plan, Visualisierung.',
+      fbContent:'<p>Nur noch 2 Wochen bis zum ersten Hertha-Training! Formuliere ein klares <strong>PROZESS-Ziel</strong> für jeden Tag.</p><p>Jede Übung bei Babelsberg ist jetzt Vorbereitung auf Hertha. Volle Intensität, volle Konzentration.</p><p>Stell dir vor: Der Hertha-Trainer beobachtet dich 90 Minuten lang.</p>',
+      mentalContent:'<p><em>Ohne Ziel ist es wie Fussball ohne Tor – du läufst, aber weisst nicht wohin.</em></p><p><strong>3 Arten von Zielen:</strong></p><ul><li><strong>TRAUM-Ziel</strong> (langfristig): z.B. «Bundesliga-Debüt»</li><li><strong>LEISTUNGS-Ziel</strong> (Saison): z.B. «Stammspieler bei Hertha U-Jugend»</li><li><strong>PROZESS-Ziel</strong> (Woche): z.B. «Jeden Tag 20 Min. schwacher Fuss»</li></ul><p><strong>Dein Matchday-Ritual:</strong> MORGENS: Power-Sätze + Stärken. 1 STUNDE VORHER: 3 Situationen visualisieren. AUFWÄRMEN: Fokus-Trigger + Power-Atem. VOR DEM ANPFIFF: Fokus-Wort + starke Körpersprache.</p>',
+      exercise:'Schreibe dein Traum-Ziel, Leistungs-Ziel und Prozess-Ziel auf.',
+      routine:['Morgens: Power-Sätze + Visualisierung (3 Hertha-Situationen)','Vor dem Training: Komplettes Matchday-Ritual','Im Training: Prozess-Ziel umsetzen','Abends: Box-Breathing + Highlight-Moment'],
+      tip:'Konzentrier dich auf den Prozess – die Ergebnisse kommen von allein!' },
+    { id:'r10', num:'Woche 10', date:'5.–11. Mai · GENERALPROBE', icon:'🏆', fb:'Alles zusammen: Kreativität + Defensiv + Führung', fbDesc:'Letzte Woche vor Hertha! Bring ALLES zusammen.', mental:'Atmen & Dein Mentalstärke-Gesamtplan', mentalDesc:'Box-Breathing, Progressive Muskelentspannung, Gesamtplan.',
+      fbContent:'<p><strong>Letzte Woche vor dem Start bei Hertha!</strong> Bring ALLES zusammen: Kreative Offensivaktionen, sofortiges Umschalten, starke Körpersprache, laute Kommunikation, Beidfüßigkeit.</p><p>Jedes Training bei Babelsberg ist jetzt ein Testlauf. Zieh dein Matchday-Ritual komplett durch.</p><p><strong>Du bist bereit. 10 Wochen harte Arbeit – am Kopf und an den Füßen. Vertrau dir!</strong></p>',
+      mentalContent:'<p><em>Die letzte Woche gehört der Entspannung und dem Zusammenführen aller Tools.</em></p><p><strong>Box-Breathing:</strong> 4 Sek. einatmen → 4 Sek. halten → 4 Sek. ausatmen → 4 Sek. Pause. 5 Runden.</p><p><strong>Progressive Muskelentspannung:</strong> Fäuste ballen → lockerlassen. Schultern hochziehen → fallen lassen. Gesicht zusammenkneifen → entspannen.</p><p><strong>Dein Gesamtplan:</strong> Fokus-Wort, 3 Power-Sätze, Fokus-Trigger, Matchday-Ritual, 10-Sekunden-Regel, Prozess-Ziel – schreib alles auf eine Karte!</p>',
+      exercise:'Schreibe deinen KOMPLETTEN Mentalstärke-Plan auf eine Karte. Nimm sie zu jedem Training mit!',
+      routine:['Morgens: Power-Sätze + Visualisierung Hertha','Vor dem Training: Matchday-Ritual + alle Tools aktivieren','Im Training: Alles zusammen – Kreativität + Defensiv + Flow','Abends: Box-Breathing + Muskelentspannung + Highlight'],
+      tip:'Du bist mental stärker als du denkst. Geh raus auf den Platz und zeig es!' }
+  ]
+},
+anton: {
+  name: 'Anton', age: 'U12', role: 'Abwehrspieler',
+  path: 'SV Babelsberg 03 · Stützpunkt Havelland · Kreisauswahl', plan: '17 Wochen · März–Juni 2026',
+  color: 'var(--anton)',
+  strengths: ['Hohe Grundschnelligkeit','Auffassungsgabe & Taktiktreue','Bestätigtes Potenzial (Kreisauswahl + Stützpunkt)'],
+  devField: 'Ruhe im Aufbauspiel & Offensivdrang',
+  weeks: [
+    { id:'a1', num:'Woche 1', date:'3.–9. März', icon:'⚽', fb:'Den Ball bewusst halten', fbDesc:'Kopf heben, scannen, Extra-Sekunde nehmen.', mental:'Was ist Mentalstärke?', mentalDesc:'Die 4 Säulen und der Selbstcheck.',
+      fbContent:'<p><strong>Dein Hauptziel:</strong> Bevor du den Ball abspielst, EINMAL kurz den Kopf heben und scannen. Nur eine halbe Sekunde – aber bewusst!</p><p>Starte einfach: Bei Rückpässen zum Torwart oder seitlichen Bällen – nimm dir die Extra-Sekunde.</p><p><strong>Tipp:</strong> Wenn du merkst, dass du hektisch wegschlagen willst – STOPP. Einmal tief durchatmen. Dann spielen.</p>',
+      mentalContent:'<p><em>Dein Kopf ist dein stärkster Muskel. Man kann es trainieren wie Passen!</em></p><p><strong>Die 4 Säulen:</strong> (1) Selbstvertrauen, (2) Konzentration, (3) Umgang mit Druck, (4) Lernbereitschaft.</p><p><strong>Merksatz:</strong> «Mentalstärke ist kein Talent – es ist Training. Jeder kann es lernen!»</p>',
+      exercise:'Wie mental stark fühlst du dich gerade (1–10)? In welcher Situation fühlst du dich am sichersten und stärksten?',
+      routine:['Morgens: Merksatz laut vorlesen (10 Sek.)','Vor dem Training: 4 Säulen – welche brauchst du?','Nach dem Training: War ich heute mental stark?','Abends: Merksatz nochmal lesen'],
+      tip:'Mentalstärke ist kein Talent – es ist Training!' },
+    { id:'a2', num:'Woche 2', date:'10.–16. März', icon:'📢', fb:'Anspielbar machen – Position zeigen', fbDesc:'AKTIV zeigen, dass du anspielbar bist. Ruf «Hier!» oder «Dreh!»', mental:'Umgang mit Druck', mentalDesc:'Umschalt-Sätze, Fokus-Wort, Power-Atem.',
+      fbContent:'<p>Wenn dein Mitspieler den Ball hat, zeig ihm AKTIV dass du anspielbar bist. Beweg dich in eine offene Position, ruf «Hier!» oder «Dreh!»</p><p>Als Abwehrspieler bist du oft die sichere Option nach hinten – super! Aber: Biete dich auch MAL seitlich oder diagonal an.</p><p><strong>Challenge:</strong> Zähle, wie oft du dich aktiv anspielbar machst. Ziel: 10x pro Übung.</p>',
+      mentalContent:'<p><em>Druck entsteht durch Gedanken wie «Ich darf keinen Fehler machen!»</em> Diese Gedanken sind normal – aber du kannst sie umschalten.</p><p><strong>Umschalt-Sätze:</strong> «Ich darf keinen Fehler machen» → «Ich spiele einfach mein Spiel – Fehler gehören dazu!»</p><p><strong>Fokus-Wort:</strong> z.B. «Ruhe!», «Sicher!», «Ich kann das!», «Meins!»</p><p><strong>Power-Atem:</strong> 4 Sek. einatmen, 1 Sek. halten, 6 Sek. ausatmen. 3x machen.</p>',
+      exercise:'Wähle dein Fokus-Wort und schreibe 3 Umschalt-Sätze auf.',
+      routine:['Morgens: Umschalt-Sätze durchlesen','Vor dem Training: 3x Power-Atem + Fokus-Wort','Im Training: Fokus-Wort bei Druck wiederholen','Abends: 3x Power-Atem vor dem Einschlafen'],
+      tip:'Druck zeigt dir, dass es wichtig ist. Atme, fokussiere, und leg los!' },
+    { id:'a3', num:'Woche 3', date:'17.–23. März', icon:'💪', fb:'Fehler akzeptieren – sofort weiter', fbDesc:'10-Sekunden-Regel. Ball halten statt hektisch wegspielen.', mental:'Fehler sind deine Freunde', mentalDesc:'10-Sekunden-Regel, Fehler-Tagebuch, Fehler-Spirale.',
+      fbContent:'<p>Wenn dir ein Fehlpass passiert oder eine Ballannahme misslingt: <strong>10 Sekunden ärgern – dann Schluss!</strong> Sofort nächste Aktion.</p><p><strong>WICHTIG:</strong> Oft spielst du den Ball zu schnell weg, WEIL du Angst hast, einen Fehler zu machen. Lieber einmal mutig den Ball halten!</p><p><strong>Experiment:</strong> Zähle im Kopf «Eins» bevor du abspielst.</p>',
+      mentalContent:'<p><em>Im Profifussball machen ALLE Spieler ständig Fehler – auch die besten Verteidiger der Welt.</em></p><p><strong>Die 10-Sekunden-Regel:</strong> Du darfst dich 10 Sekunden ärgern. Dann: Strich drunter! Als Abwehrspieler besonders wichtig – ein Fehler da ist oft direkt gefährlich. Umso wichtiger: Kopf frei, nächste Aktion!</p><p><strong>Fehler-Tagebuch:</strong> 3 Fragen: (1) Was ist passiert? (2) Was lerne ich? (3) Was mache ich besser?</p>',
+      exercise:'Starte dein Fehler-Tagebuch. Schreib heute den ersten Eintrag.',
+      routine:['Morgens: «Fehler sind Trainingseinheiten für meinen Kopf»','Im Training: 10-Sekunden-Regel bei JEDEM Fehler','Im Training: Bei Ballbesitz «Eins» zählen vor dem Pass','Nach dem Training: Fehler-Tagebuch (3 Fragen)'],
+      tip:'Fehler sind keine Niederlagen – sie sind Trainingseinheiten!' },
+    { id:'a4', num:'Woche 4', date:'24.–30. März', icon:'🔥', fb:'Mut zum Aufbauspiel – sichere Lösungen', fbDesc:'3x pro Training kontrolliert nach vorne spielen.', mental:'Selbstvertrauen aufbauen', mentalDesc:'Top-5-Stärken, Highlight-Technik, Power-Sätze.',
+      fbContent:'<p>Du hast hohe Spielintelligenz – nutze sie! Scanne die Situation: Ist ein Mitspieler im Mittelfeld frei? Kann ich den Ball flach und sicher nach vorne spielen?</p><p>Versuche <strong>mindestens 3x</strong> einen KONTROLLIERTEN Pass nach vorne (nicht nur zur Seite oder zurück).</p><p><strong>Denkregel:</strong> «Kann ich nach vorne spielen?» → Ja = machen! Nein = sicher zur Seite. Das ist cleveres Aufbauspiel.</p>',
+      mentalContent:'<p><em>Selbstvertrauen ist wie ein Akku – du kannst ihn aktiv aufladen!</em></p><p><strong>Top-5-Stärken:</strong> z.B. Schnelligkeit, Taktik-Verständnis, Zweikampfstärke, Zuverlässigkeit, Laufbereitschaft. Häng die Liste neben dein Bett!</p><p><strong>Highlight-Technik:</strong> Erinnere dich an deinen besten Moment. Eine starke Grätsche, ein rettender Sprint. Sieh es vor dir! 1 Minute jeden Abend.</p><p><strong>3 Power-Sätze:</strong> z.B. «Ich bin schnell und stark», «Ich halte meinen Bereich dicht», «Ich trau mich, den Ball zu halten»</p>',
+      exercise:'Schreibe deine Top-5-Stärken und 3 Power-Sätze auf!',
+      routine:['Morgens: Power-Sätze + Top-5-Stärken','Vor dem Training: Power-Atem + Fokus-Wort','Im Training: «Ja, genau so!» nach guter Aktion','Abends: 1 Minute Highlight-Moment visualisieren'],
+      tip:'Selbstvertrauen kommt nicht von allein – du baust es jeden Tag auf!' },
+    { id:'a5', num:'Woche 5', date:'31. März – 6. Apr.', icon:'🎯', fb:'Laufduelle gewinnen – Schnelligkeit einsetzen', fbDesc:'Deine Grundschnelligkeit BEWUSST einsetzen.', mental:'Konzentration & Fokus', mentalDesc:'Scheinwerfer auf Gegner/Ball/Raum/Mitspieler.',
+      fbContent:'<p>Deine Grundschnelligkeit ist eine deiner größten Waffen! Diese Woche: Setze sie BEWUSST ein.</p><p>Wenn ein Gegenspieler in die Tiefe startet – nimm das Laufduell an und GEWINNE es.</p><p><strong>Tipp:</strong> Nicht zu früh starten (dann läufst du ins Leere), sondern reagiere auf die Bewegung des Gegners.</p><p><strong>Challenge:</strong> Zähle gewonnene Laufduelle. Ziel: Mehr als die Hälfte!</p>',
+      mentalContent:'<p><em>Konzentration bedeutet: Dein Kopf ist genau da, wo deine Füße sind.</em></p><p><strong>Aufmerksamkeits-Scheinwerfer:</strong> Als Abwehrspieler leuchtest du auf: Gegner (Wo ist er?), Ball (Wo ist der Ball?), Raum (Wo ist die Lücke?), Mitspieler (Wem kann ich helfen?). Wenn er auf «Angst vor Fehlern» leuchtet – umschalten!</p><p><strong>Fokus-Trigger:</strong> Wähle eine Geste als Reset-Knopf (Hände klatschen, Trikot zupfen).</p><p><strong>60-Sekunden-Challenge:</strong> Augen zu, zähle nur deine Atemzüge.</p>',
+      exercise:'Wähle deinen Fokus-Trigger. Teste die 60-Sekunden-Challenge!',
+      routine:['Morgens: Power-Sätze + 60-Sekunden-Atemübung','Vor dem Training: Fokus-Trigger + Power-Atem','Im Training: Scheinwerfer auf Gegner/Ball/Raum','Abends: 60-Sek-Challenge + Power-Atem'],
+      tip:'Dein Kopf kann nur auf eine Sache fokussieren – lenke deinen Scheinwerfer!' },
+    { id:'a6', num:'Woche 6', date:'7.–13. Apr.', icon:'🌊', fb:'Nach vorne verteidigen – Mut zum Rausrücken', fbDesc:'Aktiv verteidigen! Rausrücken wenn der Moment stimmt.', mental:'Im Flow spielen', mentalDesc:'Flow-Bedingungen, Flow-Killer, 15-Min-Challenge.',
+      fbContent:'<p>Verteidige AKTIV! Statt abzuwarten – rück mutig raus und stelle den Ballführer. Du bist schnell genug, um zurückzusprinten!</p><p><strong>Wann rausrücken?</strong> Wenn der Gegner den Ball unsauber annimmt oder mit dem Kopf nach unten dribbelt – DAS ist dein Moment!</p><p><strong>Challenge:</strong> 3x pro Training aktiv rausrücken.</p>',
+      mentalContent:'<p><em>Flow ist der Zustand, in dem alles automatisch läuft.</em></p><p><strong>Flow entsteht wenn:</strong> (1) Aufgabe passt zum Können, (2) Volle Konzentration, (3) Spass am Spiel, (4) Keine Angst vor Fehlern.</p><p><strong>Flow-Killer:</strong> Zu viel nachdenken, über Fehler ärgern, Angst vor dem Ergebnis. Erkennst du das? Das ist oft der Grund, warum du den Ball zu schnell weiterspielst!</p><p><strong>15-Min-Challenge:</strong> 15 Minuten im Training KEINE negativen Gedanken. Einfach spielen.</p>',
+      exercise:'Wann warst du zuletzt im Flow? Was war anders? Schreib es auf.',
+      routine:['Morgens: «Ich spiele heute mutig und frei»','Vor dem Training: Power-Atem + Fokus-Wort + Trigger','Im Training: 15-Min-Challenge','Abends: Besten Flow-Moment visualisieren'],
+      tip:'Flow entsteht, wenn du aufhörst nachzudenken und anfängst zu spielen!' },
+    { id:'a7', num:'Woche 7', date:'14.–20. Apr.', icon:'🔄', fb:'Aufbauspiel mit Varianten', fbDesc:'Nicht nur den sicheren Rückpass – auch den Öffner nach vorne.', mental:'Umgang mit Rückschlägen', mentalDesc:'Comeback-Formel: Fühlen → Verstehen → Handeln.',
+      fbContent:'<p>Bisher hast du geübt, den Ball zu halten und ruhig zu spielen. Jetzt der nächste Schritt: <strong>VARIANTEN!</strong></p><p>3 Optionen für jede Ballsituation: (1) Sicher nach vorne? (2) Diagonal in den Raum? (3) Sicher zur Seite/zurück. Wähle immer die MUTIGSTE sichere Option.</p><p><strong>Challenge:</strong> 5x im Training einen Ball nach vorne ins Mittelfeld spielen.</p>',
+      mentalContent:'<p><em>Du wirst nicht aufgestellt. Dein Team verliert hoch. Diese Momente kommen – für jeden.</em></p><p><strong>Die Comeback-Formel:</strong></p><ul><li><strong>1 – FÜHLEN:</strong> Es ist okay, frustriert oder traurig zu sein.</li><li><strong>2 – VERSTEHEN:</strong> Was ist passiert? Was kann ich beeinflussen?</li><li><strong>3 – HANDELN:</strong> Was ist der nächste KLEINE Schritt?</li></ul><p><strong>Merksatz:</strong> «Nicht der Fall definiert dich, sondern wie du wieder aufstehst.»</p>',
+      exercise:'Denk an deinen letzten Rückschlag. Gehe die 3 Schritte durch.',
+      routine:['Morgens: Power-Sätze + Merksatz lesen','Im Training: Comeback-Formel bei Rückschlägen','Nach Training: Fehler-Tagebuch + 1 positive Sache','Abends: Power-Atem + Highlight-Moment'],
+      tip:'Nicht der Fall definiert dich, sondern wie du wieder aufstehst.' },
+    { id:'a8', num:'Woche 8', date:'21.–27. Apr.', icon:'🗣️', fb:'Kommunikation – die Abwehr organisieren', fbDesc:'Werde der CHEF der Abwehrreihe! 10 Rufe pro Training.', mental:'Kommunikation im Team', mentalDesc:'3 Arten der Kommunikation, Körpersprache, Fake it till you make it.',
+      fbContent:'<p>Ein guter Verteidiger organisiert seine Mitspieler! Werde der <strong>CHEF der Abwehrreihe</strong>. Gib Anweisungen: «Schieb raus!», «Halte die Linie!», «Ich übernehme den!»</p><p><strong>Körpersprache-Regel:</strong> Kopf IMMER oben, Brust raus, Blickkontakt. Auch wenn du dich unsicher fühlst!</p><p><strong>Challenge:</strong> 10 Mal pro Training etwas Ermutigendes oder Organisierendes sagen.</p>',
+      mentalContent:'<p><em>Auf dem Platz reden ist ein Zeichen von Führung. Gerade als Verteidiger bist du der Spieler, der das ganze Feld überblickt!</em></p><p><strong>3 Arten:</strong></p><ul><li><strong>Infos:</strong> «Linie halten!», «Abseits!», «Rücken frei!»</li><li><strong>Mut machen:</strong> «Stark gemacht!», «Kein Ding, weiter!»</li><li><strong>Körpersprache:</strong> Daumen hoch, Blickkontakt, aufrechte Haltung</li></ul><p><strong>Fake it till you make it:</strong> Tu so, als wärst du der sicherste Verteidiger auf dem Platz. Dein Körper sendet positive Signale an dein Gehirn!</p>',
+      exercise:'Zähle heute: Wie oft hast du Mitspieler gecoacht? Ziel: 10!',
+      routine:['Morgens: «Ich organisiere heute meine Abwehr»','Im Training: Mind. 10 organisierende/ermutigende Rufe','Nach Training: Habe ich mein Team organisiert?','Abends: Box-Breathing (5 Runden)'],
+      tip:'Sei der Spieler, der andere besser macht!' },
+    { id:'a9', num:'Woche 9', date:'28. Apr. – 4. Mai', icon:'⚡', fb:'Offensivdrang zeigen – mal nach vorne stoßen', fbDesc:'Mutig 5–10 Meter nach vorne dribbeln wenn Raum da ist.', mental:'Ziele setzen wie ein Profi', mentalDesc:'Ziele-Dreieck, Wann-Dann-Pläne.',
+      fbContent:'<p>Ein moderner Verteidiger beteiligt sich auch am Angriff! Wenn du den Ball gewinnst und vor dir ist Raum – <strong>DRIBBEL NACH VORNE!</strong> 5–10 Meter reichen.</p><p>Du musst nicht bis ins Tor laufen! Es geht darum, Überzahl im Mittelfeld zu schaffen. Und deine Schnelligkeit hilft dir, im Notfall zurückzusprinten.</p><p><strong>Challenge:</strong> Mindestens 2x mutig nach vorne stoßen pro Spiel.</p>',
+      mentalContent:'<p><em>Ohne Ziel ist es wie Fussball ohne Tor.</em></p><p><strong>Das Ziele-Dreieck:</strong></p><ul><li><strong>TRAUM-Ziel:</strong> z.B. «Im nächsten Jahr in ein NLZ wechseln»</li><li><strong>LEISTUNGS-Ziel:</strong> z.B. «In jedem Spiel mindestens 2 Aufbau-Pässe nach vorne»</li><li><strong>PROZESS-Ziel:</strong> z.B. «Bei jedem Ballkontakt einmal scannen bevor ich passe»</li></ul><p><strong>Wann-Dann-Plan:</strong> «WENN ich den Ball in der Abwehr bekomme, DANN nehme ich mir eine Sekunde zum Scannen.»</p>',
+      exercise:'Schreibe dein Traum-Ziel, Leistungs-Ziel und Prozess-Ziel auf.',
+      routine:['Morgens: Power-Sätze + Prozess-Ziel','Vor dem Training: Wann-Dann-Plan im Kopf','Im Training: Mindestens 2x mutig nach vorne stoßen','Abends: Highlight-Moment + Power-Atem'],
+      tip:'Konzentrier dich auf den Prozess – die Ergebnisse kommen von allein!' },
+    { id:'a10', num:'Woche 10', date:'5.–11. Mai', icon:'🏆', fb:'Matchday-Routine einführen', fbDesc:'Feste Routine für Spieltage entwickeln.', mental:'Dein Matchday-Ritual', mentalDesc:'Visualisierung, Ritual zusammenstellen.',
+      fbContent:'<p>Ab jetzt trainierst du nicht nur deine Füße, sondern auch deine <strong>ROUTINE für Spieltage</strong>. Behandle jedes Babelsberg-Spiel wie ein Auswahlspiel.</p><p><strong>Dein Ritual:</strong> Morgens Power-Sätze + Stärken lesen → Auf dem Weg Musik hören → In der Kabine 3 Situationen visualisieren → Aufwärmen Fokus-Trigger + Power-Atem → Vor dem Anpfiff Fokus-Wort + starke Körpersprache.</p>',
+      mentalContent:'<p><em>Routinen signalisieren deinem Kopf: «Jetzt geht\'s los. Ich bin bereit.»</em></p><p><strong>Visualisierung:</strong> Schließ die Augen, stell dir 3 Situationen vor, in denen du richtig gut spielst. Du gewinnst ein Laufduell. Du spielst einen sauberen Aufbaupass. Du organisierst die Abwehr.</p><p><strong>Warum Routinen für dich besonders wichtig:</strong> Du funktionierst am besten mit klaren Strukturen. Ein festes Ritual gibt dir Sicherheit.</p>',
+      exercise:'Erstelle JETZT dein persönliches Matchday-Ritual und schreib es auf!',
+      routine:['Morgens: Power-Sätze + Visualisierung (3 Situationen)','Vor dem Training/Spiel: Komplettes Matchday-Ritual','Im Training: Alles zusammen – Ball halten, nach vorne denken','Abends: Highlight-Moment + Power-Atem'],
+      tip:'Ein gutes Ritual gibt dir Sicherheit. Finde deins!' },
+    { id:'a11', num:'Woche 11', date:'12.–18. Mai', icon:'🌬️', fb:'Alles zusammen: Ruhe + Mut + Tempo', fbDesc:'Ruhe am Ball, nach vorne aufbauen, Laufduelle gewinnen.', mental:'Atmen & Entspannen', mentalDesc:'Box-Breathing, Progressive Muskelentspannung.',
+      fbContent:'<p>Bringe alle fussballerischen Schwerpunkte zusammen: Ball halten und scannen (Ruhe), nach vorne aufbauen und mal rausrücken (Mut), Laufduelle gewinnen und zurücksprinten (Tempo).</p><p><strong>Challenge:</strong> Bewerte dich nach jedem Training: Ruhe am Ball __/10, Mut nach vorne __/10, Laufduelle __/10, Kommunikation __/10.</p>',
+      mentalContent:'<p><em>Dein Atem ist die Fernbedienung für deinen Körper.</em></p><p><strong>Box-Breathing:</strong> 4 Sek. einatmen → 4 Sek. halten → 4 Sek. ausatmen → 4 Sek. Pause. 5 Runden. Perfekt um die Hektik rauszunehmen!</p><p><strong>Progressive Muskelentspannung:</strong> 5 Sekunden anspannen, dann lockerlassen: Fäuste, Schultern, Gesicht, Zehen.</p><p><strong>Warum das für dich Gold wert ist:</strong> Wenn du am Ball hektisch wirst, ist dein Körper im Stressmodus. Box-Breathing VOR dem Training bringt dich in den Ruhemodus.</p>',
+      exercise:'Probiere Box-Breathing (5 Runden) im Tools-Bereich aus!',
+      routine:['Morgens: Power-Sätze + Box-Breathing (5 Runden)','Vor dem Training: Komplettes Matchday-Ritual','Im Training: Alle Bausteine zusammen einsetzen','Abends: Progressive Muskelentspannung + Highlight'],
+      tip:'Dein Atem ist deine Superkraft. 3 tiefe Atemzüge können alles verändern!' },
+    { id:'a12', num:'Woche 12', date:'19.–25. Mai', icon:'💎', fb:'Spielintelligenz zeigen – vorausdenken', fbDesc:'Scan – Plan – Aktion. Eine Aktion VORAUS denken.', mental:'Wiederholung: Selbstvertrauen', mentalDesc:'Stärken-Update, Erfolgs-Tagebuch, Power-Sätze auffrischen.',
+      fbContent:'<p>Versuche, eine Aktion VORAUS zu denken. Bevor der Ball zu dir kommt: Wo spiele ich ihn hin? Wer ist frei? Wo ist der Gegner?</p><p><strong>Tipp:</strong> «Scan – Plan – Aktion». Drei Schritte, ganz einfach.</p>',
+      mentalContent:'<p><em>Halbzeit deines Plans! Zeit, deinen Selbstvertrauens-Akku aufzuladen.</em></p><p><strong>Stärken-Update:</strong> Schau dir deine Top-5-Stärken an. Gibt es neue? Aktualisiere deine Liste!</p><p><strong>Erfolgs-Tagebuch:</strong> Schreib JEDEN TAG eine Sache auf, die gut gelaufen ist.</p><p><strong>Power-Sätze auffrischen:</strong> Passen sie noch? Vielleicht: «Ich bin ruhig am Ball und spiele kluge Pässe.»</p>',
+      exercise:'Aktualisiere deine Top-5-Stärken und Power-Sätze. Starte das Erfolgs-Tagebuch!',
+      routine:['Morgens: Aktualisierte Power-Sätze + Stärken','Vor dem Training: «Scan – Plan – Aktion» 3x im Kopf','Nach Training: 1 Erfolg des Tages aufschreiben','Abends: Highlight-Moment + Box-Breathing'],
+      tip:'Selbstvertrauen aufbauen ist ein tägliches Training!' },
+    { id:'a13', num:'Woche 13', date:'26. Mai – 1. Juni', icon:'⚔️', fb:'Zweikampfstärke in jeder Situation', fbDesc:'Nimm JEDEN Zweikampf an – Laufduelle, 1-gegen-1, Kopfball.', mental:'Wiederholung: Druck & Fehler', mentalDesc:'Umschalt-Sätze Check, 10-Sek-Regel Update.',
+      fbContent:'<p>Als schneller Verteidiger hast du einen Riesenvorteil in Zweikämpfen. Diese Woche: Nimm JEDEN Zweikampf an!</p><p><strong>Technik:</strong> Tief in die Knie, Augen auf den Ball. Beim Laufduell: Früh den Körper zwischen Gegner und Ball bringen.</p><p><strong>Mental:</strong> Sag dir vor jedem Zweikampf dein Fokus-Wort. Du WILLST diesen Zweikampf!</p>',
+      mentalContent:'<p><em>In der zweiten Saisonhälfte steigt oft der Druck. Zeit, deine Anti-Druck-Tools aufzufrischen!</em></p><p><strong>Umschalt-Sätze Check:</strong> Passen sie noch? Schreib neue falls nötig!</p><p><strong>10-Sekunden-Regel Update:</strong> Schaffst du es schon bei 5 Sekunden? Das ist das neue Ziel!</p><p><strong>Fehler-Tagebuch Review:</strong> Wiederholen sich bestimmte Fehler? Oder sind manche verschwunden? Das zeigt deinen Fortschritt!</p>',
+      exercise:'Blättere durch dein Fehler-Tagebuch. Was fällt dir auf?',
+      routine:['Morgens: Power-Sätze + Umschalt-Sätze','Im Training: Jeden Zweikampf annehmen + 10-Sek-Regel','Nach Training: Fehler-Tagebuch + 1 gewonnener Zweikampf','Abends: Box-Breathing + Muskelentspannung'],
+      tip:'Jeder Zweikampf ist eine Chance zu zeigen, wer du bist!' },
+    { id:'a14', num:'Woche 14', date:'2.–8. Juni', icon:'🧊', fb:'Spielaufbau unter Druck', fbDesc:'Ruhe bewahren wenn der Gegner presst. Scan – Plan – Aktion.', mental:'Wiederholung: Konzentration & Flow', mentalDesc:'Scheinwerfer-Check, Flow unter Druck.',
+      fbContent:'<p>Übe das Aufbauspiel wenn der Gegner presst! Optionen: (1) Kurzer Pass zum Torwart/Nebenmann, (2) Ball mit Körper abschirmen und drehen, (3) Langer Ball hinter die Pressinglinie. NICHT: Hektisch wegbolzen!</p><p><strong>Übung:</strong> Bitte einen Mitspieler, dich im Training unter Druck zu setzen.</p>',
+      mentalContent:'<p><em>Die Saison geht in die entscheidende Phase. Dein Fokus und dein Flow sind jetzt wichtiger denn je.</em></p><p><strong>Scheinwerfer-Check:</strong> Schaffst du es, ihn im Spiel auf Gegner/Ball/Raum zu halten?</p><p><strong>Flow unter Druck:</strong> Wenn du deine Routine vor dem Spiel machst (Ritual, Power-Atem, Fokus-Wort), schaffst du die Basis für Flow auch unter Druck.</p><p><strong>60-Sekunden-Challenge:</strong> Vergleiche mit Woche 5 – du wirst Fortschritt sehen!</p>',
+      exercise:'Mache die 60-Sekunden-Challenge nochmal. Vergleiche mit Woche 5!',
+      routine:['Morgens: Power-Sätze + 60-Sek-Challenge','Vor dem Training: Matchday-Ritual + «Scan – Plan – Aktion»','Im Training: Bewusst Ruhe am Ball üben','Abends: Box-Breathing + Visualisierung'],
+      tip:'Ruhe am Ball kommt von Ruhe im Kopf!' },
+    { id:'a15', num:'Woche 15', date:'9.–15. Juni', icon:'🎖️', fb:'Der komplette Verteidiger – Profil schärfen', fbDesc:'Schnelligkeit + Spielintelligenz + Ruhe + Mut + Kommunikation.', mental:'Matchday-Ritual perfektionieren', mentalDesc:'Ritual-Check, Visualisierung aufleveln, Notfall-Plan.',
+      fbContent:'<p>Noch 2 Wochen! Zeig das komplette Paket: Schnelligkeit + Spielintelligenz + Ruhe am Ball + Mut nach vorne + Kommunikation.</p><p><strong>Stell dir vor:</strong> Jemand schreibt einen Scouting-Report: «Schneller, kluger Verteidiger, der ruhig aufbaut, laut organisiert und sich mutig einschaltet.» GENAU DAS zeigst du!</p>',
+      mentalContent:'<p><em>Dein Ritual sollte jetzt sitzen wie ein gut eingestellter Schuh. Vor JEDEM Spiel – automatisch.</em></p><p><strong>Ritual-Check:</strong> Gehst du es wirklich durch? Komplett? Was fehlt, was lenkt ab?</p><p><strong>Visualisierung aufleveln:</strong> Stell dir nicht nur gute Aktionen vor, sondern auch SCHWIERIGE Situationen, die du gut löst.</p><p><strong>Notfall-Plan:</strong> Wenn du unsicher wirst: Fokus-Trigger + Fokus-Wort + Power-Atem. In 10 Sekunden bist du wieder da.</p>',
+      exercise:'Schreib deinen Notfall-Plan auf eine kleine Karte.',
+      routine:['Morgens: Power-Sätze + Visualisierung (inkl. schwierige Situationen)','Vor dem Training/Spiel: Komplettes Matchday-Ritual','Im Training: Das komplette Paket zeigen','Abends: Box-Breathing + Muskelentspannung'],
+      tip:'Du bist mental stärker als du denkst!' },
+    { id:'a16', num:'Woche 16–17', date:'16.–29. Juni · SAISONFINALE', icon:'🏆', fb:'Saisonendspurt – jedes Spiel zählt', fbDesc:'Spass am Spiel! Vertraue deinen Tools und deinem Körper.', mental:'Dein Mentalstärke-Gesamtplan', mentalDesc:'Alles zusammenbringen, Saison-Rückblick.',
+      fbContent:'<p><strong>Die letzten zwei Wochen der Saison!</strong> Genieß jedes Spiel, gib in jedem Training alles. Du hast in 4 Monaten so viel gelernt.</p><p>Dein Fokus: SPASS am Spiel! Denk nicht an Ergebnisse, denk nicht an Fehler. Spiel frei auf, vertraue deinen Tools, vertraue deinem Körper.</p><p><strong>Nach dem letzten Saisonspiel:</strong> Mach einen großen Rückblick. Was hast du gelernt? Worauf bist du stolz?</p>',
+      mentalContent:'<p><em>Du hast 12 Module durchgearbeitet. Jetzt bringst du alles in einen Plan zusammen.</em></p><p><strong>Gesamtplan aufschreiben:</strong> Fokus-Wort, 3 Power-Sätze, Fokus-Trigger, Matchday-Ritual, 10-Sekunden-Regel, Comeback-Formel, Box-Breathing, Prozess-Ziel. Diese Karte ist dein Begleiter – für jede Saison, jeden Verein.</p><p><strong>Saison-Rückblick:</strong> (1) Was war mein größter Fortschritt? (2) Welches Mental-Tool hilft mir am meisten? (3) Was ist mein Ziel für die nächste Saison? (4) Worauf bin ich stolz?</p><p><strong>Abschluss-Merksatz:</strong> «Du bist mental stärker als du denkst. Geh raus auf den Platz und zeig es der Welt!»</p>',
+      exercise:'Schreibe deinen KOMPLETTEN Mentalstärke-Plan auf eine Karte. Beantworte die 4 Saison-Rückblick-Fragen.',
+      routine:['Morgens: Kompletter Plan – Power-Sätze, Stärken, Visualisierung','Vor dem Spiel: Matchday-Ritual komplett + Fokus auf SPASS','Im Spiel: Alle Tools einsetzen – automatisch und selbstbewusst','Nach dem letzten Spiel: Saison-Rückblick schreiben'],
+      tip:'Du bist mental stärker als du denkst. Geh raus auf den Platz und zeig es der Welt!' }
+  ]
+}
+};
+
+// ===== FUNCTIONS =====
+function selectPlayer(p) {
+  player = p;
+  document.getElementById('footerNav').style.display = 'flex';
+  showDash();
+}
+function showSelect() {
+  player = null;
+  document.getElementById('footerNav').style.display = 'none';
+  switchView('select');
+}
+function showDash() {
+  if(!player) return showSelect();
+  const d = DATA[player], ps = getPS();
+  const h = document.getElementById('dashHeader');
+  h.className = 'dash-header ' + (player==='richard'?'richard-h':'anton-h');
+  const hour = new Date().getHours();
+  const greet = hour<12?'Guten Morgen':hour<18?'Hallo':'Guten Abend';
+  document.getElementById('dashGreeting').textContent = greet + ', ' + d.name + '!';
+  document.getElementById('dashTitle').textContent = 'Dein Trainingsplan';
+  document.getElementById('dashSub').textContent = d.plan + ' · ' + d.role;
+
+  const total = d.weeks.length, done = ps.completed.length;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('dashProg').style.width = (total?Math.round(done/total*100):0)+'%';
+
+  // Current week
+  const now = new Date();
+  const weekStart = new Date(2026, 2, 3); // March 3 2026
+  const weekNum = Math.floor((now - weekStart)/(7*24*60*60*1000));
+
+  let html = '<div class="section-label">Dein Wochenplan</div>';
+  d.weeks.forEach((w, i) => {
+    const isDone = ps.completed.includes(w.id);
+    const isCurrent = (i === Math.min(Math.max(weekNum, 0), d.weeks.length-1)) && !isDone;
+    html += `<div class="week-card ${isDone?'completed':''} ${isCurrent?'current':''}" onclick="openWeek('${w.id}')">
+      <div class="week-card-icon" style="background:${d.color}22;font-size:1.5em">${w.icon}</div>
+      <div class="week-card-content">
+        <div class="week-card-num">${w.num} · ${w.date}</div>
+        <div class="week-card-title">⚽ ${w.fb}</div>
+        <div class="week-card-desc">🧠 ${w.mental}</div>
+      </div>
+      ${isCurrent?'<span class="week-card-badge">Diese Woche</span>':''}
+      <div class="week-card-check">${isDone?'✓':''}</div>
+    </div>`;
+  });
+  document.getElementById('weekList').innerHTML = html;
+  switchView('dashboard');
+  renderTools();
+}
+
+function openWeek(id) {
+  const d = DATA[player], ps = getPS();
+  const w = d.weeks.find(x => x.id === id);
+  if(!w) return;
+  const isDone = ps.completed.includes(id);
+
+  document.getElementById('detailHero').innerHTML = `
+    <div class="detail-hero-icon">${w.icon}</div>
+    <div class="detail-hero-num">${w.num} · ${w.date}</div>
+    <div class="detail-hero-title">${w.fb}</div>
+    <div class="detail-hero-sub">🧠 ${w.mental}</div>`;
+
+  let c = '';
+  // Football focus
+  c += `<div class="box-football"><div class="box-label">⚽ Fussball-Fokus: ${w.fb}</div><div style="font-size:0.82em;color:var(--text)">${w.fbDesc}</div></div>`;
+  c += `<div class="content-block"><h3>⚽ ${w.fb}</h3>${w.fbContent}</div>`;
+
+  // Mental
+  c += `<div class="content-block"><h3>🧠 ${w.mental}</h3>${w.mentalContent}</div>`;
+
+  // Exercise
+  c += `<div class="box-exercise"><div class="box-label">✏️ Übung</div><p style="color:var(--text);margin:0">${w.exercise}</p></div>`;
+
+  // Routine
+  c += `<div class="box-routine"><div class="box-label">⚡ Deine tägliche Routine</div>`;
+  w.routine.forEach(r => {
+    c += `<label class="checklist-item"><input type="checkbox"><span>${r}</span></label>`;
+  });
+  c += '</div>';
+
+  // Tip
+  c += `<div class="box-tip"><div class="box-label">💡 Merksatz</div><p style="color:var(--text);margin:0;font-weight:700">${w.tip}</p></div>`;
+
+  // Complete button
+  c += `<button class="complete-btn ${isDone?'done':''}" onclick="completeWeek('${id}',this)">${isDone?'✓ Abgeschlossen':'Woche abschließen ✓'}</button>`;
+
+  document.getElementById('detailContent').innerHTML = c;
+  switchView('detail');
+  window.scrollTo(0,0);
+}
+
+function completeWeek(id, btn) {
+  const ps = getPS();
+  if(!ps.completed.includes(id)) {
+    ps.completed.push(id);
+    save();
+    btn.classList.add('done');
+    btn.innerHTML = '✓ Abgeschlossen';
+  }
+}
+
+function renderTools() {
+  document.getElementById('toolsGrid').innerHTML = `
+    <div class="tool-card" onclick="openModal('breath')"><div class="tool-icon">😌</div><div class="tool-name">Box-Breathing</div><div class="tool-desc">4-4-4-4 Atemtechnik</div></div>
+    <div class="tool-card" onclick="openModal('power')"><div class="tool-icon">💪</div><div class="tool-name">Power-Sätze</div><div class="tool-desc">Deine persönlichen Mantras</div></div>
+    <div class="tool-card" onclick="openModal('focus')"><div class="tool-icon">🎯</div><div class="tool-name">Fokus-Timer</div><div class="tool-desc">60-Sekunden-Challenge</div></div>
+    <div class="tool-card" onclick="showChecklist()"><div class="tool-icon">🏆</div><div class="tool-name">Matchday-Check</div><div class="tool-desc">Spieltag-Checkliste</div></div>`;
+}
+
+// Breathing
+let breathRunning = false;
+function startBreathing() {
+  if(breathRunning) return;
+  breathRunning = true;
+  const circle = document.getElementById('breathCircle');
+  const label = document.getElementById('breathLabel');
+  const btn = document.getElementById('breathBtn');
+  btn.style.display = 'none';
+  let round=0, phase=0;
+  const phases = [
+    {text:'Einatmen...',cls:'inhale',dur:4000},{text:'Halten...',cls:'inhale',dur:4000},
+    {text:'Ausatmen...',cls:'exhale',dur:4000},{text:'Pause...',cls:'exhale',dur:4000}
+  ];
+  function tick() {
+    if(round>=5) { circle.className='breath-circle'; circle.textContent='Fertig!'; label.textContent='Super! 5 Runden geschafft.'; btn.style.display=''; btn.textContent='▶ Nochmal'; breathRunning=false; return; }
+    const p = phases[phase];
+    circle.className = 'breath-circle '+p.cls; circle.textContent = p.text;
+    label.textContent = 'Runde '+(round+1)+' von 5';
+    phase++; if(phase>=4){phase=0;round++;}
+    setTimeout(tick, p.dur);
+  }
+  tick();
+}
+
+// Focus
+let focusInt = null;
+function startFocus() {
+  const d = document.getElementById('focusTimer'), btn = document.getElementById('focusBtn');
+  btn.style.display = 'none'; let sec = 60; d.textContent = sec;
+  focusInt = setInterval(() => { sec--; d.textContent = sec; if(sec<=0){ clearInterval(focusInt); d.textContent='Geschafft!'; btn.style.display=''; btn.textContent='▶ Nochmal'; }}, 1000);
+}
+
+// Power sentences
+function renderPowers() {
+  const ps = getPS(), c = document.getElementById('powerList');
+  if(!ps.powers.length) { c.innerHTML='<p style="color:var(--text-dim);text-align:center;font-size:0.9em">Noch keine Power-Sätze. Füge deinen ersten hinzu!</p>'; return; }
+  c.innerHTML = ps.powers.map((s,i) => `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin:6px 0;background:var(--surface-2);border-radius:10px"><span style="flex:1;font-weight:600;font-size:0.9em">„${s}"</span><button style="background:none;border:none;color:var(--accent-4);cursor:pointer;font-size:1.1em" onclick="removePower(${i})">×</button></div>`).join('');
+}
+function addPower() {
+  const inp = document.getElementById('powerInput'), v = inp.value.trim();
+  if(!v||!player) return; getPS().powers.push(v); save(); inp.value=''; renderPowers();
+}
+function removePower(i) { getPS().powers.splice(i,1); save(); renderPowers(); }
+
+// Checklist
+function showChecklist() {
+  const items = player==='richard'
+    ? ['Power-Sätze gelesen','Top-5-Stärken durchgegangen','3 Hertha-Situationen visualisiert','Fokus-Wort bereit','3x Power-Atem gemacht','Starke Körpersprache']
+    : ['Power-Sätze gelesen','Top-5-Stärken durchgegangen','3 gute Situationen visualisiert','Fokus-Wort bereit','3x Power-Atem gemacht','Starke Körpersprache eingenommen','Abwehr-Rufe geplant'];
+  const el = document.createElement('div');
+  el.className = 'tool-modal active';
+  el.innerHTML = `<div class="tool-modal-inner"><button class="tool-modal-close" onclick="this.closest('.tool-modal').remove()">×</button><div style="text-align:center;margin-bottom:20px"><div style="font-size:2.5em">🏆</div><h3>Matchday-Checkliste</h3></div>${items.map(it => `<label class="checklist-item"><input type="checkbox"><span>${it}</span></label>`).join('')}</div>`;
+  document.body.appendChild(el);
+}
+
+// Modals & Navigation
+function openModal(name) { document.getElementById('modal-'+name).classList.add('active'); if(name==='power') renderPowers(); }
+function closeModal(name) { document.getElementById('modal-'+name).classList.remove('active'); if(name==='focus'&&focusInt) clearInterval(focusInt); }
+function switchView(name) { document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById('view-'+name).classList.add('active'); }
+function navTo(name, btn) { if(name==='dashboard') showDash(); else switchView(name); document.querySelectorAll('.footer-nav-item').forEach(b=>b.classList.remove('active')); if(btn) btn.classList.add('active'); }
+</script>
+</body>
+</html>
