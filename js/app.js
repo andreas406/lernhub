@@ -8,7 +8,13 @@
 
   let modules = [];
 
-  // Load module registry and render cards
+  // Category definitions: order, label, icon, subtitle
+  const categories = [
+    { key: 'lehrplan',  icon: '🎓', title: 'Lehrplan 6. Klasse', subtitle: 'Rahmenlehrplan Brandenburg' },
+    { key: 'aktuelles', icon: '📌', title: 'Aktuelles',          subtitle: 'Aktuelle Themen & Tests' },
+    { key: 'fussball',  icon: '⚽', title: 'Fußball',            subtitle: 'Training & Mentalstärke' }
+  ];
+
   async function init() {
     try {
       const res = await fetch('modules/registry.json');
@@ -33,13 +39,64 @@
       return;
     }
 
-    grid.innerHTML = modules.map(m => `
-      <div class="module-card" data-id="${m.id}" role="button" tabindex="0">
-        <div class="icon">${m.icon}</div>
-        <div class="name">${m.name}</div>
-        <div class="desc">${m.description}</div>
-      </div>
-    `).join('');
+    let html = '';
+
+    for (const cat of categories) {
+      const catModules = modules.filter(m => m.category === cat.key);
+      if (catModules.length === 0) continue;
+
+      html += `
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon ${cat.key}">${cat.icon}</div>
+            <div class="section-label">
+              <div class="section-title">${cat.title}</div>
+              <div class="section-subtitle">${cat.subtitle}</div>
+            </div>
+            <div class="section-line"></div>
+          </div>
+          <div class="section-grid ${cat.key}">
+            ${catModules.map(m => `
+              <div class="module-card" data-id="${m.id}" role="button" tabindex="0">
+                <div class="icon">${m.icon}</div>
+                <div class="card-text">
+                  <div class="name">${m.name}</div>
+                  <div class="desc">${m.description}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    // Uncategorized modules (fallback)
+    const uncategorized = modules.filter(m => !m.category || !categories.find(c => c.key === m.category));
+    if (uncategorized.length > 0) {
+      html += `
+        <div class="section">
+          <div class="section-header">
+            <div class="section-icon" style="background:rgba(148,163,184,0.15)">📦</div>
+            <div class="section-label">
+              <div class="section-title">Sonstiges</div>
+              <div class="section-subtitle">Weitere Module</div>
+            </div>
+            <div class="section-line"></div>
+          </div>
+          <div class="section-grid">
+            ${uncategorized.map(m => `
+              <div class="module-card" data-id="${m.id}" role="button" tabindex="0">
+                <div class="icon">${m.icon}</div>
+                <div class="card-text">
+                  <div class="name">${m.name}</div>
+                  <div class="desc">${m.description}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>`;
+    }
+
+    grid.innerHTML = html;
 
     grid.querySelectorAll('.module-card').forEach(card => {
       card.addEventListener('click', () => openModule(card.dataset.id));
@@ -57,7 +114,6 @@
     moduleFrame.src = mod.path;
     moduleView.classList.remove('hidden');
     moduleView.classList.add('entering');
-    // Trigger animation
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         moduleView.classList.remove('entering');
@@ -72,14 +128,12 @@
 
   backBtn.addEventListener('click', closeModule);
 
-  // Listen for messages from modules
   window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'lernhub:close') {
       closeModule();
     }
   });
 
-  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }

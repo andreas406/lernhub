@@ -1,79 +1,90 @@
 [
   {
     "id": "deutsch-6",
-    "name": "Deutsch Klasse 6",
+    "name": "Deutsch",
     "description": "Satzglieder, Zeitformen, Wortarten, Satzbau, Balladen & Rechtschreibung",
     "icon": "📖",
-    "path": "modules/deutsch-6/index.html"
+    "path": "modules/deutsch-6/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "mathe-6",
-    "name": "Mathe Klasse 6",
+    "name": "Mathe",
     "description": "Winkel, Flächen, Volumen, Daten/Zufall & Dreisatz",
     "icon": "📐",
-    "path": "modules/mathe-6/index.html"
+    "path": "modules/mathe-6/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "englisch-6",
-    "name": "English Year 6",
+    "name": "English",
     "description": "Simple Past, Irregular Verbs, going-to-future, Comparison & Reading",
     "icon": "🇬🇧",
-    "path": "modules/englisch-6/index.html"
+    "path": "modules/englisch-6/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "nawi-6",
-    "name": "NaWi Klasse 6",
+    "name": "NaWi",
     "description": "Ernährung, Verdauung, Suchtprävention, Stromkreise & Maschinen",
     "icon": "🔬",
-    "path": "modules/nawi-6/index.html"
+    "path": "modules/nawi-6/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "gewi-6",
-    "name": "GeWi Klasse 6",
+    "name": "GeWi",
     "description": "Europa, EU, Demokratie, Tourismus & Deutschland",
     "icon": "🌍",
-    "path": "modules/gewi-6/index.html"
+    "path": "modules/gewi-6/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "ler-6",
-    "name": "LER Klasse 6",
+    "name": "LER",
     "description": "Identität, Miteinander, Gefühle, Weltbilder & Zukunft",
     "icon": "🤔",
-    "path": "modules/ler-6/index.html"
+    "path": "modules/ler-6/index.html",
+    "category": "lehrplan"
+  },
+  {
+    "id": "mathe-trainer",
+    "name": "Kopfrechnen",
+    "description": "Kopfrechnen üben mit zufälligen Aufgaben",
+    "icon": "🔢",
+    "path": "modules/mathe-trainer/index.html",
+    "category": "lehrplan"
   },
   {
     "id": "stadtentwicklung",
     "name": "Stadtentwicklung",
-    "description": "Antons Lernplan: Standortfaktoren, Phasen, Funktionen & Potsdam",
+    "description": "Standortfaktoren, Phasen, Funktionen & Potsdam",
     "icon": "🏙️",
-    "path": "modules/stadtentwicklung/index.html"
+    "path": "modules/stadtentwicklung/index.html",
+    "category": "aktuelles"
   },
   {
     "id": "stadtentwicklung-v2",
     "name": "Stadtentwicklung V2",
-    "description": "Antons Lernplan V2: Erweiterte Version mit mehr Übungen",
+    "description": "Erweiterte Version mit mehr Übungen",
     "icon": "🏰",
-    "path": "modules/stadtentwicklung-v2/index.html"
+    "path": "modules/stadtentwicklung-v2/index.html",
+    "category": "aktuelles"
+  },
+  {
+    "id": "quiz-demo",
+    "name": "Quiz Demo",
+    "description": "Ein Beispiel-Quiz mit Multiple Choice",
+    "icon": "❓",
+    "path": "modules/quiz-demo/index.html",
+    "category": "aktuelles"
   },
   {
     "id": "mentaltraining",
     "name": "Mental stark auf dem Platz",
     "description": "Mentaltraining für junge Sportler",
     "icon": "💪",
-    "path": "modules/mentaltraining/index.html"
-  },
-  {
-    "id": "quiz-demo",
-    "name": "Quiz Demo",
-    "description": "Ein Beispiel-Quiz mit Multiple Choice Fragen",
-    "icon": "❓",
-    "path": "modules/quiz-demo/index.html"
-  },
-  {
-    "id": "mathe-trainer",
-    "name": "Mathe Trainer",
-    "description": "Kopfrechnen üben mit zufälligen Aufgaben",
-    "icon": "🔢",
-    "path": "modules/mathe-trainer/index.html"
+    "path": "modules/mentaltraining/index.html",
+    "category": "fussball"
   }
 ]
