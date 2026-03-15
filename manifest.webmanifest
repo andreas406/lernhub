@@ -1,7 +1,7 @@
 {
-  "name": "LernHub",
+  "name": "LernHub Familie Grimm",
   "short_name": "LernHub",
-  "description": "Modulare Lern-App",
+  "description": "Modulare Lern-App für Familie Grimm",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
