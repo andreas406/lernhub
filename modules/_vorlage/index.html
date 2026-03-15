@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mein Modul</title>
+  <style>
+    /* ===== Basis-Styles (kannst du anpassen) ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #475569;
+    }
+
+    /* Beispiel: Ein Button */
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:active {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================
+       HIER DEINEN INHALT EINFÜGEN
+       ======================================== -->
+
+  <h1>Modul-Titel</h1>
+  <p>Hier kommt dein Lerninhalt hin. Du kannst beliebiges HTML, CSS und JavaScript verwenden.</p>
+
+  <button class="btn" onclick="alert('Es funktioniert!')">Test-Button</button>
+
+  <!-- ========================================
+       OPTIONAL: Kommunikation mit der Shell
+       ======================================== -->
+  <script>
+    // Modul schließen und zurück zum Home Screen:
+    // window.parent.postMessage({ type: 'lernhub:close' }, '*');
+
+    // Beispiel: Button der das Modul schließt
+    // document.getElementById('fertig-btn').addEventListener('click', () => {
+    //   window.parent.postMessage({ type: 'lernhub:close' }, '*');
+    // });
+  </script>
+
+</body>
+</html>

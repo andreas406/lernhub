@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathe Trainer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px;
+    }
+
+    .trainer {
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat .value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .stat .label {
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .stat .value.green { color: #22c55e; }
+    .stat .value.red { color: #ef4444; }
+
+    .task {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 32px;
+      letter-spacing: 2px;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .answer-input {
+      width: 160px;
+      padding: 14px 20px;
+      font-size: 28px;
+      font-weight: 600;
+      text-align: center;
+      border: 3px solid #e2e8f0;
+      border-radius: 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .answer-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .answer-input.correct { border-color: #22c55e; background: #f0fdf4; }
+    .answer-input.wrong { border-color: #ef4444; background: #fef2f2; }
+
+    .submit-btn {
+      padding: 14px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .submit-btn:active { background: #2563eb; }
+
+    .feedback {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      min-height: 30px;
+    }
+
+    .feedback.correct { color: #22c55e; }
+    .feedback.wrong { color: #ef4444; }
+
+    .streak {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fef3c7;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #92400e;
+      display: none;
+    }
+
+    .streak.active { display: inline-block; }
+
+    .difficulty {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    .diff-btn {
+      padding: 8px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      background: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .diff-btn.active {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      color: #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="trainer">
+    <div class="difficulty">
+      <button class="diff-btn active" data-level="easy">Leicht</button>
+      <button class="diff-btn" data-level="medium">Mittel</button>
+      <button class="diff-btn" data-level="hard">Schwer</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="value green" id="correct-count">0</div>
+        <div class="label">Richtig</div>
+      </div>
+      <div class="stat">
+        <div class="value red" id="wrong-count">0</div>
+        <div class="label">Falsch</div>
+      </div>
+      <div class="stat">
+        <div class="value" id="total-count">0</div>
+        <div class="label">Gesamt</div>
+      </div>
+    </div>
+
+    <div class="task" id="task"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="input-row">
+      <input type="number" class="answer-input" id="answer" autocomplete="off" inputmode="numeric">
+      <button class="submit-btn" id="submit">OK</button>
+    </div>
+
+    <div class="streak" id="streak"></div>
+  </div>
+
+  <script>
+    let correctCount = 0;
+    let wrongCount = 0;
+    let streakCount = 0;
+    let currentAnswer = 0;
+    let level = 'easy';
+
+    const taskEl = document.getElementById('task');
+    const answerEl = document.getElementById('answer');
+    const feedbackEl = document.getElementById('feedback');
+    const submitBtn = document.getElementById('submit');
+    const streakEl = document.getElementById('streak');
+
+    const ops = {
+      easy: ['+', '-'],
+      medium: ['+', '-', '*'],
+      hard: ['+', '-', '*', '/']
+    };
+
+    const ranges = {
+      easy: [1, 20],
+      medium: [1, 50],
+      hard: [1, 100]
+    };
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function newTask() {
+      const [min, max] = ranges[level];
+      const op = ops[level][rand(0, ops[level].length - 1)];
+      let a, b;
+
+      if (op === '/') {
+        // Ensure clean division
+        b = rand(2, 12);
+        currentAnswer = rand(1, 12);
+        a = b * currentAnswer;
+      } else {
+        a = rand(min, max);
+        b = rand(min, max);
+        if (op === '-' && a < b) [a, b] = [b, a]; // No negative results
+        currentAnswer = op === '+' ? a + b : op === '-' ? a - b : a * b;
+      }
+
+      taskEl.textContent = `${a} ${op} ${b} = ?`;
+      answerEl.value = '';
+      answerEl.className = 'answer-input';
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      answerEl.focus();
+    }
+
+    function check() {
+      const val = parseInt(answerEl.value);
+      if (isNaN(val)) return;
+
+      const correct = val === currentAnswer;
+      const total = correctCount + wrongCount + 1;
+
+      if (correct) {
+        correctCount++;
+        streakCount++;
+        answerEl.classList.add('correct');
+        feedbackEl.textContent = 'Richtig!';
+        feedbackEl.className = 'feedback correct';
+      } else {
+        wrongCount++;
+        streakCount = 0;
+        answerEl.classList.add('wrong');
+        feedbackEl.textContent = `Falsch! Die Antwort ist ${currentAnswer}`;
+        feedbackEl.className = 'feedback wrong';
+      }
+
+      document.getElementById('correct-count').textContent = correctCount;
+      document.getElementById('wrong-count').textContent = wrongCount;
+      document.getElementById('total-count').textContent = total;
+
+      if (streakCount >= 3) {
+        streakEl.textContent = `🔥 ${streakCount} richtig in Folge!`;
+        streakEl.classList.add('active');
+      } else {
+        streakEl.classList.remove('active');
+      }
+
+      setTimeout(newTask, correct ? 600 : 1500);
+    }
+
+    submitBtn.addEventListener('click', check);
+    answerEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter') check();
+    });
+
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        level = btn.dataset.level;
+        newTask();
+      });
+    });
+
+    newTask();
+  </script>
+</body>
+</html>

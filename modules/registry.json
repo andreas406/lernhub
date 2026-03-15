@@ -1,0 +1,16 @@
+[
+  {
+    "id": "quiz-demo",
+    "name": "Quiz Demo",
+    "description": "Ein Beispiel-Quiz mit Multiple Choice Fragen",
+    "icon": "🧠",
+    "path": "modules/quiz-demo/index.html"
+  },
+  {
+    "id": "mathe-trainer",
+    "name": "Mathe Trainer",
+    "description": "Kopfrechnen üben mit zufälligen Aufgaben",
+    "icon": "🔢",
+    "path": "modules/mathe-trainer/index.html"
+  }
+]
