@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antons Lernplan: Stadtentwicklung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f172a; --card: #1e293b; --card-hover: #334155;
+    --accent: #38bdf8; --accent2: #a78bfa; --accent3: #34d399; --accent4: #fb923c; --accent5: #f472b6;
+    --text: #f1f5f9; --text-dim: #94a3b8;
+    --success: #22c55e; --error: #ef4444; --warning: #eab308;
+  }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,23,42,.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(56,189,248,.15);
+    padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-bar h1 { font-size: 1.1rem; font-weight: 800; }
+  .top-bar h1 span { color: var(--accent); }
+  .progress-bar-wrap { width: 200px; height: 8px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .5s ease; }
+  .progress-label { font-size: .8rem; color: var(--text-dim); margin-left: 8px; }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+
+  .hero {
+    text-align: center; padding: 40px 20px 30px;
+    background: linear-gradient(135deg, rgba(56,189,248,.08), rgba(167,139,250,.08));
+    border-radius: 20px; margin-bottom: 30px; border: 1px solid rgba(56,189,248,.12);
+  }
+  .hero .emoji { font-size: 3rem; margin-bottom: 12px; }
+  .hero h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+  .hero p { color: var(--text-dim); font-size: .95rem; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+  .hero .countdown {
+    display: inline-block; margin-top: 16px; padding: 8px 20px;
+    background: rgba(234,179,8,.15); border: 1px solid rgba(234,179,8,.3);
+    border-radius: 99px; font-weight: 700; color: var(--warning); font-size: .9rem;
+  }
+
+  .section-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 30px; }
+  .nav-btn {
+    background: var(--card); border: 2px solid transparent; border-radius: 14px; padding: 14px 12px;
+    cursor: pointer; text-align: center; transition: all .2s;
+    font-family: inherit; color: var(--text); font-size: .85rem; font-weight: 600;
+  }
+  .nav-btn:hover { background: var(--card-hover); transform: translateY(-2px); }
+  .nav-btn.active { border-color: var(--accent); background: rgba(56,189,248,.1); }
+  .nav-btn .nav-emoji { display: block; font-size: 1.5rem; margin-bottom: 6px; }
+  .nav-btn .nav-check { color: var(--success); margin-left: 4px; }
+
+  .section { display: none; animation: fadeIn .3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,.06); transition: border-color .2s;
+  }
+  .card:hover { border-color: rgba(56,189,248,.2); }
+  .card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .card p, .card li { line-height: 1.7; color: var(--text-dim); font-size: .92rem; }
+  .card strong { color: var(--text); }
+  .card ul { list-style: none; padding: 0; }
+  .card li { padding: 4px 0; padding-left: 20px; position: relative; }
+  .card li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  .merksatz {
+    background: linear-gradient(135deg, rgba(167,139,250,.12), rgba(244,114,182,.12));
+    border: 1px solid rgba(167,139,250,.25); border-radius: 14px; padding: 18px 20px; margin: 16px 0;
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .merksatz .bulb { font-size: 1.4rem; flex-shrink: 0; }
+  .merksatz p { color: var(--accent2); font-weight: 700; font-size: .95rem; line-height: 1.6; }
+
+  .timeline { position: relative; padding-left: 36px; margin: 16px 0; }
+  .timeline::before {
+    content: ''; position: absolute; left: 14px; top: 0; bottom: 0;
+    width: 3px; background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent5));
+    border-radius: 99px;
+  }
+  .tl-item { position: relative; margin-bottom: 20px; }
+  .tl-dot { position: absolute; left: -29px; top: 4px; width: 16px; height: 16px; border-radius: 50%; border: 3px solid; background: var(--bg); }
+  .tl-item h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .tl-item p { font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
+  .tl-item .tl-tag { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: .75rem; font-weight: 700; margin-bottom: 6px; }
+
+  .quiz-card { background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 16px; border: 2px solid rgba(255,255,255,.06); }
+  .quiz-card.correct { border-color: var(--success); background: rgba(34,197,94,.06); }
+  .quiz-card.wrong { border-color: var(--error); background: rgba(239,68,68,.06); }
+  .quiz-q { font-size: 1rem; font-weight: 700; margin-bottom: 16px; line-height: 1.5; }
+  .quiz-options { display: grid; gap: 8px; }
+  .quiz-opt {
+    background: rgba(255,255,255,.04); border: 2px solid rgba(255,255,255,.08);
+    border-radius: 12px; padding: 12px 16px; cursor: pointer;
+    font-family: inherit; font-size: .9rem; color: var(--text); text-align: left; transition: all .15s; font-weight: 600;
+  }
+  .quiz-opt:hover:not(.disabled) { background: rgba(56,189,248,.08); border-color: rgba(56,189,248,.3); }
+  .quiz-opt.selected-correct { border-color: var(--success); background: rgba(34,197,94,.12); color: var(--success); }
+  .quiz-opt.selected-wrong { border-color: var(--error); background: rgba(239,68,68,.12); color: var(--error); }
+  .quiz-opt.show-correct { border-color: var(--success); background: rgba(34,197,94,.08); }
+  .quiz-opt.disabled { cursor: default; opacity: .7; }
+  .quiz-feedback { margin-top: 12px; padding: 12px 16px; border-radius: 10px; font-size: .88rem; font-weight: 600; line-height: 1.5; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(34,197,94,.1); color: var(--success); }
+  .quiz-feedback.wrong-fb { background: rgba(239,68,68,.1); color: var(--error); }
+
+  .match-game { margin: 16px 0; }
+  .match-row { display: flex; align-items: stretch; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .match-left {
+    flex: 1; min-width: 120px; background: rgba(56,189,248,.1);
+    border: 1px solid rgba(56,189,248,.2); border-radius: 10px; padding: 10px 14px; font-size: .88rem; font-weight: 700;
+    display: flex; align-items: center;
+  }
+  .match-drop {
+    flex: 2; min-width: 150px; min-height: 44px;
+    border: 2px dashed rgba(255,255,255,.15); border-radius: 10px; padding: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .85rem; color: var(--text-dim); transition: all .2s; cursor: pointer;
+  }
+  .match-drop.filled { border-style: solid; border-color: var(--accent2); background: rgba(167,139,250,.08); color: var(--text); font-weight: 600; }
+  .match-drop.correct-match { border-color: var(--success); background: rgba(34,197,94,.08); }
+  .match-drop.wrong-match { border-color: var(--error); background: rgba(239,68,68,.08); }
+  .match-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; justify-content: center; }
+  .match-chip {
+    background: var(--card-hover); border: 1px solid rgba(255,255,255,.1); border-radius: 99px; padding: 8px 16px;
+    font-size: .85rem; cursor: pointer; transition: all .15s; font-family: inherit; color: var(--text); font-weight: 600;
+  }
+  .match-chip:hover { background: rgba(56,189,248,.15); border-color: var(--accent); }
+  .match-chip.used { opacity: .3; pointer-events: none; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 12px; border: none;
+    font-family: inherit; font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .2s;
+  }
+  .btn-primary { background: var(--accent); color: var(--bg); }
+  .btn-primary:hover { background: #7dd3fc; transform: translateY(-1px); }
+  .btn-secondary { background: var(--card-hover); color: var(--text); }
+  .btn-secondary:hover { background: rgba(255,255,255,.15); }
+  .btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+  .score-display {
+    text-align: center; padding: 40px;
+    background: linear-gradient(135deg, rgba(34,197,94,.1), rgba(56,189,248,.1));
+    border-radius: 20px; border: 1px solid rgba(34,197,94,.2);
+  }
+  .score-big { font-size: 3rem; font-weight: 800; }
+  .score-label { color: var(--text-dim); margin-top: 8px; }
+
+  .plan-block {
+    background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.2);
+    border-radius: 14px; padding: 18px 20px; margin: 12px 0;
+  }
+  .plan-block h4 { color: var(--accent3); font-size: 1rem; margin-bottom: 8px; }
+  .plan-block p { font-size: .88rem; color: var(--text-dim); line-height: 1.6; }
+
+  .flip-container { perspective: 1000px; margin: 10px 0; cursor: pointer; }
+  .flip-card { position: relative; width: 100%; min-height: 100px; transition: transform .5s; transform-style: preserve-3d; }
+  .flip-container.flipped .flip-card { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute; top: 0; left: 0; width: 100%; min-height: 100px;
+    backface-visibility: hidden; border-radius: 14px; padding: 20px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .flip-front {
+    background: linear-gradient(135deg, rgba(56,189,248,.15), rgba(167,139,250,.15));
+    border: 1px solid rgba(56,189,248,.2); font-weight: 700; font-size: 1rem;
+  }
+  .flip-back {
+    background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(56,189,248,.15));
+    border: 1px solid rgba(34,197,94,.2); transform: rotateY(180deg);
+    font-size: .9rem; line-height: 1.6; color: var(--text-dim);
+  }
+  .flip-back strong { color: var(--text); }
+  .flip-hint { font-size: .75rem; color: var(--text-dim); text-align: center; margin-top: 4px; }
+
+  .info-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .88rem; }
+  .info-table th { background: rgba(56,189,248,.1); color: var(--accent); text-align: left; padding: 10px 14px; font-weight: 700; border-bottom: 2px solid rgba(56,189,248,.2); }
+  .info-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,.05); color: var(--text-dim); }
+  .info-table tr:hover td { background: rgba(255,255,255,.03); }
+
+  @media (max-width: 600px) {
+    .hero h2 { font-size: 1.3rem; }
+    .section-nav { grid-template-columns: repeat(2, 1fr); }
+    .match-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>🏙️ <span>Stadtentwicklung</span> · Antons Lernplan</h1>
+  <div style="display:flex;align-items:center;">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-label" id="progressLabel">0%</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="emoji">🏰</div>
+    <h2>Du schaffst das, Anton!</h2>
+    <p>Alles in kleine Happen aufgeteilt. Ein Thema nach dem anderen. Kein Stress – einfach durchklicken, lesen, quizzen. Los geht's!</p>
+    <div class="countdown" id="countdown">⏰ Noch X bis zum Test</div>
+  </div>
+
+  <div class="section-nav" id="sectionNav"></div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 1: STANDORTFAKTOREN -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-standort">
+    <div class="card">
+      <h3>📍 Wo entstanden die ersten Städte?</h3>
+      <p>Städte sind nicht zufällig irgendwo entstanden. Sie brauchten einen <strong>guten Grund</strong>, genau an dieser Stelle zu sein. Diese Gründe nennt man <strong>Standortfaktoren</strong>.</p>
+    </div>
+
+    <div class="card">
+      <h3>🗺️ Die 4 wichtigsten Standortfaktoren</h3>
+      <ul>
+        <li><strong>An Flüssen</strong> (Handelswege)</li>
+        <li><strong>An Furten / Flussquerungen</strong> – z.B. Erfurt, Frankfurt</li>
+        <li><strong>An Straßenknotenpunkten</strong> (Fernhandel)</li>
+        <li><strong>Am Meer</strong> – CFH, „Hanse"</li>
+      </ul>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">💡</span>
+      <p>Merksatz: <strong>„FFSH – Fluss, Furt, Straße, Hafen"</strong> – Wo Wasser fließt oder Wege sich kreuzen, da bauten Menschen Städte!</p>
+    </div>
+
+    <div class="quiz-card" id="q-standort-1">
+      <div class="quiz-q">Warum heißt Frankfurt wohl „Frankfurt"?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-1',this,false)">Weil dort ein König namens Frank lebte</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-1',this,true)">Weil dort eine Furt war, die die Franken nutzten</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-1',this,false)">Weil es dort viele Frankfurter Würstchen gab</button>
+      </div>
+      <div class="quiz-feedback" id="q-standort-1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-standort-2">
+      <div class="quiz-q">Die Hanse war ein Städtebund für den Handel. Wo lagen die Hanse-Städte vor allem?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-2',this,false)">In den Bergen</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-2',this,false)">An Straßenkreuzungen</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-standort-2',this,true)">Am Meer (Nord- und Ostsee)</button>
+      </div>
+      <div class="quiz-feedback" id="q-standort-2-fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('standort')">✅ Verstanden – weiter!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 2: PHASEN DER STADTENTWICKLUNG -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-phasen">
+    <div class="card">
+      <h3>⏳ Die 5 Phasen der Stadtentwicklung</h3>
+      <p>Städte haben sich über Jahrtausende verändert. Jede Phase hat einen <strong>typischen Grundriss</strong>, besondere <strong>Merkmale</strong> und eine <strong>Beispielstadt</strong>. Genau das kommt im Test als Zuordnungsaufgabe!</p>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">💡</span>
+      <p>Merksatz für die Reihenfolge: <strong>„Römer Machten Alle Industriell Neu"</strong><br>
+      <strong>R</strong>ömisch → <strong>M</strong>ittelalter → <strong>A</strong>bsolutismus → <strong>I</strong>ndustrie → <strong>N</strong>eugründung</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent);"></div>
+        <span class="tl-tag" style="background:rgba(56,189,248,.15);color:var(--accent);">Phase 1</span>
+        <h4>🏛️ Römische Stadt</h4>
+        <p><strong>Merkmale:</strong> Grundriss und Ruinen, geschlossene Bebauung, militärisch stark gesichert<br>
+        <strong>Lage:</strong> Entlang des Rheins / Donau (= Grenzen des Römischen Reichs)<br>
+        <strong>Beispiele:</strong> Trier, Wiesbaden</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent2);"></div>
+        <span class="tl-tag" style="background:rgba(167,139,250,.15);color:var(--accent2);">Phase 2</span>
+        <h4>🏰 Mittelalter</h4>
+        <p><strong>Beispiel:</strong> Köln – freie Stadt<br>
+        <strong>Merkmale:</strong> Marktrecht (= wirtschaftliche Gründe), Gilden, Zünfte, Hanse<br>
+        <strong>Besonderes:</strong> Hochphase der Städte: ca. 4.000 Städte</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent3);"></div>
+        <span class="tl-tag" style="background:rgba(52,211,153,.15);color:var(--accent3);">Phase 3</span>
+        <h4>👑 Residenzstädte (Absolutismus/Barock)</h4>
+        <p><strong>Beispiele:</strong> Karlsruhe, Potsdam<br>
+        <strong>Merkmale:</strong> Fürstliche Prachtbauten, geometrische Sichtachsen</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent4);"></div>
+        <span class="tl-tag" style="background:rgba(251,146,60,.15);color:var(--accent4);">Phase 4</span>
+        <h4>🏭 Industriezeitalter (ab 1800)</h4>
+        <p><strong>Merkmale:</strong> Bodenschätze (Bau in der Nähe von Bodenschätzen), eher planloser Bau<br>
+        <strong>Beispiel:</strong> Ruhrgebiet „Ruhrpott"</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent5);"></div>
+        <span class="tl-tag" style="background:rgba(244,114,182,.15);color:var(--accent5);">Phase 5</span>
+        <h4>🚗 Stadtgründung im 19./20. Jh.</h4>
+        <p><strong>Beispiele:</strong> Wolfsburg (Automobilbau), Wilhelmshaven (deutsche Marine)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>🔄 Klick-Karten: Teste dein Wissen!</h3>
+      <p style="margin-bottom:12px;">Klick auf eine Karte, um die Antwort zu sehen.</p>
+
+      <div class="flip-container" onclick="this.classList.toggle('flipped')" style="height:100px;margin-bottom:16px;">
+        <div class="flip-card">
+          <div class="flip-front">Welche Stadt hat geometrische Sichtachsen und fürstliche Prachtbauten?</div>
+          <div class="flip-back"><strong>Karlsruhe!</strong> Typische Residenzstadt aus der Phase Absolutismus/Barock</div>
+        </div>
+      </div>
+      <div class="flip-hint">👆 Antippen zum Umdrehen</div>
+
+      <div class="flip-container" onclick="this.classList.toggle('flipped')" style="height:100px;margin-bottom:16px;">
+        <div class="flip-card">
+          <div class="flip-front">Warum entstand das Ruhrgebiet genau dort?</div>
+          <div class="flip-back"><strong>Bodenschätze!</strong> In der Nähe von Bodenschätzen → eher planloser Bau</div>
+        </div>
+      </div>
+      <div class="flip-hint">👆 Antippen zum Umdrehen</div>
+
+      <div class="flip-container" onclick="this.classList.toggle('flipped')" style="height:100px;margin-bottom:16px;">
+        <div class="flip-card">
+          <div class="flip-front">Wofür wurde Wolfsburg gegründet?</div>
+          <div class="flip-back"><strong>Automobilbau!</strong> Stadtgründung im 20. Jahrhundert</div>
+        </div>
+      </div>
+      <div class="flip-hint">👆 Antippen zum Umdrehen</div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 Zuordnungsspiel: Phase → Beispielstadt</h3>
+      <p style="margin-bottom:14px;">Klicke erst auf einen Chip unten, dann auf das passende Feld.</p>
+      <div class="match-game" id="matchGame1">
+        <div class="match-row"><div class="match-left">🏛️ Römisch</div><div class="match-drop" data-answer="Trier" onclick="placeMatch('matchGame1',this)">?</div></div>
+        <div class="match-row"><div class="match-left">🏰 Mittelalter</div><div class="match-drop" data-answer="Köln" onclick="placeMatch('matchGame1',this)">?</div></div>
+        <div class="match-row"><div class="match-left">👑 Residenz</div><div class="match-drop" data-answer="Karlsruhe" onclick="placeMatch('matchGame1',this)">?</div></div>
+        <div class="match-row"><div class="match-left">🏭 Industrie</div><div class="match-drop" data-answer="Ruhrgebiet" onclick="placeMatch('matchGame1',this)">?</div></div>
+        <div class="match-row"><div class="match-left">🚗 Neugründung</div><div class="match-drop" data-answer="Wolfsburg" onclick="placeMatch('matchGame1',this)">?</div></div>
+        <div class="match-choices">
+          <button class="match-chip" onclick="selectChip('matchGame1',this)">Wolfsburg</button>
+          <button class="match-chip" onclick="selectChip('matchGame1',this)">Trier</button>
+          <button class="match-chip" onclick="selectChip('matchGame1',this)">Ruhrgebiet</button>
+          <button class="match-chip" onclick="selectChip('matchGame1',this)">Köln</button>
+          <button class="match-chip" onclick="selectChip('matchGame1',this)">Karlsruhe</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="checkMatch('matchGame1')">Auflösen</button>
+        <button class="btn btn-secondary" onclick="resetMatch('matchGame1')">🔄 Nochmal</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('phasen')">✅ Verstanden – weiter!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 3: STADTGRÖSSEN -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-groessen">
+    <div class="card">
+      <h3>📏 Wann ist eine Stadt eine Stadt?</h3>
+      <p>Das bestimmt die <strong>Einwohnerzahl (EW)</strong>:</p>
+
+      <table class="info-table">
+        <thead>
+          <tr><th>Bezeichnung</th><th>Einwohner</th><th>Beispiel</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Stadt</strong></td><td>ab 2.000 EW</td><td>Neuruppin</td></tr>
+          <tr><td><strong>Großstadt</strong></td><td>ab 100.000 EW</td><td>Potsdam</td></tr>
+          <tr><td><strong>Millionenstadt</strong></td><td>1–5 Mio. EW</td><td>Berlin, Hamburg</td></tr>
+          <tr>
+            <td><strong>Millionenstadt</strong> – zusätzlich:</td>
+            <td colspan="2">zentrale Funktion, hohe Bevölkerungsdichte</td>
+          </tr>
+          <tr><td><strong>Metropole</strong></td><td>mehr als 5 Mio. EW</td><td>London, NY</td></tr>
+          <tr><td><strong>Megacity</strong></td><td>mehr als 10 Mio. EW</td><td>Tokio, Jakarta</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">💡</span>
+      <p>Merksatz: <strong>„2T – 100T – 1M – 5M – 10M"</strong><br>
+      <strong>Stadt → Groß → Million → Metro → Mega</strong> – jede Stufe wird viel größer!</p>
+    </div>
+
+    <div class="quiz-card" id="q-groesse-1">
+      <div class="quiz-q">Potsdam hat ca. 185.000 Einwohner. Was ist Potsdam?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-1',this,false)">Eine Stadt</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-1',this,true)">Eine Großstadt</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-1',this,false)">Eine Millionenstadt</button>
+      </div>
+      <div class="quiz-feedback" id="q-groesse-1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-groesse-2">
+      <div class="quiz-q">Tokio hat über 13 Millionen Einwohner. Welche Bezeichnung passt?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-2',this,false)">Metropole</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-2',this,true)">Megacity</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-2',this,false)">Millionenstadt</button>
+      </div>
+      <div class="quiz-feedback" id="q-groesse-2-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-groesse-3">
+      <div class="quiz-q">Ab wie vielen Einwohnern gilt ein Ort als „Stadt"?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-3',this,false)">Ab 500</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-3',this,true)">Ab 2.000</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-groesse-3',this,false)">Ab 10.000</button>
+      </div>
+      <div class="quiz-feedback" id="q-groesse-3-fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('groessen')">✅ Verstanden – weiter!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 4: FUNKTIONEN -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-funktionen">
+    <div class="card">
+      <h3>⚙️ Welche Funktionen erfüllt die Stadt?</h3>
+      <p>Laut deinem Heft hat eine Stadt diese <strong>8 Funktionen</strong>. Hier siehst du jede einzeln erklärt mit einem Beispiel:</p>
+    </div>
+
+    <!-- 1. Wirtschaft / Handel -->
+    <div class="card">
+      <h3>🏪 1. Wirtschaft / Handel</h3>
+      <p>In der Stadt wird <strong>eingekauft und verkauft</strong>. Es gibt Geschäfte, Märkte und Firmen, die Waren anbieten und Geld verdienen. Früher war der Marktplatz das Zentrum jeder Stadt – heute sind es Einkaufsstraßen und Onlineshops.</p>
+      <p><strong>Beispiel:</strong> Ein Wochenmarkt in der Potsdamer Innenstadt, wo Händler Obst und Gemüse verkaufen.</p>
+    </div>
+
+    <!-- 2. Leben (Wohnen) -->
+    <div class="card">
+      <h3>🏠 2. Leben (Wohnen)</h3>
+      <p>Menschen brauchen einen Ort zum <strong>Wohnen</strong>. Städte bieten Wohnungen, Häuser und Wohngebiete, in denen Menschen ihr tägliches Leben verbringen – schlafen, essen, Familie haben.</p>
+      <p><strong>Beispiel:</strong> Die Wohnviertel in Potsdam-Babelsberg, wo Familien in Mehrfamilienhäusern leben.</p>
+    </div>
+
+    <!-- 3. Industrie -->
+    <div class="card">
+      <h3>🏭 3. Industrie</h3>
+      <p>In Städten werden <strong>Dinge hergestellt und produziert</strong>. Fabriken und Betriebe fertigen Produkte – von Autos bis zu Lebensmitteln. Besonders seit dem Industriezeitalter (ab 1800) gibt es dafür eigene Stadtteile.</p>
+      <p><strong>Beispiel:</strong> Das VW-Werk in Wolfsburg – die ganze Stadt wurde für die Autoproduktion gebaut.</p>
+    </div>
+
+    <!-- 4. Tourismus -->
+    <div class="card">
+      <h3>🗺️ 4. Tourismus</h3>
+      <p>Manche Städte ziehen <strong>Besucher und Touristen</strong> an, weil es dort Sehenswürdigkeiten, Museen oder schöne Orte gibt. Das bringt Geld in die Stadt und schafft Arbeitsplätze in Hotels und Restaurants.</p>
+      <p><strong>Beispiel:</strong> Schloss Sanssouci in Potsdam – UNESCO-Welterbe, das jedes Jahr Tausende Besucher anzieht.</p>
+    </div>
+
+    <!-- 5. Grünflächen -->
+    <div class="card">
+      <h3>🌳 5. Grünflächen</h3>
+      <p>Städte brauchen <strong>Parks, Gärten und Grünflächen</strong>, damit Menschen sich erholen können, frische Luft bekommen und Natur erleben. Grünflächen machen eine Stadt lebenswert.</p>
+      <p><strong>Beispiel:</strong> Der Park Sanssouci oder der Volkspark in Potsdam, wo man spazieren, joggen oder spielen kann.</p>
+    </div>
+
+    <!-- 6. Arbeit -->
+    <div class="card">
+      <h3>💼 6. Arbeit</h3>
+      <p>Städte bieten <strong>Arbeitsplätze</strong>. Menschen kommen in die Stadt, um zu arbeiten – in Büros, Geschäften, Krankenhäusern oder Fabriken. Ohne Arbeit könnten die Menschen dort nicht leben.</p>
+      <p><strong>Beispiel:</strong> Die Filmstudios in Potsdam-Babelsberg, wo Hunderte Menschen arbeiten.</p>
+    </div>
+
+    <!-- 7. Medizinische Versorgung -->
+    <div class="card">
+      <h3>🏥 7. Medizinische Versorgung</h3>
+      <p>In Städten gibt es <strong>Krankenhäuser, Arztpraxen und Apotheken</strong>, damit Menschen versorgt werden, wenn sie krank oder verletzt sind. Auf dem Land ist der Weg zum Arzt oft weiter.</p>
+      <p><strong>Beispiel:</strong> Das Klinikum Ernst von Bergmann in Potsdam, eines der großen Krankenhäuser der Stadt.</p>
+    </div>
+
+    <!-- 8. Sicherheit -->
+    <div class="card">
+      <h3>🚔 8. Sicherheit</h3>
+      <p>Eine Stadt muss ihre Bewohner <strong>schützen</strong>. Dafür gibt es Polizei, Feuerwehr und Rettungsdienste. Sie sorgen dafür, dass Menschen sicher leben können.</p>
+      <p><strong>Beispiel:</strong> Die Polizeiwache und die Feuerwehr in Potsdam, die bei Notfällen schnell da sind.</p>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">💡</span>
+      <p>Tipp: Geh die 8 Funktionen einmal durch und überleg dir zu jeder ein <strong>eigenes Beispiel aus deinem Alltag</strong> – das hilft beim Merken!</p>
+    </div>
+
+    <!-- QUIZ: 8 Fragen, eine pro Funktion -->
+    <div class="card">
+      <h3>🧠 Quiz: Alle 8 Funktionen</h3>
+      <p>Jetzt zu jeder Funktion eine Frage!</p>
+    </div>
+
+    <div class="quiz-card" id="q-funk-1">
+      <div class="quiz-q">1. In einer Stadt gibt es Geschäfte und Märkte, wo Waren verkauft werden. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-1',this,false)">Industrie</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-1',this,true)">Wirtschaft / Handel</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-1',this,false)">Arbeit</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-2">
+      <div class="quiz-q">2. Familien leben in Wohnungen und Häusern in der Stadt. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-2',this,false)">Sicherheit</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-2',this,false)">Grünflächen</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-2',this,true)">Leben (Wohnen)</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-2-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-3">
+      <div class="quiz-q">3. In einer Fabrik werden Autos hergestellt. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-3',this,true)">Industrie</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-3',this,false)">Wirtschaft / Handel</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-3',this,false)">Arbeit</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-3-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-4">
+      <div class="quiz-q">4. Viele Besucher kommen wegen Schloss Sanssouci nach Potsdam. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-4',this,false)">Grünflächen</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-4',this,true)">Tourismus</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-4',this,false)">Leben (Wohnen)</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-4-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-5">
+      <div class="quiz-q">5. Im Volkspark kann man joggen und auf der Wiese spielen. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-5',this,false)">Tourismus</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-5',this,false)">Sicherheit</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-5',this,true)">Grünflächen</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-5-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-6">
+      <div class="quiz-q">6. Viele Menschen pendeln in die Stadt, um in Büros und Betrieben zu arbeiten. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-6',this,false)">Wirtschaft / Handel</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-6',this,true)">Arbeit</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-6',this,false)">Industrie</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-6-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-7">
+      <div class="quiz-q">7. Du bist krank und gehst zum Arzt oder ins Krankenhaus. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-7',this,false)">Sicherheit</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-7',this,false)">Leben (Wohnen)</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-7',this,true)">Medizinische Versorgung</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-7-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-funk-8">
+      <div class="quiz-q">8. Die Feuerwehr löscht einen Brand, die Polizei regelt den Verkehr. Welche Funktion?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-8',this,true)">Sicherheit</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-8',this,false)">Medizinische Versorgung</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-funk-8',this,false)">Arbeit</button>
+      </div>
+      <div class="quiz-feedback" id="q-funk-8-fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('funktionen')">✅ Verstanden – weiter!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 5: POTSDAM -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-potsdam">
+    <div class="card">
+      <h3>🏙️ Unsere Stadt: Potsdam</h3>
+      <p>Potsdam hat <strong>mehrere Phasen</strong> durchlaufen:</p>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent2);"></div>
+        <span class="tl-tag" style="background:rgba(167,139,250,.15);color:var(--accent2);">Mittelalter</span>
+        <h4>🏰 Slawische Burg</h4>
+        <p>Erstmals <strong>993</strong> erwähnt als <strong>„Potstupimi"</strong><br>
+        <strong>1345</strong> Stadtrecht</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot" style="border-color: var(--accent3);"></div>
+        <span class="tl-tag" style="background:rgba(52,211,153,.15);color:var(--accent3);">Residenzstadt</span>
+        <h4>👑 Preußische Könige</h4>
+        <p><strong>Soldatenkönig Friedrich Wilhelm I.</strong><br>
+        Danach: <strong>Friedrich der Große</strong><br>
+        Bau <strong>Schloss Sanssouci</strong><br>
+        Seit <strong>1990</strong> Landeshauptstadt<br>
+        Schlösser und Gärten: <strong>UNESCO-Welterbe</strong></p>
+      </div>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">💡</span>
+      <p>Merksatz: <strong>„993 – 1345 – 1990"</strong><br>
+      Ersterwähnung → Stadtrecht → Landeshauptstadt</p>
+    </div>
+
+    <div class="quiz-card" id="q-potsdam-1">
+      <div class="quiz-q">Wie hieß Potsdam bei seiner ersten Erwähnung 993?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-1',this,false)">Potsdamium</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-1',this,true)">Potstupimi</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-1',this,false)">Potsilvania</button>
+      </div>
+      <div class="quiz-feedback" id="q-potsdam-1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="q-potsdam-2">
+      <div class="quiz-q">Wer hat Schloss Sanssouci bauen lassen?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-2',this,false)">Soldatenkönig Friedrich Wilhelm I.</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-2',this,true)">Friedrich der Große</button>
+        <button class="quiz-opt" onclick="checkQuiz('q-potsdam-2',this,false)">Otto von Bismarck</button>
+      </div>
+      <div class="quiz-feedback" id="q-potsdam-2-fb"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('potsdam')">✅ Verstanden – weiter!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 6: ABSCHLUSSQUIZ -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-endquiz">
+    <div class="card">
+      <h3>🏆 Abschlussquiz – Bist du bereit für den Test?</h3>
+      <p>10 Fragen quer durch alle Themen!</p>
+    </div>
+
+    <div class="quiz-card" id="qf-1">
+      <div class="quiz-q">1. Nenne einen Standortfaktor für die Entstehung von Städten:</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-1',this,true)">An Flüssen (Handelswege)</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-1',this,false)">In der Wüste</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-1',this,false)">Auf Bergen</button>
+      </div>
+      <div class="quiz-feedback" id="qf-1-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-2">
+      <div class="quiz-q">2. Römische Städte hatten welche Merkmale?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-2',this,false)">Verwinkelte Gassen, Marktrecht</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-2',this,true)">Geschlossene Bebauung, militärisch stark gesichert</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-2',this,false)">Geometrische Sichtachsen, Prachtbauten</button>
+      </div>
+      <div class="quiz-feedback" id="qf-2-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-3">
+      <div class="quiz-q">3. Wie viele Städte gab es ungefähr in der Hochphase des Mittelalters?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-3',this,false)">400</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-3',this,true)">4.000</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-3',this,false)">40.000</button>
+      </div>
+      <div class="quiz-feedback" id="qf-3-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-4">
+      <div class="quiz-q">4. Karlsruhe ist ein Beispiel für welche Phase?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-4',this,false)">Industriestadt</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-4',this,false)">Mittelalterliche Stadt</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-4',this,true)">Residenzstadt (Absolutismus)</button>
+      </div>
+      <div class="quiz-feedback" id="qf-4-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-5">
+      <div class="quiz-q">5. Ab wie vielen Einwohnern ist eine Stadt eine „Großstadt"?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-5',this,false)">Ab 50.000</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-5',this,true)">Ab 100.000</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-5',this,false)">Ab 500.000</button>
+      </div>
+      <div class="quiz-feedback" id="qf-5-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-6">
+      <div class="quiz-q">6. Wann erhielt Potsdam das Stadtrecht?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-6',this,false)">993</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-6',this,true)">1345</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-6',this,false)">1990</button>
+      </div>
+      <div class="quiz-feedback" id="qf-6-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-7">
+      <div class="quiz-q">7. Was ist KEINE Funktion der Stadt laut deinem Heft?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-7',this,false)">Grünflächen</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-7',this,true)">Bildung</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-7',this,false)">Arbeit</button>
+      </div>
+      <div class="quiz-feedback" id="qf-7-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-8">
+      <div class="quiz-q">8. Entlang welcher Flüsse lagen die römischen Städte?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-8',this,true)">Rhein und Donau</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-8',this,false)">Elbe und Spree</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-8',this,false)">Nil und Tigris</button>
+      </div>
+      <div class="quiz-feedback" id="qf-8-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-9">
+      <div class="quiz-q">9. Wolfsburg wurde gegründet wegen …</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-9',this,false)">der deutschen Marine</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-9',this,true)">Automobilbau</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-9',this,false)">Bodenschätzen</button>
+      </div>
+      <div class="quiz-feedback" id="qf-9-fb"></div>
+    </div>
+
+    <div class="quiz-card" id="qf-10">
+      <div class="quiz-q">10. London hat ca. 9 Millionen Einwohner. Was ist London?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="checkQuiz('qf-10',this,false)">Megacity</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-10',this,true)">Metropole (mehr als 5 Mio. EW)</button>
+        <button class="quiz-opt" onclick="checkQuiz('qf-10',this,false)">Millionenstadt</button>
+      </div>
+      <div class="quiz-feedback" id="qf-10-fb"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:24px;">
+      <button class="btn btn-primary" onclick="showFinalScore()" style="font-size:1.1rem;padding:16px 40px;">🏆 Ergebnis anzeigen!</button>
+    </div>
+
+    <div class="score-display" id="finalScore" style="display:none;margin-top:24px;">
+      <div class="score-big" id="scoreText"></div>
+      <div class="score-label" id="scoreMsg"></div>
+      <div class="btn-row" style="justify-content:center;margin-top:20px;">
+        <button class="btn btn-secondary" onclick="resetEndQuiz()">🔄 Nochmal versuchen</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="completeSection('endquiz')">✅ Fertig!</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SECTION 7: LERNPLAN -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="section" id="sec-lernplan">
+    <div class="card">
+      <h3>📅 Dein 2-Tage-Lernplan</h3>
+      <p>Du hast <strong>Sonntag + Montag</strong>. Das reicht! Hier ist der Plan:</p>
+    </div>
+
+    <div class="plan-block">
+      <h4>📅 Sonntag (heute) – ca. 45 Min, 3 Blöcke à 15 Min</h4>
+      <p><strong>Block 1 (15 Min):</strong> Lies „Standortfaktoren" und „Phasen" durch. Mach die Quizze.<br>
+      <strong>Pause 10 Min</strong> – Beweg dich! 🏃<br>
+      <strong>Block 2 (15 Min):</strong> Lies „Stadtgrößen" und „Funktionen". Mach die Quizze.<br>
+      <strong>Pause 10 Min</strong><br>
+      <strong>Block 3 (15 Min):</strong> Lies „Potsdam". Dann mach das Abschlussquiz.</p>
+    </div>
+
+    <div class="plan-block">
+      <h4>📅 Montag – ca. 30 Min, 2 Blöcke à 15 Min</h4>
+      <p><strong>Block 1 (15 Min):</strong> Geh alles nochmal durch – aber nur die Merksätze und Flip-Karten.<br>
+      <strong>Pause 10 Min</strong><br>
+      <strong>Block 2 (15 Min):</strong> Mach das Abschlussquiz nochmal. Ziel: mindestens 8 von 10!</p>
+    </div>
+
+    <div class="merksatz">
+      <span class="bulb">🎯</span>
+      <p><strong>Tipp für Anton:</strong> Du musst nicht alles auf einmal perfekt können. Mach kleine Schritte, feier jeden richtigen Quiz-Punkt. Das Gehirn merkt sich Dinge besser, wenn du Spaß dabei hast!</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const sections = [
+  { id: 'standort', label: 'Standort-faktoren', emoji: '📍', done: false },
+  { id: 'phasen', label: '5 Phasen', emoji: '⏳', done: false },
+  { id: 'groessen', label: 'Stadtgrößen', emoji: '📏', done: false },
+  { id: 'funktionen', label: 'Funktionen', emoji: '⚙️', done: false },
+  { id: 'potsdam', label: 'Potsdam', emoji: '🏙️', done: false },
+  { id: 'endquiz', label: 'Abschluss-Quiz', emoji: '🏆', done: false },
+  { id: 'lernplan', label: 'Lernplan', emoji: '📅', done: false },
+];
+let currentSection = 'standort';
+let quizScore = {};
+let matchGames = {};
+
+function updateCountdown() {
+  const test = new Date('2026-03-17T08:00:00');
+  const now = new Date();
+  const diff = test - now;
+  if (diff <= 0) { document.getElementById('countdown').textContent = '⏰ Heute ist Test-Tag! Du schaffst das!'; return; }
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const el = document.getElementById('countdown');
+  if (days > 0) el.textContent = `⏰ Noch ${days} Tag${days > 1 ? 'e' : ''} und ${hours} Stunden bis zum Test`;
+  else el.textContent = `⏰ Noch ${hours} Stunden bis zum Test`;
+}
+updateCountdown();
+
+function renderNav() {
+  const nav = document.getElementById('sectionNav');
+  nav.innerHTML = sections.map(s =>
+    `<button class="nav-btn ${s.id === currentSection ? 'active' : ''}" onclick="goToSection('${s.id}')">
+      <span class="nav-emoji">${s.emoji}</span>${s.label}${s.done ? '<span class="nav-check">✓</span>' : ''}
+    </button>`
+  ).join('');
+}
+
+function goToSection(id) {
+  currentSection = id;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  renderNav();
+  window.scrollTo({ top: 200, behavior: 'smooth' });
+}
+
+function completeSection(id) {
+  const sec = sections.find(s => s.id === id);
+  if (sec) sec.done = true;
+  updateProgress();
+  const idx = sections.findIndex(s => s.id === id);
+  if (idx < sections.length - 1) goToSection(sections[idx + 1].id);
+  else renderNav();
+}
+
+function updateProgress() {
+  const done = sections.filter(s => s.done).length;
+  const pct = Math.round((done / sections.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = pct + '%';
+  renderNav();
+}
+
+function checkQuiz(qId, btn, correct) {
+  const card = document.getElementById(qId);
+  if (card.classList.contains('answered')) return;
+  card.classList.add('answered');
+  const fb = document.getElementById(qId + '-fb');
+  const opts = card.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  if (correct) {
+    btn.classList.add('selected-correct');
+    card.classList.add('correct');
+    fb.className = 'quiz-feedback show correct-fb';
+    fb.textContent = '✅ Richtig! Gut gemacht!';
+    quizScore[qId] = true;
+  } else {
+    btn.classList.add('selected-wrong');
+    card.classList.add('wrong');
+    opts.forEach(o => { if (o.onclick.toString().includes('true')) o.classList.add('show-correct'); });
+    fb.className = 'quiz-feedback show wrong-fb';
+    fb.textContent = '❌ Nicht ganz – schau dir die grün markierte Antwort an!';
+    quizScore[qId] = false;
+  }
+}
+
+function selectChip(gameId, chip) {
+  if (!matchGames[gameId]) matchGames[gameId] = {};
+  const game = document.getElementById(gameId);
+  game.querySelectorAll('.match-chip').forEach(c => c.style.outline = '');
+  chip.style.outline = '2px solid var(--accent)';
+  matchGames[gameId].selectedChip = chip;
+}
+
+function placeMatch(gameId, drop) {
+  if (!matchGames[gameId] || !matchGames[gameId].selectedChip) return;
+  const chip = matchGames[gameId].selectedChip;
+  drop.textContent = chip.textContent;
+  drop.classList.add('filled');
+  chip.classList.add('used');
+  chip.style.outline = '';
+  matchGames[gameId].selectedChip = null;
+}
+
+function checkMatch(gameId) {
+  const game = document.getElementById(gameId);
+  game.querySelectorAll('.match-drop').forEach(drop => {
+    const answer = drop.dataset.answer;
+    if (drop.textContent === answer) { drop.classList.add('correct-match'); drop.classList.remove('wrong-match'); }
+    else if (drop.textContent !== '?') { drop.classList.add('wrong-match'); drop.classList.remove('correct-match'); }
+  });
+}
+
+function resetMatch(gameId) {
+  const game = document.getElementById(gameId);
+  game.querySelectorAll('.match-drop').forEach(drop => { drop.textContent = '?'; drop.classList.remove('filled', 'correct-match', 'wrong-match'); });
+  game.querySelectorAll('.match-chip').forEach(c => { c.classList.remove('used'); c.style.outline = ''; });
+  if (matchGames[gameId]) matchGames[gameId].selectedChip = null;
+}
+
+function showFinalScore() {
+  const finalQs = ['qf-1','qf-2','qf-3','qf-4','qf-5','qf-6','qf-7','qf-8','qf-9','qf-10'];
+  let correct = 0;
+  finalQs.forEach(q => { if (quizScore[q]) correct++; });
+  const el = document.getElementById('finalScore');
+  el.style.display = 'block';
+  document.getElementById('scoreText').textContent = correct + ' / 10';
+  const msg = document.getElementById('scoreMsg');
+  if (correct >= 9) msg.textContent = '🎉 Mega! Du bist bestens vorbereitet!';
+  else if (correct >= 7) msg.textContent = '💪 Stark! Schau dir die Fehler nochmal an, dann sitzt es!';
+  else if (correct >= 5) msg.textContent = '👍 Guter Start! Geh die Themen nochmal durch und versuch es erneut.';
+  else msg.textContent = '📚 Kein Stress! Lies die Abschnitte nochmal und versuch es dann erneut.';
+  el.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetEndQuiz() {
+  const finalQs = ['qf-1','qf-2','qf-3','qf-4','qf-5','qf-6','qf-7','qf-8','qf-9','qf-10'];
+  finalQs.forEach(qId => {
+    const card = document.getElementById(qId);
+    card.classList.remove('answered', 'correct', 'wrong');
+    card.querySelectorAll('.quiz-opt').forEach(o => { o.classList.remove('disabled', 'selected-correct', 'selected-wrong', 'show-correct'); });
+    const fb = document.getElementById(qId + '-fb');
+    fb.className = 'quiz-feedback'; fb.textContent = '';
+    delete quizScore[qId];
+  });
+  document.getElementById('finalScore').style.display = 'none';
+  window.scrollTo({ top: document.getElementById('sec-endquiz').offsetTop - 80, behavior: 'smooth' });
+}
+
+renderNav();
+goToSection('standort');
+</script>
+</body>
+</html>

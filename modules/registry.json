@@ -1,9 +1,30 @@
 [
   {
+    "id": "stadtentwicklung",
+    "name": "Stadtentwicklung",
+    "description": "Antons Lernplan: Standortfaktoren, Phasen, Funktionen & Potsdam",
+    "icon": "🏙️",
+    "path": "modules/stadtentwicklung/index.html"
+  },
+  {
+    "id": "stadtentwicklung-v2",
+    "name": "Stadtentwicklung V2",
+    "description": "Antons Lernplan V2: Erweiterte Version mit mehr Übungen",
+    "icon": "🏰",
+    "path": "modules/stadtentwicklung-v2/index.html"
+  },
+  {
+    "id": "mentaltraining",
+    "name": "Mental stark auf dem Platz",
+    "description": "Mentaltraining für junge Sportler",
+    "icon": "🧠",
+    "path": "modules/mentaltraining/index.html"
+  },
+  {
     "id": "quiz-demo",
     "name": "Quiz Demo",
     "description": "Ein Beispiel-Quiz mit Multiple Choice Fragen",
-    "icon": "🧠",
+    "icon": "❓",
     "path": "modules/quiz-demo/index.html"
   },
   {

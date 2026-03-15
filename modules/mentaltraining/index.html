@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mental stark auf dem Platz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --bg: #0a0f1a;
+    --surface: #131b2e;
+    --surface-2: #1a2540;
+    --surface-3: #213058;
+    --border: rgba(255,255,255,0.06);
+    --text: #e8ecf4;
+    --text-muted: #8896b0;
+    --text-dim: #5a6a85;
+    --accent: #22c55e;
+    --accent-glow: rgba(34,197,94,0.15);
+    --accent-2: #3b82f6;
+    --accent-3: #f59e0b;
+    --accent-4: #ef4444;
+    --accent-5: #a855f7;
+    --accent-6: #06b6d4;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 10px; }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; min-height: 100dvh; }
+  .view.active { display: block; }
+
+  /* ===== ONBOARDING ===== */
+  .onboarding {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100dvh; padding: 20px;
+    background: radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.08), transparent 60%),
+                radial-gradient(ellipse at 80% 70%, rgba(59,130,246,0.05), transparent 50%),
+                var(--bg);
+  }
+  .onboarding-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    max-width: 560px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  .onboarding-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-5));
+  }
+  .ob-step { display: none; }
+  .ob-step.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .ob-progress {
+    display: flex; gap: 8px; margin-bottom: 32px;
+  }
+  .ob-progress-dot {
+    height: 4px; flex: 1; border-radius: 4px;
+    background: var(--surface-3); transition: background 0.3s;
+  }
+  .ob-progress-dot.done { background: var(--accent); }
+  .ob-progress-dot.current { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+
+  .ob-emoji { font-size: 3em; display: block; margin-bottom: 16px; }
+  .ob-title {
+    font-size: 1.75em; font-weight: 800; margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff, var(--text));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .ob-subtitle { color: var(--text-muted); font-size: 1em; margin-bottom: 28px; }
+
+  /* ===== FORM ELEMENTS ===== */
+  .input-field {
+    width: 100%; padding: 14px 18px; border-radius: var(--radius-sm);
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text); font-size: 1em; font-family: inherit;
+    outline: none; transition: border-color 0.2s;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: var(--text-dim); }
+
+  .age-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .age-card {
+    background: var(--surface-2); border: 2px solid var(--border);
+    border-radius: var(--radius-sm); padding: 20px 16px; text-align: center;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+  }
+  .age-card:hover { border-color: rgba(255,255,255,0.12); background: var(--surface-3); }
+  .age-card.selected { border-color: var(--accent); background: var(--accent-glow); }
+  .age-card .age-range { font-size: 1.3em; font-weight: 800; display: block; }
+  .age-card .age-label { font-size: 0.8em; color: var(--text-muted); margin-top: 4px; }
+
+  .challenge-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .challenge-chip {
+    background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: 50px; padding: 10px 20px; font-size: 0.9em;
+    cursor: pointer; transition: all 0.2s; user-select: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .challenge-chip:hover { border-color: rgba(255,255,255,0.12); }
+  .challenge-chip.selected { border-color: var(--accent); background: var(--accent-glow); color: var(--accent); }
+  .challenge-chip .chip-icon { font-size: 1.1em; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px 28px; border-radius: 50px; font-size: 1em; font-weight: 700;
+    font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+    margin-top: 24px;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0a0f1a;
+  }
+  .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--surface-3); }
+  .btn-full { width: 100%; }
+
+  /* ===== DASHBOARD ===== */
+  .dash-header {
+    padding: 40px 20px 24px;
+    background: linear-gradient(180deg, rgba(34,197,94,0.06), transparent);
+    text-align: center;
+  }
+  .dash-greeting { font-size: 0.9em; color: var(--text-muted); margin-bottom: 4px; }
+  .dash-title { font-size: 1.6em; font-weight: 800; }
+  .dash-stats {
+    display: flex; justify-content: center; gap: 24px; margin-top: 16px;
+  }
+  .dash-stat {
+    text-align: center;
+  }
+  .dash-stat-num { font-size: 1.4em; font-weight: 800; color: var(--accent); }
+  .dash-stat-label { font-size: 0.75em; color: var(--text-muted); }
+
+  .dash-container { max-width: 800px; margin: 0 auto; padding: 0 16px 40px; }
+
+  .section-label {
+    font-size: 0.75em; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--text-dim); margin: 28px 0 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ===== MODULE CARDS ===== */
+  .module-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-1px); }
+  .module-card.recommended::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+  }
+  .module-card.completed { opacity: 0.6; }
+  .module-card-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5em; flex-shrink: 0;
+  }
+  .module-card-content { flex: 1; min-width: 0; }
+  .module-card-num { font-size: 0.7em; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .module-card-title { font-size: 1.05em; font-weight: 700; }
+  .module-card-desc { font-size: 0.82em; color: var(--text-muted); margin-top: 2px; }
+  .module-card-badge {
+    font-size: 0.65em; font-weight: 700; padding: 3px 8px;
+    border-radius: 50px; background: var(--accent-glow); color: var(--accent);
+    white-space: nowrap;
+  }
+  .module-card-check {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 2px solid var(--surface-3); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8em; transition: all 0.2s;
+  }
+  .module-card.completed .module-card-check {
+    background: var(--accent); border-color: var(--accent); color: #000;
+  }
+
+  /* ===== MODULE DETAIL VIEW ===== */
+  .detail-header {
+    padding: 20px 16px 0;
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+  }
+  .detail-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-muted); font-size: 0.85em; font-weight: 600;
+    background: none; border: none; cursor: pointer; font-family: inherit;
+    padding: 8px 12px; border-radius: var(--radius-xs); transition: color 0.2s;
+  }
+  .detail-back:hover { color: var(--text); }
+
+  .detail-hero {
+    padding: 24px 20px 32px; text-align: center;
+  }
+  .detail-hero-icon { font-size: 3em; margin-bottom: 12px; }
+  .detail-hero-num { font-size: 0.75em; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; }
+  .detail-hero-title { font-size: 1.8em; font-weight: 900; margin: 4px 0; }
+  .detail-hero-sub { color: var(--text-muted); font-size: 0.95em; }
+
+  .detail-container { max-width: 720px; margin: 0 auto; padding: 0 16px 60px; }
+
+  .content-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .content-block h3 {
+    font-size: 1.15em; font-weight: 800; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .content-block p { margin-bottom: 10px; font-size: 0.93em; color: var(--text-muted); line-height: 1.7; }
+  .content-block p strong { color: var(--text); }
+  .content-block ul { margin: 8px 0 0 20px; }
+  .content-block li { margin-bottom: 8px; font-size: 0.93em; color: var(--text-muted); }
+  .content-block li strong { color: var(--text); }
+
+  /* ===== SPECIAL BOXES ===== */
+  .box-exercise {
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: var(--radius); padding: 20px; margin: 16px 0;
+  }
+  .box-exercise .box-label { font-size: 0.72em; font-weight: 700; color: var(--accent-2); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+
+  .box-tip {
+    background: rgba(245,158,11,0.08);
+    border: 1px solid rgba(245,158,11,0.15);
+    border-radius: var(--radius); padding: 20px; margin: 16px 0;
+  }
+  .box-tip .box-label { font-size: 0.72em; font-weight: 700; color: var(--accent-3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+
+  .box-challenge {
+    background: rgba(168,85,247,0.08);
+    border: 1px solid rgba(168,85,247,0.15);
+    border-radius: var(--radius); padding: 20px; margin: 16px 0;
+  }
+  .box-challenge .box-label { font-size: 0.72em; font-weight: 700; color: var(--accent-5); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+
+  .box-story {
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.12);
+    border-radius: var(--radius); padding: 20px; margin: 16px 0;
+    font-style: italic;
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-option {
+    background: var(--surface-2); border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 18px; margin: 8px 0;
+    cursor: pointer; transition: all 0.2s; font-size: 0.93em;
+  }
+  .quiz-option:hover { border-color: rgba(255,255,255,0.12); }
+  .quiz-option.correct { border-color: var(--accent); background: rgba(34,197,94,0.1); }
+  .quiz-option.wrong { border-color: var(--accent-4); background: rgba(239,68,68,0.1); }
+  .quiz-feedback { font-size: 0.85em; padding: 8px 0 0; display: none; }
+
+  /* ===== BREATHING TOOL ===== */
+  .breath-tool {
+    text-align: center; padding: 30px 0;
+  }
+  .breath-circle {
+    width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 16px;
+    background: radial-gradient(circle, rgba(34,197,94,0.3), rgba(34,197,94,0.05));
+    border: 2px solid rgba(34,197,94,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.95em; color: var(--accent);
+    transition: transform 4s ease-in-out;
+  }
+  .breath-circle.inhale { transform: scale(1.4); }
+  .breath-circle.exhale { transform: scale(1); }
+  .breath-label { font-size: 0.85em; color: var(--text-muted); }
+  .breath-btn {
+    margin-top: 16px; padding: 10px 24px; border-radius: 50px;
+    background: var(--accent-glow); border: 1px solid rgba(34,197,94,0.3);
+    color: var(--accent); font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+
+  /* ===== PROGRESS BAR ===== */
+  .progress-bar-wrap {
+    width: 100%; height: 6px; background: var(--surface-3);
+    border-radius: 10px; margin: 12px 0 4px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 10px; transition: width 0.5s ease;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+
+  /* ===== MODULE COMPLETE BUTTON ===== */
+  .complete-btn {
+    width: 100%; padding: 16px; border-radius: var(--radius);
+    background: var(--accent); color: #0a0f1a; font-weight: 800;
+    font-size: 1em; border: none; cursor: pointer; font-family: inherit;
+    margin-top: 20px; transition: all 0.2s;
+  }
+  .complete-btn:hover { filter: brightness(1.1); }
+  .complete-btn.done { background: var(--surface-3); color: var(--text-muted); cursor: default; }
+
+  /* ===== FOOTER NAV ===== */
+  .footer-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(10,15,26,0.9); backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: center; gap: 40px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+  }
+  .footer-nav-item {
+    text-align: center; cursor: pointer; background: none; border: none;
+    font-family: inherit; color: var(--text-dim); transition: color 0.2s;
+  }
+  .footer-nav-item.active { color: var(--accent); }
+  .footer-nav-item .nav-icon { font-size: 1.3em; display: block; }
+  .footer-nav-item .nav-label { font-size: 0.65em; font-weight: 600; margin-top: 2px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .onboarding-card { padding: 32px 24px; border-radius: 20px; }
+    .ob-title { font-size: 1.4em; }
+    .age-grid { grid-template-columns: 1fr; gap: 10px; }
+    .age-card { padding: 14px; display: flex; align-items: center; gap: 12px; text-align: left; }
+    .detail-hero-title { font-size: 1.4em; }
+  }
+
+  /* ===== TOOLS VIEW ===== */
+  .tools-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    max-width: 800px; margin: 0 auto; padding: 0 16px 100px;
+  }
+  .tool-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 20px; text-align: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .tool-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
+  .tool-card .tool-icon { font-size: 2em; margin-bottom: 8px; }
+  .tool-card .tool-name { font-weight: 700; font-size: 0.9em; }
+  .tool-card .tool-desc { font-size: 0.78em; color: var(--text-muted); margin-top: 4px; }
+
+  /* ===== TOOL MODALS ===== */
+  .tool-modal {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .tool-modal.active { display: flex; }
+  .tool-modal-inner {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 24px; padding: 36px 32px; max-width: 480px; width: 100%;
+    max-height: 90dvh; overflow-y: auto; position: relative;
+  }
+  .tool-modal-close {
+    position: absolute; top: 16px; right: 16px; background: var(--surface-2);
+    border: none; color: var(--text-muted); width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer; font-size: 1.1em; display: flex;
+    align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- =========================================================== -->
+<!-- VIEW: ONBOARDING -->
+<!-- =========================================================== -->
+<div class="view active" id="view-onboarding">
+<div class="onboarding">
+<div class="onboarding-card">
+
+  <div class="ob-progress">
+    <div class="ob-progress-dot current" id="dot1"></div>
+    <div class="ob-progress-dot" id="dot2"></div>
+    <div class="ob-progress-dot" id="dot3"></div>
+  </div>
+
+  <!-- STEP 1: Name -->
+  <div class="ob-step active" id="step1">
+    <span class="ob-emoji">&#9917;</span>
+    <div class="ob-title">Hey, Spieler!</div>
+    <div class="ob-subtitle">Willkommen beim Mentaltraining. Wie hei&szlig;t du?</div>
+    <input class="input-field" id="playerName" type="text" placeholder="Dein Vorname" autocomplete="off" autofocus>
+    <button class="btn btn-primary btn-full" id="btnStep1" disabled onclick="goStep(2)">Weiter &rarr;</button>
+  </div>
+
+  <!-- STEP 2: Age -->
+  <div class="ob-step" id="step2">
+    <span class="ob-emoji">&#128197;</span>
+    <div class="ob-title">Wie alt bist du?</div>
+    <div class="ob-subtitle">Wir passen die Inhalte genau auf dein Alter an.</div>
+    <div class="age-grid">
+      <div class="age-card" onclick="selectAge(this, 'u11')" data-age="u11">
+        <span class="age-range">8&ndash;11</span>
+        <span class="age-label">Bambini bis E-Jugend</span>
+      </div>
+      <div class="age-card" onclick="selectAge(this, 'u14')" data-age="u14">
+        <span class="age-range">12&ndash;14</span>
+        <span class="age-label">D- und C-Jugend</span>
+      </div>
+      <div class="age-card" onclick="selectAge(this, 'u19')" data-age="u19">
+        <span class="age-range">15&ndash;19</span>
+        <span class="age-label">B- und A-Jugend</span>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" id="btnStep2" disabled onclick="goStep(3)">Weiter &rarr;</button>
+  </div>
+
+  <!-- STEP 3: Challenges -->
+  <div class="ob-step" id="step3">
+    <span class="ob-emoji">&#127919;</span>
+    <div class="ob-title">Was sind deine Herausforderungen?</div>
+    <div class="ob-subtitle">W&auml;hle alles, was auf dich zutrifft. Du kannst mehrere ausw&auml;hlen.</div>
+    <div class="challenge-grid">
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="nervosität"><span class="chip-icon">&#128168;</span> Nervosit&auml;t &amp; Druck</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="fehler"><span class="chip-icon">&#128170;</span> Fehler &amp; Frust</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="selbstvertrauen"><span class="chip-icon">&#128293;</span> Wenig Selbstvertrauen</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="konzentration"><span class="chip-icon">&#127919;</span> Konzentration</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="team"><span class="chip-icon">&#128483;&#65039;</span> Teamkommunikation</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="rückschläge"><span class="chip-icon">&#128548;</span> R&uuml;ckschl&auml;ge</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="erwartungen"><span class="chip-icon">&#128101;</span> Erwartungsdruck</div>
+      <div class="challenge-chip" onclick="toggleChallenge(this)" data-ch="vergleich"><span class="chip-icon">&#128241;</span> Vergleich mit anderen</div>
+    </div>
+    <button class="btn btn-primary btn-full" id="btnStart" onclick="startApp()">Mein Training starten &#9889;</button>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- =========================================================== -->
+<!-- VIEW: DASHBOARD -->
+<!-- =========================================================== -->
+<div class="view" id="view-dashboard">
+  <div class="dash-header">
+    <div class="dash-greeting" id="dashGreeting">Hallo!</div>
+    <div class="dash-title">Dein Mentaltraining</div>
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="statCompleted">0</div>
+        <div class="dash-stat-label">Abgeschlossen</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat-num" id="statTotal">0</div>
+        <div class="dash-stat-label">Module</div>
+      </div>
+    </div>
+    <div style="max-width:400px;margin:0 auto;">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="dashProgress" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="dash-container" id="moduleList"></div>
+  <div style="height:80px"></div>
+</div>
+
+<!-- =========================================================== -->
+<!-- VIEW: MODULE DETAIL -->
+<!-- =========================================================== -->
+<div class="view" id="view-detail">
+  <div class="detail-header">
+    <button class="detail-back" onclick="showDashboard()">&larr; &Uuml;bersicht</button>
+  </div>
+  <div class="detail-hero" id="detailHero"></div>
+  <div class="detail-container" id="detailContent"></div>
+  <div style="height:80px"></div>
+</div>
+
+<!-- =========================================================== -->
+<!-- VIEW: TOOLS -->
+<!-- =========================================================== -->
+<div class="view" id="view-tools">
+  <div class="dash-header">
+    <div class="dash-greeting">Deine Werkzeuge</div>
+    <div class="dash-title">Schnellzugriff</div>
+  </div>
+  <div class="tools-grid" id="toolsGrid"></div>
+</div>
+
+<!-- =========================================================== -->
+<!-- FOOTER NAV -->
+<!-- =========================================================== -->
+<div class="footer-nav" id="footerNav" style="display:none">
+  <button class="footer-nav-item active" onclick="showView('dashboard', this)">
+    <span class="nav-icon">&#127968;</span>
+    <span class="nav-label">Module</span>
+  </button>
+  <button class="footer-nav-item" onclick="showView('tools', this)">
+    <span class="nav-icon">&#9889;</span>
+    <span class="nav-label">Tools</span>
+  </button>
+  <button class="footer-nav-item" onclick="resetProfile()">
+    <span class="nav-icon">&#128260;</span>
+    <span class="nav-label">Neustart</span>
+  </button>
+</div>
+
+<!-- =========================================================== -->
+<!-- TOOL MODALS -->
+<!-- =========================================================== -->
+<div class="tool-modal" id="modal-breath">
+  <div class="tool-modal-inner">
+    <button class="tool-modal-close" onclick="closeModal('breath')">&times;</button>
+    <div class="breath-tool">
+      <div class="breath-circle" id="breathCircle">Bereit?</div>
+      <div class="breath-label" id="breathLabel">Dr&uuml;cke Start f&uuml;r 5 Runden Box-Breathing</div>
+      <button class="breath-btn" id="breathBtn" onclick="startBreathing()">&#9654; Start</button>
+    </div>
+  </div>
+</div>
+
+<div class="tool-modal" id="modal-power">
+  <div class="tool-modal-inner">
+    <button class="tool-modal-close" onclick="closeModal('power')">&times;</button>
+    <div style="text-align:center">
+      <div style="font-size:2.5em;margin-bottom:12px">&#128170;</div>
+      <h3 style="margin-bottom:16px">Deine Power-S&auml;tze</h3>
+      <div id="powerSentences" style="text-align:left"></div>
+      <div style="margin-top:16px">
+        <input class="input-field" id="newPowerInput" placeholder="Neuen Power-Satz hinzuf&uuml;gen..." style="margin-bottom:8px">
+        <button class="btn btn-primary btn-full" onclick="addPowerSentence()" style="margin-top:8px">Hinzuf&uuml;gen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tool-modal" id="modal-focus">
+  <div class="tool-modal-inner">
+    <button class="tool-modal-close" onclick="closeModal('focus')">&times;</button>
+    <div style="text-align:center">
+      <div style="font-size:2.5em;margin-bottom:12px">&#127919;</div>
+      <h3 style="margin-bottom:8px">60-Sekunden Fokus-Challenge</h3>
+      <p style="color:var(--text-muted);font-size:0.9em;margin-bottom:20px">Schlie&szlig; die Augen, z&auml;hle deine Atemz&uuml;ge. Der Timer l&auml;uft!</p>
+      <div id="focusTimer" style="font-size:3em;font-weight:900;color:var(--accent);margin:20px 0">60</div>
+      <button class="breath-btn" id="focusBtn" onclick="startFocusTimer()">&#9654; Start</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================== -->
+<!-- JAVASCRIPT -->
+<!-- =========================================================== -->
+<script>
+// ===== STATE =====
+let state = {
+  name: '', age: '', challenges: [],
+  completed: [], powerSentences: []
+};
+
+// Load state
+try {
+  const saved = localStorage.getItem('mentaltraining_state');
+  if (saved) {
+    state = { ...state, ...JSON.parse(saved) };
+    if (state.name && state.age) {
+      showDashboard();
+    }
+  }
+} catch(e) {}
+
+function saveState() {
+  localStorage.setItem('mentaltraining_state', JSON.stringify(state));
+}
+
+// ===== ONBOARDING =====
+const nameInput = document.getElementById('playerName');
+nameInput.addEventListener('input', () => {
+  document.getElementById('btnStep1').disabled = !nameInput.value.trim();
+});
+nameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && nameInput.value.trim()) goStep(2);
+});
+
+function goStep(n) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  document.querySelectorAll('.ob-progress-dot').forEach((d, i) => {
+    d.className = 'ob-progress-dot';
+    if (i < n - 1) d.classList.add('done');
+    if (i === n - 1) d.classList.add('current');
+  });
+  if (n === 2) state.name = nameInput.value.trim();
+}
+
+function selectAge(el, age) {
+  document.querySelectorAll('.age-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.age = age;
+  document.getElementById('btnStep2').disabled = false;
+}
+
+function toggleChallenge(el) {
+  el.classList.toggle('selected');
+  const ch = el.dataset.ch;
+  if (state.challenges.includes(ch)) {
+    state.challenges = state.challenges.filter(c => c !== ch);
+  } else {
+    state.challenges.push(ch);
+  }
+}
+
+function startApp() {
+  saveState();
+  showDashboard();
+}
+
+function resetProfile() {
+  if (confirm('Wirklich neu starten? Dein Fortschritt wird gelöscht.')) {
+    localStorage.removeItem('mentaltraining_state');
+    location.reload();
+  }
+}
+
+// ===== MODULE DATA =====
+function getModules() {
+  const age = state.age;
+  const ch = state.challenges;
+
+  // Age-specific text helpers
+  const isYoung = age === 'u11';
+  const isMid = age === 'u14';
+  const isOld = age === 'u19';
+
+  const modules = [
+    {
+      id: 'm1', icon: '&#129504;', color: '#22c55e',
+      title: 'Was ist Mentalst\u00e4rke?',
+      desc: 'Warum dein Kopf genauso wichtig ist wie deine Beine',
+      tags: [],
+      content: (a) => buildModule1(a)
+    },
+    {
+      id: 'm2', icon: '&#128168;', color: '#f59e0b',
+      title: 'Umgang mit Druck',
+      desc: 'Cool bleiben, wenn es drauf ankommt',
+      tags: ['nervosität', 'erwartungen'],
+      content: (a) => buildModule2(a)
+    },
+    {
+      id: 'm3', icon: '&#128170;', color: '#ef4444',
+      title: 'Fehler sind deine Freunde',
+      desc: 'Aus Fehlern lernen statt sich \u00e4rgern',
+      tags: ['fehler'],
+      content: (a) => buildModule3(a)
+    },
+    {
+      id: 'm4', icon: '&#128293;', color: '#eab308',
+      title: 'Selbstvertrauen aufbauen',
+      desc: 'Werde auf dem Platz zu deiner besten Version',
+      tags: ['selbstvertrauen'],
+      content: (a) => buildModule4(a)
+    },
+    {
+      id: 'm5', icon: '&#127919;', color: '#3b82f6',
+      title: 'Konzentration & Fokus',
+      desc: '90 Minuten voll bei der Sache',
+      tags: ['konzentration'],
+      content: (a) => buildModule5(a)
+    },
+    {
+      id: 'm6', icon: '&#127754;', color: '#a855f7',
+      title: 'Im Flow spielen',
+      desc: 'Wenn alles wie von selbst l\u00e4uft',
+      tags: ['konzentration'],
+      content: (a) => buildModule6(a)
+    },
+    {
+      id: 'm7', icon: '&#128548;', color: '#ef4444',
+      title: 'R\u00fcckschl\u00e4ge meistern',
+      desc: 'Was du tun kannst, wenn es mal nicht l\u00e4uft',
+      tags: ['rückschläge'],
+      content: (a) => buildModule7(a)
+    },
+    {
+      id: 'm8', icon: '&#128483;&#65039;', color: '#3b82f6',
+      title: 'Kommunikation im Team',
+      desc: 'Reden ist Gold \u2013 auch auf dem Platz',
+      tags: ['team'],
+      content: (a) => buildModule8(a)
+    },
+    {
+      id: 'm9', icon: '&#127793;', color: '#22c55e',
+      title: 'Ziele setzen wie ein Profi',
+      desc: 'Die richtigen Ziele finden und erreichen',
+      tags: [],
+      content: (a) => buildModule9(a)
+    },
+    {
+      id: 'm10', icon: '&#127941;', color: '#a855f7',
+      title: 'Dein Matchday-Ritual',
+      desc: 'Deine mentale Spielvorbereitung',
+      tags: ['nervosität'],
+      content: (a) => buildModule10(a)
+    },
+    {
+      id: 'm11', icon: '&#128524;', color: '#06b6d4',
+      title: 'Atmen & Entspannen',
+      desc: 'Techniken, die dich sofort runterbringen',
+      tags: ['nervosität'],
+      content: (a) => buildModule11(a)
+    },
+    {
+      id: 'm12', icon: '&#127942;', color: '#f59e0b',
+      title: 'Dein Mentalst\u00e4rke-Plan',
+      desc: 'Bring alles zusammen',
+      tags: [],
+      content: (a) => buildModule12(a)
+    }
+  ];
+
+  // Bonus modules based on age + challenges
+  if (isOld || isMid) {
+    modules.splice(7, 0, {
+      id: 'mx1', icon: '&#128241;', color: '#06b6d4',
+      title: 'Social Media & Vergleiche',
+      desc: 'Warum Instagram nicht die Wahrheit zeigt',
+      tags: ['vergleich', 'selbstvertrauen'],
+      bonus: true,
+      content: (a) => buildModuleSocial(a)
+    });
+  }
+
+  if (isOld || isMid) {
+    modules.splice(modules.length - 1, 0, {
+      id: 'mx2', icon: '&#128218;', color: '#ec4899',
+      title: 'Schule & Sport in Balance',
+      desc: 'Beides unter einen Hut kriegen',
+      tags: ['erwartungen'],
+      bonus: true,
+      content: (a) => buildModuleBalance(a)
+    });
+  }
+
+  if (isOld) {
+    modules.splice(modules.length - 1, 0, {
+      id: 'mx3', icon: '&#128101;', color: '#f97316',
+      title: 'Umgang mit Erwartungen',
+      desc: 'Trainer, Eltern, Scouts \u2013 und du mittendrin',
+      tags: ['erwartungen', 'nervosität'],
+      bonus: true,
+      content: (a) => buildModuleExpectations(a)
+    });
+  }
+
+  return modules;
+}
+
+// ===== DASHBOARD =====
+function showDashboard() {
+  switchView('dashboard');
+  document.getElementById('footerNav').style.display = 'flex';
+
+  const greeting = getTimeGreeting();
+  document.getElementById('dashGreeting').textContent = greeting + ', ' + state.name + '!';
+
+  const modules = getModules();
+  const ch = state.challenges;
+
+  // Sort: recommended first, then rest
+  const recommended = modules.filter(m => m.tags.some(t => ch.includes(t)));
+  const rest = modules.filter(m => !recommended.includes(m));
+
+  let html = '';
+  if (recommended.length > 0) {
+    html += '<div class="section-label">Empfohlen f\u00fcr dich</div>';
+    recommended.forEach((m, i) => {
+      html += renderModuleCard(m, i + 1, true);
+    });
+  }
+  html += '<div class="section-label">Alle Module</div>';
+  const allOrdered = [...recommended, ...rest.filter(r => !recommended.includes(r))];
+  rest.filter(r => !recommended.includes(r)).forEach((m, i) => {
+    html += renderModuleCard(m, recommended.length + i + 1, false);
+  });
+
+  document.getElementById('moduleList').innerHTML = html;
+  updateStats();
+  renderToolsView();
+}
+
+function renderModuleCard(m, num, isRec) {
+  const done = state.completed.includes(m.id);
+  return `<div class="module-card ${isRec ? 'recommended' : ''} ${done ? 'completed' : ''}" onclick="openModule('${m.id}')">
+    <div class="module-card-icon" style="background:${m.color}22">${m.icon}</div>
+    <div class="module-card-content">
+      <div class="module-card-num">${m.bonus ? 'Bonus' : 'Modul ' + num}</div>
+      <div class="module-card-title">${m.title}</div>
+      <div class="module-card-desc">${m.desc}</div>
+    </div>
+    ${isRec && !done ? '<span class="module-card-badge">Empfohlen</span>' : ''}
+    <div class="module-card-check">${done ? '&#10003;' : ''}</div>
+  </div>`;
+}
+
+function updateStats() {
+  const modules = getModules();
+  const completed = state.completed.length;
+  document.getElementById('statCompleted').textContent = completed;
+  document.getElementById('statTotal').textContent = modules.length;
+  const pct = modules.length ? Math.round((completed / modules.length) * 100) : 0;
+  document.getElementById('dashProgress').style.width = pct + '%';
+}
+
+// ===== MODULE DETAIL =====
+function openModule(id) {
+  const modules = getModules();
+  const m = modules.find(x => x.id === id);
+  if (!m) return;
+  const idx = modules.indexOf(m);
+
+  document.getElementById('detailHero').innerHTML = `
+    <div class="detail-hero-icon">${m.icon}</div>
+    <div class="detail-hero-num">${m.bonus ? 'Bonus-Modul' : 'Modul ' + (idx + 1)}</div>
+    <div class="detail-hero-title">${m.title}</div>
+    <div class="detail-hero-sub">${m.desc}</div>
+  `;
+
+  const done = state.completed.includes(id);
+  let content = m.content(state.age);
+  content += `<button class="complete-btn ${done ? 'done' : ''}" onclick="completeModule('${id}', this)">
+    ${done ? '&#10003; Abgeschlossen' : 'Modul abschlie\u00dfen &#10003;'}
+  </button>`;
+  document.getElementById('detailContent').innerHTML = content;
+  switchView('detail');
+  window.scrollTo(0, 0);
+}
+
+function completeModule(id, btn) {
+  if (!state.completed.includes(id)) {
+    state.completed.push(id);
+    saveState();
+    btn.classList.add('done');
+    btn.innerHTML = '&#10003; Abgeschlossen';
+  }
+}
+
+// ===== TOOLS VIEW =====
+function renderToolsView() {
+  document.getElementById('toolsGrid').innerHTML = `
+    <div class="tool-card" onclick="openModal('breath')">
+      <div class="tool-icon">&#128524;</div>
+      <div class="tool-name">Box-Breathing</div>
+      <div class="tool-desc">4-4-4-4 Atemtechnik</div>
+    </div>
+    <div class="tool-card" onclick="openModal('power')">
+      <div class="tool-icon">&#128170;</div>
+      <div class="tool-name">Power-S\u00e4tze</div>
+      <div class="tool-desc">Deine pers\u00f6nlichen Mantras</div>
+    </div>
+    <div class="tool-card" onclick="openModal('focus')">
+      <div class="tool-icon">&#127919;</div>
+      <div class="tool-name">Fokus-Timer</div>
+      <div class="tool-desc">60-Sekunden-Challenge</div>
+    </div>
+    <div class="tool-card" onclick="showChecklist()">
+      <div class="tool-icon">&#127941;</div>
+      <div class="tool-name">Matchday-Check</div>
+      <div class="tool-desc">Spieltag-Checkliste</div>
+    </div>
+  `;
+}
+
+// ===== BREATHING TOOL =====
+let breathInterval = null;
+function startBreathing() {
+  const circle = document.getElementById('breathCircle');
+  const label = document.getElementById('breathLabel');
+  const btn = document.getElementById('breathBtn');
+  btn.style.display = 'none';
+  let round = 0, phase = 0;
+  const phases = [
+    { text: 'Einatmen...', cls: 'inhale', dur: 4000 },
+    { text: 'Halten...', cls: 'inhale', dur: 4000 },
+    { text: 'Ausatmen...', cls: 'exhale', dur: 4000 },
+    { text: 'Pause...', cls: 'exhale', dur: 4000 }
+  ];
+  function tick() {
+    if (round >= 5) {
+      circle.className = 'breath-circle';
+      circle.textContent = 'Fertig!';
+      label.textContent = 'Super gemacht! 5 Runden geschafft.';
+      btn.style.display = '';
+      btn.textContent = '&#9654; Nochmal';
+      return;
+    }
+    const p = phases[phase];
+    circle.className = 'breath-circle ' + p.cls;
+    circle.textContent = p.text;
+    label.textContent = 'Runde ' + (round + 1) + ' von 5';
+    phase++;
+    if (phase >= 4) { phase = 0; round++; }
+    setTimeout(tick, p.dur);
+  }
+  tick();
+}
+
+// ===== FOCUS TIMER =====
+let focusInterval = null;
+function startFocusTimer() {
+  const display = document.getElementById('focusTimer');
+  const btn = document.getElementById('focusBtn');
+  btn.style.display = 'none';
+  let sec = 60;
+  display.textContent = sec;
+  focusInterval = setInterval(() => {
+    sec--;
+    display.textContent = sec;
+    if (sec <= 0) {
+      clearInterval(focusInterval);
+      display.textContent = 'Geschafft!';
+      btn.style.display = '';
+      btn.textContent = '\u25b6 Nochmal';
+    }
+  }, 1000);
+}
+
+// ===== POWER SENTENCES =====
+function renderPowerSentences() {
+  const c = document.getElementById('powerSentences');
+  if (!state.powerSentences.length) {
+    c.innerHTML = '<p style="color:var(--text-dim);font-size:0.9em;text-align:center">Noch keine Power-S\u00e4tze. F\u00fcge deinen ersten hinzu!</p>';
+    return;
+  }
+  c.innerHTML = state.powerSentences.map((s, i) =>
+    `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;margin:6px 0;background:var(--surface-2);border-radius:10px;">
+      <span style="flex:1;font-weight:600;font-size:0.9em">\u201e${s}\u201c</span>
+      <button style="background:none;border:none;color:var(--accent-4);cursor:pointer;font-size:1.1em" onclick="removePower(${i})">&times;</button>
+    </div>`
+  ).join('');
+}
+function addPowerSentence() {
+  const inp = document.getElementById('newPowerInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  state.powerSentences.push(val);
+  saveState();
+  inp.value = '';
+  renderPowerSentences();
+}
+function removePower(i) {
+  state.powerSentences.splice(i, 1);
+  saveState();
+  renderPowerSentences();
+}
+
+// ===== MATCHDAY CHECKLIST =====
+function showChecklist() {
+  const items = [
+    'Power-S\u00e4tze gelesen',
+    'Top-5-St\u00e4rken durchgegangen',
+    '3 Situationen visualisiert',
+    'Fokus-Wort bereit',
+    '3x Power-Atem gemacht',
+    'Starke K\u00f6rpersprache eingenommen'
+  ];
+  const el = document.createElement('div');
+  el.className = 'tool-modal active';
+  el.id = 'modal-checklist';
+  el.innerHTML = `<div class="tool-modal-inner">
+    <button class="tool-modal-close" onclick="this.closest('.tool-modal').remove()">&times;</button>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:2.5em">&#127941;</div>
+      <h3>Matchday-Checkliste</h3>
+    </div>
+    ${items.map((item, i) => `
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 14px;margin:6px 0;background:var(--surface-2);border-radius:10px;cursor:pointer">
+        <input type="checkbox" style="width:20px;height:20px;accent-color:var(--accent)">
+        <span style="font-size:0.9em">${item}</span>
+      </label>
+    `).join('')}
+  </div>`;
+  document.body.appendChild(el);
+}
+
+// ===== MODALS =====
+function openModal(name) {
+  document.getElementById('modal-' + name).classList.add('active');
+  if (name === 'power') renderPowerSentences();
+}
+function closeModal(name) {
+  document.getElementById('modal-' + name).classList.remove('active');
+  if (name === 'focus' && focusInterval) clearInterval(focusInterval);
+}
+
+// ===== QUIZ =====
+function checkQuiz(el, correct) {
+  const parent = el.parentElement;
+  if (parent.dataset.answered) return;
+  parent.dataset.answered = 'true';
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    parent.querySelector('[data-correct]').classList.add('correct');
+  }
+}
+
+// ===== NAVIGATION =====
+function switchView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+}
+function showView(name, btn) {
+  if (name === 'dashboard') showDashboard();
+  else switchView(name);
+  document.querySelectorAll('.footer-nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
+function getTimeGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Guten Morgen';
+  if (h < 18) return 'Hallo';
+  return 'Guten Abend';
+}
+
+// ===== AGE-SPECIFIC CONTENT HELPERS =====
+function ageText(young, mid, old) {
+  if (state.age === 'u11') return young;
+  if (state.age === 'u14') return mid;
+  return old;
+}
+
+// ===== MODULE CONTENT BUILDERS =====
+function buildModule1(age) {
+  return `
+  <div class="content-block">
+    <h3>&#129504; Dein Kopf ist dein st\u00e4rkster Muskel</h3>
+    <p>${ageText(
+      'Hast du dich mal gefragt, warum manche Kinder in wichtigen Momenten richtig gut spielen \u2013 und andere pl\u00f6tzlich nerv\u00f6s werden? Das hat weniger mit Talent zu tun, als du denkst. Der Unterschied liegt im <strong>Kopf</strong>.',
+      'Warum spielen manche Spieler in Drucksituationen ihr bestes Spiel, w\u00e4hrend andere v\u00f6llig blockieren? Die Antwort ist oft nicht Talent \u2013 sondern <strong>mentale St\u00e4rke</strong>.',
+      'Im Leistungsfu\u00dfball entscheidet ab einem gewissen Niveau nicht mehr nur die Technik. Spieler mit vergleichbarem K\u00f6nnen trennt vor allem eins: die <strong>mentale St\u00e4rke</strong> in entscheidenden Momenten.'
+    )}</p>
+    <p>Mentalst\u00e4rke bedeutet: Du kannst deine Gedanken und Gef\u00fchle so steuern, dass sie dir helfen statt dich zu bremsen. Und das Beste: Man kann es <strong>trainieren</strong>!</p>
+  </div>
+
+  <div class="box-story">
+    <strong>Wusstest du?</strong> ${ageText(
+      'Viele Profifu\u00dfballer arbeiten regelm\u00e4\u00dfig mit Mentaltrainern. Sie wissen: Wer im Kopf stark ist, gewinnt \u00f6fter!',
+      'In der Bundesliga arbeiten mittlerweile fast alle Vereine mit Sportpsychologen. Auch viele Nachwuchsleistungszentren bieten Mentaltraining ab der U13 an.',
+      'Spitzensportler wie Profis in der Champions League nutzen Mentaltraining genauso selbstverst\u00e4ndlich wie Taktiktraining. Studien zeigen, dass mentale St\u00e4rke bis zu 50% der Leistungsschwankungen erkl\u00e4ren kann.'
+    )}
+  </div>
+
+  <div class="content-block">
+    <h3>Die 4 S\u00e4ulen der Mentalst\u00e4rke</h3>
+    <ul>
+      <li><strong>Selbstvertrauen</strong> \u2013 Du glaubst an dich und deine F\u00e4higkeiten</li>
+      <li><strong>Konzentration</strong> \u2013 Du bist voll bei der Sache</li>
+      <li><strong>Umgang mit Druck</strong> \u2013 Du bleibst cool, wenn es drauf ankommt</li>
+      <li><strong>Lernbereitschaft</strong> \u2013 Du siehst Fehler als Chance</li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Selbstcheck</div>
+    <p style="color:var(--text);margin:0">Auf einer Skala von 1\u201310: Wie mental stark f\u00fchlst du dich gerade? Denk an eine Situation auf dem Platz, in der du dich richtig stark gef\u00fchlt hast. Was war da anders?</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Mentalst\u00e4rke ist kein Talent \u2013 es ist Training. Jeder kann es lernen!</strong></p>
+  </div>`;
+}
+
+function buildModule2(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128168; Wenn der Druck kommt</h3>
+    <p>${ageText(
+      'Elfmeter. Alle schauen auf dich. Dein Herz klopft ganz schnell. Kennst du das Gef\u00fchl? Das ist Druck \u2013 und der ist erstmal gar nicht schlecht!',
+      'Elfmeter im Pokalfinale. Letzte Minute, 0:0. Alle schauen auf dich. Dein Herz rast. Druck zeigt dir, dass dir etwas <strong>wichtig</strong> ist.',
+      'Entscheidungsspiel, Scoutingtermin, Probetraining bei einem h\u00f6herklassigen Verein. In solchen Momenten kann sich Druck wie eine L\u00e4hmung anf\u00fchlen \u2013 oder wie ein Booster.'
+    )}</p>
+    <p>Druck entsteht durch Gedanken wie: <em>\u201eIch <strong>muss</strong> treffen!\u201c</em> oder <em>\u201eWas, wenn ich versage?\u201c</em> Diese Gedanken sind normal \u2013 aber du kannst sie <strong>umschalten</strong>.</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Gedanken umschalten</div>
+    <p style="color:var(--text);margin:0">Wandle Druckgedanken in hilfreiche Gedanken um:</p>
+    <ul style="margin-top:8px">
+      <li><strong>\u201eIch darf nicht versagen\u201c</strong> &rarr; \u201eIch gebe mein Bestes \u2013 das reicht!\u201c</li>
+      <li><strong>\u201eAlle schauen auf mich\u201c</strong> &rarr; \u201eCool, ich darf zeigen, was ich kann!\u201c</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>Deine 3 Anti-Druck-Tools</h3>
+    <ul>
+      <li><strong>Power-Atem:</strong> 3x tief einatmen (4 Sek.) und langsam ausatmen (6 Sek.)</li>
+      <li><strong>Fokus-Wort:</strong> W\u00e4hle ein Wort, das dich stark macht (z.B. \u201eLos!\u201c, \u201eRuhe!\u201c)</li>
+      <li><strong>K\u00f6rper-Reset:</strong> Sch\u00fcttel Arme und Beine aus, stell dich aufrecht hin</li>
+    </ul>
+  </div>
+
+  ${age === 'u19' ? `
+  <div class="content-block">
+    <h3>&#129504; Fortgeschritten: Arousal-Regulation</h3>
+    <p>Jeder Spieler hat ein optimales Aktivierungslevel. Manche brauchen mehr Energie (Aktivierung hoch), andere m\u00fcssen sich eher beruhigen (Aktivierung runter). Finde heraus, was f\u00fcr dich passt:</p>
+    <ul>
+      <li><strong>Zu ruhig?</strong> Schnelle Atemz\u00fcge, dynamische Bewegungen, motivierende Selbstgespr\u00e4che</li>
+      <li><strong>Zu aufgedreht?</strong> Box-Breathing, progressive Muskelentspannung, Fokus auf den Prozess</li>
+    </ul>
+  </div>` : ''}
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge der Woche</div>
+    <p style="color:var(--text);margin:0">\u00dcbe vor jedem Training dein Anti-Druck-Ritual: 3x Power-Atem + dein Fokus-Wort!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Druck ist dein Freund \u2013 er zeigt dir, dass es wichtig ist. Atme, fokussiere, und leg los!</strong></p>
+  </div>`;
+}
+
+function buildModule3(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128170; Jeder macht Fehler \u2013 jeder!</h3>
+    <p>${ageText(
+      'Fehlpass. Danebengeschossen. Das \u00e4rgert! Aber selbst die allerbesten Spieler der Welt machen st\u00e4ndig Fehler. Der Unterschied: Sie lassen sich davon nicht runterziehen.',
+      'Im Profifu\u00dfball gelingen nur ca. 10% aller Torsch\u00fcsse. 9 von 10 gehen daneben \u2013 und das ist v\u00f6llig normal. Entscheidend ist, wie du nach einem Fehler reagierst.',
+      'Fehler geh\u00f6ren zum Spiel. Die besten Spieler zeichnet nicht Fehlerfreiheit aus, sondern ihre F\u00e4higkeit, nach einem Fehler sofort wieder voll da zu sein.'
+    )}</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Die Fehler-Spirale &amp; die 10-Sekunden-Regel</h3>
+    <p>Fehler &rarr; \u00c4rger &rarr; Unsicherheit &rarr; n\u00e4chster Fehler &rarr; noch mehr \u00c4rger. Das ist die <strong>Fehler-Spirale</strong>.</p>
+    <p>Die L\u00f6sung: Du darfst dich <strong>10 Sekunden lang</strong> \u00e4rgern. Dann: <strong>Strich drunter.</strong> N\u00e4chste Aktion!</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Fehler-Tagebuch</div>
+    <p style="color:var(--text);margin:0">Denk an deinen letzten Fehler und beantworte 3 Fragen:</p>
+    <ul style="margin-top:8px">
+      <li><strong>Was ist passiert?</strong></li>
+      <li><strong>Was kann ich daraus lernen?</strong></li>
+      <li><strong>Was mache ich n\u00e4chstes Mal besser?</strong></li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>&#127915; Quiz: Wie reagierst du richtig?</h3>
+    <p>Du machst einen Fehlpass und der Gegner hat den Ball. Was ist die beste Reaktion?</p>
+    <div id="quiz1">
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) Mich laut aufregen und auf den Boden stampfen</div>
+      <div class="quiz-option" data-correct onclick="checkQuiz(this, true)">B) 10 Sek. \u00e4rgern, Strich drunter, sofort nachsetzen</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) Die Schuld auf meinen Mitspieler schieben</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">D) Kopf h\u00e4ngen lassen und hoffen, dass keiner mir den Ball gibt</div>
+    </div>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Fehler sind keine Niederlagen \u2013 sie sind Trainingseinheiten f\u00fcr deinen Kopf!</strong></p>
+  </div>`;
+}
+
+function buildModule4(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128293; Glaub an dich!</h3>
+    <p>Selbstvertrauen ist wie ein Akku. Manchmal voll geladen, manchmal fast leer. Du bestimmst, wie du ihn aufl\u00e4dst.</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Meine Top-5-St\u00e4rken</div>
+    <p style="color:var(--text);margin:0">Schreib deine 5 gr\u00f6\u00dften St\u00e4rken auf dem Platz auf und h\u00e4ng die Liste neben dein Bett. Lies sie vor jedem Spiel!</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Die Highlight-Technik</h3>
+    <p>Schlie\u00df die Augen und erinnere dich an deinen besten Moment auf dem Platz. Dein sch\u00f6nstes Tor, dein bestes Dribbling. Sp\u00fcr das Gef\u00fchl nochmal. <strong>Das bist du. Das kannst du.</strong></p>
+  </div>
+
+  <div class="content-block">
+    <h3>Positive Selbstgespr\u00e4che</h3>
+    <p>Was du dir selbst sagst, beeinflusst, wie du spielst. Statt \u201eIch kann das nicht\u201c sag dir:</p>
+    <ul>
+      <li>\u201eIch werde besser mit jeder Aktion\u201c</li>
+      <li>\u201eIch bin vorbereitet\u201c</li>
+      <li>\u201eIch liebe diese Herausforderung\u201c</li>
+    </ul>
+  </div>
+
+  ${age === 'u19' ? `
+  <div class="content-block">
+    <h3>&#129504; Fortgeschritten: Kognitive Umstrukturierung</h3>
+    <p>Achte gezielt auf deine <strong>automatischen negativen Gedanken</strong> (ANGs). Oft laufen sie unbewusst ab: \u201eIch bin nicht gut genug\u201c, \u201eDie anderen sind besser\u201c. Schreib sie auf, hinterfrage sie rational, und ersetze sie durch realistische, hilfreiche Alternativen.</p>
+  </div>` : ''}
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge der Woche</div>
+    <p style="color:var(--text);margin:0">Schreib dir 3 Power-S\u00e4tze auf und lies sie jeden Morgen laut vor \u2013 eine Woche lang! Nutze daf\u00fcr das Power-S\u00e4tze-Tool.</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Selbstvertrauen kommt nicht von allein \u2013 du baust es jeden Tag auf!</strong></p>
+  </div>`;
+}
+
+function buildModule5(age) {
+  return `
+  <div class="content-block">
+    <h3>&#127919; Voll fokussiert</h3>
+    <p>Konzentration bedeutet: Dein Kopf ist genau <strong>da, wo deine F\u00fc\u00dfe sind</strong> \u2013 auf dem Platz, im Moment, bei der Aktion.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Der Aufmerksamkeits-Scheinwerfer</h3>
+    <p>Stell dir einen Scheinwerfer im Kopf vor. Du entscheidest, worauf er leuchtet:</p>
+    <ul>
+      <li><strong>Ball</strong> \u2013 Wo ist der Ball?</li>
+      <li><strong>Mitspieler</strong> \u2013 Wer ist frei?</li>
+      <li><strong>Raum</strong> \u2013 Wo ist Platz?</li>
+      <li><strong>Gegner</strong> \u2013 Was macht mein Gegenspieler?</li>
+    </ul>
+    <p>Wenn der Scheinwerfer auf \u201eAngst vor Fehlern\u201c leuchtet \u2013 schalte ihn um!</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Fokus-Trigger</div>
+    <p style="color:var(--text);margin:0">W\u00e4hle eine Geste als Reset-Knopf f\u00fcr deinen Kopf: In die H\u00e4nde klatschen, am Trikot zupfen, oder einmal auf den Boden tippen.</p>
+  </div>
+
+  ${age !== 'u11' ? `
+  <div class="content-block">
+    <h3>&#129504; Achtsamkeit im Sport</h3>
+    <p>Achtsamkeit bedeutet, den Moment wahrzunehmen, ohne ihn zu bewerten. Im Fu\u00dfball hei\u00dft das: Du nimmst wahr, was passiert, ohne in Gedanken abzuschweifen. \u00dcbe das auch abseits des Platzes \u2013 zum Beispiel beim Essen, Gehen oder Z\u00e4hneputzen.</p>
+  </div>` : ''}
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; 60-Sekunden-Challenge</div>
+    <p style="color:var(--text);margin:0">Nutze den Fokus-Timer im Tools-Bereich: 60 Sekunden lang nur an deine Atmung denken. Wie viele Atemz\u00fcge schaffst du ohne Ablenkung?</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Dein Kopf kann nur auf eine Sache richtig fokussieren. Lenke deinen Scheinwerfer auf das, was z\u00e4hlt!</strong></p>
+  </div>`;
+}
+
+function buildModule6(age) {
+  return `
+  <div class="content-block">
+    <h3>&#127754; Was ist der Flow?</h3>
+    <p>Kennst du Momente, in denen alles wie automatisch l\u00e4uft? Du triffst die richtigen Entscheidungen, denkst gar nicht nach \u2013 du <strong>machst</strong> einfach. Das ist der <strong>Flow</strong>.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Wie kommst du in den Flow?</h3>
+    <ul>
+      <li><strong>Die Aufgabe passt zu deinem K\u00f6nnen</strong> \u2013 nicht zu leicht, nicht zu schwer</li>
+      <li><strong>Du bist voll konzentriert</strong> \u2013 keine Ablenkungen</li>
+      <li><strong>Du hast Spa\u00df</strong> \u2013 du genie\u00dft das Spiel</li>
+      <li><strong>Keine Angst vor Fehlern</strong> \u2013 du spielst frei auf</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>Flow-Killer vermeiden</h3>
+    <ul>
+      <li>Zu viel nachdenken</li>
+      <li>Sich \u00fcber Fehler \u00e4rgern</li>
+      <li>Angst vor dem Ergebnis</li>
+      <li>Sich mit anderen vergleichen</li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Meine Flow-Momente</div>
+    <p style="color:var(--text);margin:0">Erinnere dich an ein Spiel oder Training, in dem du im Flow warst. Was war anders? Was hat dazu gef\u00fchrt? Schreib es auf!</p>
+  </div>
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge</div>
+    <p style="color:var(--text);margin:0">N\u00e4chstes Training: 15 Minuten ohne negativen Gedanken. Einfach nur spielen und Spa\u00df haben!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Flow entsteht, wenn du aufh\u00f6rst nachzudenken und anf\u00e4ngst zu spielen!</strong></p>
+  </div>`;
+}
+
+function buildModule7(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128548; Wenn es mal nicht l\u00e4uft</h3>
+    <p>${ageText(
+      'Du wirst nicht aufgestellt. Dein Team verliert hoch. Das sind blöde Momente. Und es ist okay, traurig zu sein!',
+      'Nicht aufgestellt. 0:5 verloren. Elfmeter verschossen. Das sind harte Momente. Aber: Ein R\u00fcckschlag ist kein R\u00fcckstand.',
+      'Nicht in den Kader berufen. Verletzung vor dem wichtigen Sichtungstraining. Abstieg mit dem Team. R\u00fcckschl\u00e4ge k\u00f6nnen deine gr\u00f6\u00dften Lehrer sein.'
+    )}</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Die Comeback-Formel</h3>
+    <ul>
+      <li><strong>1. F\u00fchlen</strong> \u2013 Lass die Gef\u00fchle zu. Es ist okay, frustriert zu sein.</li>
+      <li><strong>2. Verstehen</strong> \u2013 Was genau ist passiert? Was kannst du beeinflussen?</li>
+      <li><strong>3. Handeln</strong> \u2013 Was ist der n\u00e4chste kleine Schritt?</li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Comeback-Plan</div>
+    <p style="color:var(--text);margin:0">Denk an einen R\u00fcckschlag: Wie hast du dich gef\u00fchlt? Was hast du gelernt? Was ist dein n\u00e4chster Schritt?</p>
+  </div>
+
+  ${age === 'u19' ? `
+  <div class="content-block">
+    <h3>&#129504; Resilienz aufbauen</h3>
+    <p>Resilienz ist die F\u00e4higkeit, nach R\u00fcckschl\u00e4gen schnell wieder aufzustehen. Sie w\u00e4chst durch:</p>
+    <ul>
+      <li><strong>Soziale Unterst\u00fctzung</strong> \u2013 Vertrauenspersonen haben (Trainer, Familie, Freunde)</li>
+      <li><strong>Kontrollierbare Ziele</strong> \u2013 Fokus auf das, was du beeinflussen kannst</li>
+      <li><strong>Perspektivwechsel</strong> \u2013 R\u00fcckschl\u00e4ge als Wachstumschance sehen</li>
+      <li><strong>Routine</strong> \u2013 Feste Strukturen geben Halt in unsicheren Zeiten</li>
+    </ul>
+  </div>` : ''}
+
+  <div class="box-story">
+    <strong>Denk dran:</strong> Jeder Profi hat R\u00fcckschl\u00e4ge erlebt. Was sie ausmacht: Sie haben nie aufgegeben.
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Nicht der Fall definiert dich, sondern wie du wieder aufstehst.</strong></p>
+  </div>`;
+}
+
+function buildModule8(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128483;&#65039; Reden ist Gold</h3>
+    <p>Auf dem Platz zu reden ist ein Zeichen von <strong>F\u00fchrung</strong>. Die besten Teams kommunizieren st\u00e4ndig.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>3 Arten der Kommunikation</h3>
+    <ul>
+      <li><strong>Infos geben:</strong> \u201eIch bin frei!\u201c, \u201eZeit!\u201c, \u201eR\u00fcckraum!\u201c</li>
+      <li><strong>Mut machen:</strong> \u201eStark gemacht!\u201c, \u201eWeiter so!\u201c, \u201eWir schaffen das!\u201c</li>
+      <li><strong>K\u00f6rpersprache:</strong> Aufrechte Haltung, Blickkontakt, Daumen hoch</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>&#127915; Quiz</h3>
+    <p>Dein Mitspieler macht einen Fehlpass und senkt den Kopf. Was sagst du?</p>
+    <div id="quiz2">
+      <div class="quiz-option" onclick="checkQuiz(this, false)">A) \u201eEy, was war das denn?!\u201c</div>
+      <div class="quiz-option" data-correct onclick="checkQuiz(this, true)">B) \u201eKein Ding! Weiter, n\u00e4chster Ball geh\u00f6rt dir!\u201c</div>
+      <div class="quiz-option" onclick="checkQuiz(this, false)">C) Gar nichts sagen und weggucken</div>
+    </div>
+  </div>
+
+  <div class="content-block">
+    <h3>K\u00f6rpersprache-Check</h3>
+    <ul>
+      <li><strong>Stark:</strong> Kopf hoch, Brust raus, Blickkontakt</li>
+      <li><strong>Schwach:</strong> Kopf h\u00e4ngen lassen, Schultern nach vorne, wegschauen</li>
+    </ul>
+    <p>Tipp: Auch wenn du dich schlecht f\u00fchlst \u2013 tu so, als w\u00e4rst du stark. Dein K\u00f6rper sendet dann positive Signale an dein Gehirn!</p>
+  </div>
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge</div>
+    <p style="color:var(--text);margin:0">N\u00e4chstes Training: Sag mindestens <strong>10 ermutigende Sachen</strong> zu deinen Mitspielern!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Sei der Spieler, der andere besser macht!</strong></p>
+  </div>`;
+}
+
+function buildModule9(age) {
+  return `
+  <div class="content-block">
+    <h3>&#127793; Dein Weg zum Ziel</h3>
+    <p>Ohne Ziel ist es wie Fu\u00dfball ohne Tor \u2013 du l\u00e4ufst, aber wei\u00dft nicht wohin.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Die 3 Arten von Zielen</h3>
+    <ul>
+      <li><strong>Ergebnis-Ziele:</strong> \u201eIn die Bezirksauswahl\u201c \u2013 motivierend, aber schwer zu kontrollieren</li>
+      <li><strong>Leistungs-Ziele:</strong> \u201ePassquote auf 80%\u201c \u2013 messbar und in deiner Hand</li>
+      <li><strong>Prozess-Ziele:</strong> \u201eJeden Tag 20 Min. schwacher Fu\u00df\u201c \u2013 <strong>die wichtigsten!</strong></li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Mein Ziele-Dreieck</div>
+    <p style="color:var(--text);margin:0">Schreib f\u00fcr jede Ebene ein Ziel auf:</p>
+    <ul style="margin-top:8px">
+      <li><strong>Traum-Ziel</strong> (langfristig)</li>
+      <li><strong>Leistungs-Ziel</strong> (diese Saison)</li>
+      <li><strong>Prozess-Ziel</strong> (diese Woche)</li>
+    </ul>
+  </div>
+
+  ${age !== 'u11' ? `
+  <div class="content-block">
+    <h3>&#129504; SMART-Ziele</h3>
+    <p>Gute Ziele sind <strong>SMART</strong>:</p>
+    <ul>
+      <li><strong>S</strong>pezifisch \u2013 genau formuliert</li>
+      <li><strong>M</strong>essbar \u2013 du kannst messen, ob du es erreicht hast</li>
+      <li><strong>A</strong>ttraktiv \u2013 es motiviert dich</li>
+      <li><strong>R</strong>ealistisch \u2013 herausfordernd, aber machbar</li>
+      <li><strong>T</strong>erminiert \u2013 mit klarem Zeitrahmen</li>
+    </ul>
+  </div>` : ''}
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Konzentrier dich auf den Prozess \u2013 die Ergebnisse kommen von allein!</strong></p>
+  </div>`;
+}
+
+function buildModule10(age) {
+  return `
+  <div class="content-block">
+    <h3>&#127941; Spieltag \u2013 dein Ritual</h3>
+    <p>Routinen signalisieren deinem Kopf: \u201eJetzt geht\u2019s los. Ich bin bereit.\u201c</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Dein Matchday-Plan</h3>
+    <ul>
+      <li><strong>Morgens:</strong> Power-S\u00e4tze und Top-5-St\u00e4rken lesen</li>
+      <li><strong>1 Stunde vorher:</strong> 3 Situationen visualisieren, in denen du gut spielst</li>
+      <li><strong>In der Kabine:</strong> Musik h\u00f6ren, die dich pusht</li>
+      <li><strong>Beim Aufw\u00e4rmen:</strong> Fokus-Trigger + 3x Power-Atem</li>
+      <li><strong>Vor dem Anpfiff:</strong> Fokus-Wort, starke K\u00f6rpersprache</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>Visualisierung \u2013 dein Geheimtrick</h3>
+    <p>Schlie\u00df die Augen und stell dir eine super Aktion vor. Sieh den Rasen, den Ball, die Spieler. H\u00f6r die Zuschauer. Je genauer dein \u201eKopfkino\u201c, desto besser!</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Mein pers\u00f6nliches Ritual</div>
+    <p style="color:var(--text);margin:0">Erstelle dein eigenes Matchday-Ritual f\u00fcr: Am Morgen, auf dem Weg zum Spiel, direkt vor dem Anpfiff. Nutze die Matchday-Checkliste im Tools-Bereich!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Ein gutes Ritual gibt dir Sicherheit. Finde deins!</strong></p>
+  </div>`;
+}
+
+function buildModule11(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128524; Die Kraft der Atmung</h3>
+    <p>Dein Atem ist die Fernbedienung f\u00fcr deinen K\u00f6rper. Schnelle Atmung = Stress. Langsame Atmung = Ruhe und Kontrolle.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Box-Breathing (Kisten-Atmung)</h3>
+    <p>Nutze das Atem-Tool im Tools-Bereich f\u00fcr eine gef\u00fchrte \u00dcbung!</p>
+    <ul>
+      <li><strong>4 Sekunden einatmen</strong></li>
+      <li><strong>4 Sekunden Luft halten</strong></li>
+      <li><strong>4 Sekunden ausatmen</strong></li>
+      <li><strong>4 Sekunden Pause</strong></li>
+    </ul>
+    <p style="text-align:center;margin-top:16px">
+      <button class="breath-btn" onclick="openModal('breath')">&#128524; Jetzt ausprobieren</button>
+    </p>
+  </div>
+
+  <div class="content-block">
+    <h3>Progressive Muskelentspannung</h3>
+    <p>Spann f\u00fcr 5 Sekunden verschiedene Muskeln fest an \u2013 und lass locker:</p>
+    <ul>
+      <li>F\u00e4uste &rarr; lockerlassen</li>
+      <li>Schultern hochziehen &rarr; fallenlassen</li>
+      <li>Gesicht zusammenkneifen &rarr; entspannen</li>
+      <li>Zehen einrollen &rarr; lockerlassen</li>
+    </ul>
+  </div>
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge</div>
+    <p style="color:var(--text);margin:0">Mach Box-Breathing <strong>jeden Abend vor dem Einschlafen</strong> \u2013 eine Woche lang!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Dein Atem ist deine Superkraft. 3 tiefe Atemz\u00fcge k\u00f6nnen alles ver\u00e4ndern!</strong></p>
+  </div>`;
+}
+
+function buildModule12(age) {
+  return `
+  <div class="content-block">
+    <h3>&#127942; Du hast es geschafft!</h3>
+    <p>In den letzten Modulen hast du unglaublich viel gelernt. Jetzt bringst du alles zusammen.</p>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Dein Gesamtplan</div>
+    <p style="color:var(--text);margin:0">F\u00fcll deinen pers\u00f6nlichen Mentalst\u00e4rke-Plan aus:</p>
+    <ul style="margin-top:8px">
+      <li><strong>Mein Fokus-Wort:</strong> ___</li>
+      <li><strong>Meine 3 Power-S\u00e4tze</strong> (im Tool gespeichert)</li>
+      <li><strong>Mein Fokus-Trigger:</strong> ___</li>
+      <li><strong>Mein Matchday-Ritual</strong></li>
+      <li><strong>Meine 10-Sekunden-Regel</strong></li>
+      <li><strong>Mein Prozess-Ziel diese Woche:</strong> ___</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>Dein t\u00e4glicher Mental-Trainingsplan</h3>
+    <ul>
+      <li><strong>Jeden Morgen:</strong> Power-S\u00e4tze lesen (30 Sek.)</li>
+      <li><strong>Vor dem Training:</strong> Fokus-Wort + Power-Atem (1 Min.)</li>
+      <li><strong>Im Training:</strong> Fokus-Trigger nutzen, 10-Sekunden-Regel bei Fehlern</li>
+      <li><strong>Nach dem Training:</strong> 1 Sache aufschreiben, die gut war</li>
+      <li><strong>Vor dem Spiel:</strong> Matchday-Ritual durchziehen</li>
+      <li><strong>Abends:</strong> Box-Breathing zum Einschlafen (2 Min.)</li>
+    </ul>
+  </div>
+
+  <div class="box-story">
+    <strong>Eine letzte Sache:</strong> Mentalst\u00e4rke ist kein Schalter, den du einmal umlegst. Es ist eine Reise. Solange du dranbleibst, wirst du immer st\u00e4rker. Du schaffst das!
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Letzter Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Du bist mental st\u00e4rker als du denkst. Geh raus auf den Platz und zeig es!</strong></p>
+  </div>`;
+}
+
+// ===== BONUS MODULES =====
+function buildModuleSocial(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128241; Die Highlight-Falle</h3>
+    <p>Auf Social Media siehst du immer nur die besten Momente anderer Spieler \u2013 die Traumtore, die perfekten Dribblings. Was du <strong>nicht</strong> siehst: die 100 Fehlversuche davor, die Frustration, die harte Arbeit.</p>
+    <p>${age === 'u19' ?
+      'Studien zeigen, dass \u00fcberm\u00e4\u00dfiger Social-Media-Konsum bei jungen Sportlern zu niedrigerem Selbstwertgef\u00fchl und h\u00f6herem Leistungsdruck f\u00fchren kann.' :
+      'Wenn du dich st\u00e4ndig mit den Highlight-Reels anderer vergleichst, f\u00fchlt sich dein eigenes Spiel automatisch schlechter an \u2013 obwohl das gar nicht stimmt!'
+    }</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Vergleichs-Falle vermeiden</h3>
+    <ul>
+      <li><strong>Vergleiche dich nur mit dir selbst</strong> \u2013 Wo warst du vor 3 Monaten? Wo bist du jetzt?</li>
+      <li><strong>Limit setzen:</strong> Vor dem Spiel kein Social Media \u2013 dein Kopf braucht Ruhe</li>
+      <li><strong>Inspiration statt Vergleich:</strong> Lass dich motivieren, aber miss dich nicht an anderen</li>
+      <li><strong>Realit\u00e4tscheck:</strong> Hinter jedem Highlight-Reel stecken tausende Stunden Training</li>
+    </ul>
+  </div>
+
+  <div class="box-challenge">
+    <div class="box-label">&#127919; Challenge</div>
+    <p style="color:var(--text);margin:0">Eine Woche lang: Kein Social Media am Spieltag. Beobachte, wie sich das auf deine Stimmung und dein Spiel auswirkt!</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Dein einziger Ma\u00dfstab bist du selbst \u2013 gestern vs. heute!</strong></p>
+  </div>`;
+}
+
+function buildModuleBalance(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128218; Zwei Welten, ein Kopf</h3>
+    <p>${age === 'u19' ?
+      'Abitur, Ausbildung oder Studium plus Leistungsfu\u00dfball \u2013 das ist ein Balanceakt. Aber beides ist m\u00f6glich, wenn du deine Energie klug einteilst und lernst, zwischen den Rollen zu wechseln.' :
+      'Schule und Fu\u00dfball unter einen Hut zu kriegen ist manchmal echt schwer. Klassenarbeit am n\u00e4chsten Tag und abends noch Training? Das stresst!'
+    }</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Tipps f\u00fcr die Balance</h3>
+    <ul>
+      <li><strong>Klare Grenzen:</strong> Wenn du lernst, lerne. Wenn du trainierst, trainiere. Kein Multitasking.</li>
+      <li><strong>Wochenplan:</strong> Trage Training, Schule und Freizeit fest ein \u2013 so vergisst du nichts</li>
+      <li><strong>Pufferzeiten:</strong> Plane nie alles Minute f\u00fcr Minute \u2013 Puffer reduzieren Stress</li>
+      <li><strong>Erholung ist Pflicht:</strong> Dein Gehirn braucht Pausen, um zu lernen UND zu performen</li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Mein Wochenplan</div>
+    <p style="color:var(--text);margin:0">Erstelle einen Wochenplan mit festen Bl\u00f6cken f\u00fcr: Schule/Lernen, Training/Spiel, Freizeit/Erholung. Wo sind deine Engp\u00e4sse?</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Balance hei\u00dft nicht 50/50 \u2013 es hei\u00dft, im richtigen Moment voll da zu sein!</strong></p>
+  </div>`;
+}
+
+function buildModuleExpectations(age) {
+  return `
+  <div class="content-block">
+    <h3>&#128101; Erwartungen von allen Seiten</h3>
+    <p>Trainer wollen Leistung. Eltern wollen das Beste f\u00fcr dich. Scouts beobachten. Mitspieler z\u00e4hlen auf dich. Und du selbst hast auch Anspr\u00fcche. Das kann ganz sch\u00f6n viel werden.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Was du kontrollieren kannst</h3>
+    <p>Mach dir bewusst: Du kannst nicht kontrollieren, was andere von dir erwarten. Aber du kannst kontrollieren:</p>
+    <ul>
+      <li><strong>Deine Einstellung</strong> \u2013 mit welcher Haltung du auf den Platz gehst</li>
+      <li><strong>Deinen Einsatz</strong> \u2013 wie viel du gibst</li>
+      <li><strong>Deine Vorbereitung</strong> \u2013 wie professionell du dich vorbereitest</li>
+      <li><strong>Deine Reaktion</strong> \u2013 wie du mit Feedback umgehst</li>
+    </ul>
+  </div>
+
+  <div class="content-block">
+    <h3>Gespr\u00e4che f\u00fchren</h3>
+    <p>Wenn der Druck von au\u00dfen zu gro\u00df wird, hilft reden:</p>
+    <ul>
+      <li><strong>Mit dem Trainer:</strong> Frag nach konkretem Feedback \u2013 was genau soll besser werden?</li>
+      <li><strong>Mit den Eltern:</strong> Erkl\u00e4re, was dir hilft und was dich unter Druck setzt</li>
+      <li><strong>Mit Vertrauenspersonen:</strong> Manchmal hilft ein Gespr\u00e4ch au\u00dferhalb des Fu\u00dfballs</li>
+    </ul>
+  </div>
+
+  <div class="box-exercise">
+    <div class="box-label">&#9997;&#65039; Erwartungs-Check</div>
+    <p style="color:var(--text);margin:0">Schreib auf: Was erwarte ich von mir selbst? Was erwarten andere? Wo \u00fcberschneidet sich das \u2013 und wo entsteht Druck?</p>
+  </div>
+
+  <div class="box-tip">
+    <div class="box-label">&#128161; Merksatz</div>
+    <p style="color:var(--text);margin:0"><strong>Spiel f\u00fcr dich \u2013 nicht f\u00fcr die Erwartungen anderer. Dein Weg, dein Tempo.</strong></p>
+  </div>`;
+}
+</script>
+</body>
+</html>
