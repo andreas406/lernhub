@@ -72,14 +72,6 @@
     "category": "aktuelles"
   },
   {
-    "id": "quiz-demo",
-    "name": "Quiz Demo",
-    "description": "Ein Beispiel-Quiz mit Multiple Choice",
-    "icon": "❓",
-    "path": "modules/quiz-demo/index.html",
-    "category": "aktuelles"
-  },
-  {
     "id": "mentaltraining",
     "name": "Mental stark auf dem Platz",
     "description": "Mentaltraining für junge Sportler",
