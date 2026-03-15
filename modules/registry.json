@@ -86,5 +86,13 @@
     "icon": "⚽",
     "path": "modules/fussball-sommer/index.html",
     "category": "fussball"
+  },
+  {
+    "id": "fussball-tagebuch",
+    "name": "Fußball-Tagebuch",
+    "description": "Trainingseinheiten dokumentieren, Fortschritte tracken & PDF-Export",
+    "icon": "📓",
+    "path": "modules/fussball-tagebuch/index.html",
+    "category": "fussball"
   }
 ]

@@ -1,0 +1,16 @@
+{
+  "name": "Fußball-Tagebuch",
+  "short_name": "Fußball App",
+  "description": "Ein Tagebuch zur Erfassung von Fußballspielen und Statistiken.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#e9ecef",
+  "theme_color": "#28a745",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
