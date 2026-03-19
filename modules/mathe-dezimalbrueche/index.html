@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mathe-Test: Dezimalbrüche</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh}
+.app{max-width:600px;margin:0 auto;padding:16px 20px}
+h1{font-size:22px;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:#64748b;font-size:14px;margin-bottom:16px}
+
+/* Timer & Progress Bar */
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px}
+.timer{font-size:15px;font-weight:600;color:#1e293b;white-space:nowrap;min-width:60px;text-align:right}
+.timer.warn{color:#f59e0b}
+.timer.critical{color:#ef4444;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.progress-bar{flex:1;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:#3b82f6;border-radius:4px;transition:width .3s}
+.score-display{font-size:14px;font-weight:600;color:#3b82f6;white-space:nowrap}
+
+/* Section tabs */
+.tabs{display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:8px 12px;border:2px solid #e2e8f0;border-radius:8px;background:#fff;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:.2s}
+.tab.active{border-color:#3b82f6;background:#eff6ff;color:#3b82f6}
+.tab.done{border-color:#22c55e;background:#f0fdf4;color:#16a34a}
+.tab .count{font-size:11px;color:#94a3b8;margin-left:4px}
+
+/* Card */
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:12px}
+.q-num{font-size:12px;color:#94a3b8;margin-bottom:6px}
+.question{font-size:17px;font-weight:500;margin-bottom:16px;line-height:1.5}
+.question .formula{display:inline-block;background:#fefce8;padding:2px 8px;border-radius:4px;font-family:ui-monospace,monospace;font-weight:600}
+
+/* Multiple Choice */
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{padding:12px 16px;border:2px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:15px;cursor:pointer;transition:.15s;text-align:left}
+.opt:active{transform:scale(.98)}
+.opt.correct{border-color:#22c55e;background:#dcfce7;color:#166534}
+.opt.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.opt.disabled{pointer-events:none;opacity:.6}
+.opt.highlight{border-color:#22c55e;background:#dcfce7}
+
+/* Free Input */
+.input-row{display:flex;gap:10px;align-items:center}
+.input-row input{flex:1;padding:10px 14px;border:2px solid #e2e8f0;border-radius:8px;font-size:18px;font-family:ui-monospace,monospace;text-align:center;outline:none;max-width:200px}
+.input-row input:focus{border-color:#3b82f6}
+.input-row input.correct{border-color:#22c55e;background:#dcfce7}
+.input-row input.wrong{border-color:#ef4444;background:#fee2e2}
+.check-btn{padding:10px 20px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer}
+.check-btn:active{background:#2563eb}
+.check-btn:disabled{background:#94a3b8;cursor:default}
+
+/* Ordering */
+.order-items{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.order-item{padding:8px 14px;border:2px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:16px;font-family:ui-monospace,monospace;cursor:pointer;transition:.15s;user-select:none}
+.order-item:active{transform:scale(.95)}
+.order-item.selected{border-color:#3b82f6;background:#eff6ff;color:#3b82f6}
+.order-item.placed{border-color:#94a3b8;background:#f1f5f9;color:#94a3b8;cursor:default}
+.order-slots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;min-height:44px;padding:8px;background:#f1f5f9;border-radius:8px;margin-bottom:12px}
+.order-slots .slot{padding:6px 12px;background:#fff;border:2px dashed #cbd5e1;border-radius:6px;font-size:15px;font-family:ui-monospace,monospace;cursor:pointer;min-width:50px;text-align:center}
+.order-slots .slot.filled{border-style:solid;border-color:#3b82f6;background:#eff6ff}
+.order-slots .arrow{color:#94a3b8;font-size:14px}
+
+/* Feedback */
+.feedback{margin-top:12px;padding:10px 14px;border-radius:8px;font-size:14px;line-height:1.5}
+.feedback.ok{background:#dcfce7;color:#166534}
+.feedback.nope{background:#fee2e2;color:#991b1b}
+
+/* Results */
+.results{text-align:center;padding:20px 0}
+.results .emoji{font-size:64px;margin-bottom:12px}
+.results .score-big{font-size:36px;font-weight:700;color:#1e293b}
+.results .score-label{font-size:15px;color:#64748b;margin-bottom:20px}
+.results .breakdown{display:flex;flex-direction:column;gap:8px;text-align:left;margin-bottom:20px}
+.results .breakdown .row{display:flex;justify-content:space-between;padding:8px 12px;background:#f1f5f9;border-radius:6px;font-size:14px}
+.results .breakdown .row .name{color:#475569}
+.results .breakdown .row .val{font-weight:600}
+.results .breakdown .row .val.green{color:#16a34a}
+.results .breakdown .row .val.red{color:#ef4444}
+.btn{display:inline-block;padding:12px 24px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
+.btn:active{background:#2563eb}
+.btn.outline{background:transparent;color:#3b82f6;border:2px solid #3b82f6}
+
+/* Start screen */
+.start{text-align:center;padding:30px 0}
+.start .icon{font-size:48px;margin-bottom:12px}
+.start h2{font-size:20px;margin-bottom:8px}
+.start p{color:#64748b;font-size:14px;margin-bottom:6px;line-height:1.5}
+.start .topics{text-align:left;margin:16px 0;padding:12px 16px;background:#eff6ff;border-radius:8px}
+.start .topics li{font-size:14px;margin:4px 0;color:#1e293b}
+.mode-btns{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// ============================================================
+// DEZIMALBRÜCHE TEST — 6. Klasse Brandenburg
+// ============================================================
+
+const SECTIONS = {
+  umwandeln: {
+    title: "Umwandeln",
+    questions: [
+      {type:"mc",q:"Welcher Bruch entspricht <span class='formula'>0,75</span>?",opts:["¾","⅗","⅝","7/10"],correct:0,explain:"0,75 = 75/100 = ¾"},
+      {type:"mc",q:"Wandle <span class='formula'>⅜</span> in einen Dezimalbruch um.",opts:["0,375","0,38","0,35","0,3"],correct:0,explain:"3 ÷ 8 = 0,375"},
+      {type:"input",q:"Schreibe als Dezimalzahl: <span class='formula'>17/20</span>",answer:"0,85",explain:"17 ÷ 20 = 0,85"},
+      {type:"mc",q:"Welcher Dezimalbruch entspricht <span class='formula'>⅔</span>?",opts:["0,6̄ (0,666…)","0,67","0,6","0,65"],correct:0,explain:"2 ÷ 3 = 0,666… (periodisch)"},
+      {type:"input",q:"Schreibe als Bruch (z.B. 3/4): <span class='formula'>0,4</span>",answer:"2/5",accept:["2/5","4/10"],explain:"0,4 = 4/10 = 2/5"},
+    ]
+  },
+  vergleichen: {
+    title: "Vergleichen",
+    questions: [
+      {type:"order",q:"Ordne aufsteigend (kleinste zuerst):",items:["0,7","0,09","0,65","0,701"],correctOrder:["0,09","0,65","0,7","0,701"],explain:"0,09 < 0,65 < 0,7 < 0,701"},
+      {type:"mc",q:"Welche Aussage ist richtig?",opts:["0,30 = 0,3","0,30 > 0,3","0,30 < 0,3","Kann man nicht vergleichen"],correct:0,explain:"Endnullen ändern den Wert nicht: 0,30 = 0,3"},
+      {type:"mc",q:"Welche Zahl liegt zwischen <span class='formula'>0,4</span> und <span class='formula'>0,5</span>?",opts:["0,45","0,54","0,39","0,04"],correct:0,explain:"0,4 < 0,45 < 0,5"},
+      {type:"order",q:"Ordne absteigend (größte zuerst):",items:["1,09","1,9","1,19","0,99"],correctOrder:["1,9","1,19","1,09","0,99"],explain:"1,9 > 1,19 > 1,09 > 0,99"},
+      {type:"mc",q:"Was ist größer: <span class='formula'>0,8</span> oder <span class='formula'>0,08</span>?",opts:["0,8","0,08","Beide gleich groß","Kommt drauf an"],correct:0,explain:"0,8 = 0,80, und 0,80 > 0,08"},
+    ]
+  },
+  addSub: {
+    title: "＋ / −",
+    questions: [
+      {type:"input",q:"Rechne: <span class='formula'>3,47 + 2,85</span>",answer:"6,32",explain:"3,47 + 2,85 = 6,32 (Komma untereinander!)"},
+      {type:"input",q:"Rechne: <span class='formula'>10 − 4,63</span>",answer:"5,37",explain:"10,00 − 4,63 = 5,37"},
+      {type:"input",q:"Rechne: <span class='formula'>0,8 + 0,75 + 0,45</span>",answer:"2",accept:["2","2,0","2,00"],explain:"0,80 + 0,75 + 0,45 = 2,00 = 2"},
+      {type:"mc",q:"Lea hat 20 €. Sie kauft für 7,49 € und 3,99 €. Wie viel bleibt übrig?",opts:["8,52 €","9,52 €","8,42 €","9,48 €"],correct:0,explain:"20 − 7,49 − 3,99 = 20 − 11,48 = 8,52 €"},
+      {type:"input",q:"Rechne: <span class='formula'>15,03 − 8,7</span>",answer:"6,33",explain:"15,03 − 8,70 = 6,33"},
+    ]
+  },
+  mulDiv: {
+    title: "× / ÷",
+    questions: [
+      {type:"input",q:"Rechne: <span class='formula'>2,5 × 4</span>",answer:"10",accept:["10","10,0"],explain:"2,5 × 4 = 10"},
+      {type:"input",q:"Rechne: <span class='formula'>0,6 × 0,3</span>",answer:"0,18",explain:"6 × 3 = 18, zwei Nachkommastellen → 0,18"},
+      {type:"input",q:"Rechne: <span class='formula'>7,2 ÷ 0,9</span>",answer:"8",accept:["8","8,0"],explain:"7,2 ÷ 0,9 → 72 ÷ 9 = 8"},
+      {type:"mc",q:"Was passiert mit dem Komma bei <span class='formula'>3,14 × 100</span>?",opts:["Es rückt 2 Stellen nach rechts → 314","Es rückt 2 Stellen nach links → 0,0314","Es bleibt, wo es ist → 3,1400","Man streicht es → 314,00"],correct:0,explain:"× 100 verschiebt das Komma um 2 Stellen nach rechts"},
+      {type:"input",q:"Rechne: <span class='formula'>4,56 ÷ 0,4</span>",answer:"11,4",explain:"4,56 ÷ 0,4 → 45,6 ÷ 4 = 11,4"},
+    ]
+  },
+  runden: {
+    title: "Runden",
+    questions: [
+      {type:"input",q:"Runde auf Zehntel: <span class='formula'>3,847</span>",answer:"3,8",explain:"Die Hundertstelstelle ist 4 → abrunden → 3,8"},
+      {type:"input",q:"Runde auf Hundertstel: <span class='formula'>12,3456</span>",answer:"12,35",explain:"Die Tausendstelstelle ist 5 → aufrunden → 12,35"},
+      {type:"mc",q:"Runde <span class='formula'>9,95</span> auf Zehntel.",opts:["10,0","9,9","10","9,10"],correct:0,explain:"Die 5 rundet auf: 9,95 → 10,0 (nicht 9,9!)"},
+      {type:"input",q:"Runde auf ganze Zahl: <span class='formula'>7,503</span>",answer:"8",accept:["8","8,0"],explain:"5 auf der Zehntelstelle → aufrunden → 8"},
+      {type:"mc",q:"Welche Zahl ergibt gerundet auf Zehntel <span class='formula'>4,7</span>?",opts:["4,739","4,753","4,651","4,76"],correct:0,explain:"4,739 → Zehntel: 7, Hundertstel 3 → abrunden → 4,7. Die anderen ergeben 4,8 bzw. 4,7 nicht."},
+    ]
+  },
+  textaufgaben: {
+    title: "Textaufgaben",
+    questions: [
+      {type:"input",q:"Ein Stück Stoff ist 2,4 m lang. Es werden 3 gleiche Teile benötigt. Wie lang ist jedes Teil in Metern?",answer:"0,8",explain:"2,4 ÷ 3 = 0,8 m"},
+      {type:"mc",q:"Max läuft 100 m in 13,4 Sekunden. Lena braucht 13,09 s. Wer ist schneller und um wie viel?",opts:["Lena, um 0,31 s","Lena, um 0,4 s","Max, um 0,31 s","Max, um 0,4 s"],correct:0,explain:"13,40 − 13,09 = 0,31 → Lena ist 0,31 s schneller"},
+      {type:"input",q:"4 Flaschen Wasser kosten 3,80 €. Wie viel kostet eine Flasche?",answer:"0,95",explain:"3,80 ÷ 4 = 0,95 €"},
+      {type:"mc",q:"Ein Rechteck hat die Seiten 3,5 cm und 2,4 cm. Wie groß ist der Flächeninhalt?",opts:["8,4 cm²","8,40 cm²","84 cm²","0,84 cm²"],correct:0,explain:"3,5 × 2,4 = 8,4 cm²"},
+      {type:"input",q:"Temperatur morgens: −2,3 °C. Mittags ist es 8,7 °C wärmer. Wie warm ist es mittags?",answer:"6,4",explain:"−2,3 + 8,7 = 6,4 °C"},
+    ]
+  }
+};
+
+const SECTION_KEYS = Object.keys(SECTIONS);
+const TOTAL_Q = SECTION_KEYS.reduce((s,k) => s + SECTIONS[k].questions.length, 0);
+const TEST_MINUTES = 20;
+
+let state = {view:"start"};
+let sectionResults = {};
+let currentSection = null;
+let currentQ = 0;
+let answered = [];
+let orderSlots = [];
+let timerInterval = null;
+let timeLeft = TEST_MINUTES * 60;
+let totalCorrect = 0;
+let totalAnswered = 0;
+
+const $ = id => document.getElementById(id);
+const app = $("app");
+
+function render() {
+  if (state.view === "start") renderStart();
+  else if (state.view === "test") renderTest();
+  else if (state.view === "results") renderResults();
+}
+
+function renderStart() {
+  app.innerHTML = `
+    <div class="start">
+      <div class="icon">🔢</div>
+      <h2>Mathe-Test: Dezimalbrüche</h2>
+      <p>Wiederholung & Testvorbereitung – 6. Klasse</p>
+      <p style="color:#3b82f6;font-weight:600">${TOTAL_Q} Aufgaben · ${TEST_MINUTES} Minuten</p>
+      <ul class="topics">
+        ${SECTION_KEYS.map(k => `<li>📌 ${SECTIONS[k].title} (${SECTIONS[k].questions.length} Aufgaben)</li>`).join("")}
+      </ul>
+      <div class="mode-btns">
+        <button class="btn" onclick="startTest()">🚀 Test starten</button>
+      </div>
+    </div>
+  `;
+}
+
+function startTest() {
+  state.view = "test";
+  currentSection = SECTION_KEYS[0];
+  currentQ = 0;
+  answered = [];
+  orderSlots = [];
+  totalCorrect = 0;
+  totalAnswered = 0;
+  sectionResults = {};
+  SECTION_KEYS.forEach(k => sectionResults[k] = {correct:0, total:SECTIONS[k].questions.length, done:false});
+  timeLeft = TEST_MINUTES * 60;
+  startTimer();
+  render();
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      finishTest();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const el = document.querySelector(".timer");
+  if (!el) return;
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  el.textContent = `⏱ ${m}:${s.toString().padStart(2,"0")}`;
+  el.className = "timer" + (timeLeft < 120 ? " critical" : timeLeft < 300 ? " warn" : "");
+}
+
+function renderTest() {
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  const globalIdx = getGlobalIndex();
+
+  let qHTML = "";
+  if (q.type === "mc") qHTML = renderMC(q);
+  else if (q.type === "input") qHTML = renderInput(q);
+  else if (q.type === "order") qHTML = renderOrder(q);
+
+  app.innerHTML = `
+    <h1>Dezimalbrüche</h1>
+    <div class="top-bar">
+      <div class="score-display">${totalCorrect}/${totalAnswered}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${(totalAnswered/TOTAL_Q)*100}%"></div></div>
+      <div class="timer"></div>
+    </div>
+    <div class="tabs">
+      ${SECTION_KEYS.map(k => {
+        const r = sectionResults[k];
+        const cls = k === currentSection ? "active" : r.done ? "done" : "";
+        return `<div class="tab ${cls}" onclick="switchSection('${k}')">${SECTIONS[k].title}<span class="count">${r.done ? "✓" : ""}</span></div>`;
+      }).join("")}
+    </div>
+    <div class="card">
+      <div class="q-num">${sec.title} · Aufgabe ${currentQ+1}/${sec.questions.length}</div>
+      <div class="question">${q.q}</div>
+      ${qHTML}
+      <div id="feedback"></div>
+    </div>
+  `;
+  updateTimer();
+  const inp = document.querySelector(".answer-input");
+  if (inp) inp.focus();
+}
+
+function renderMC(q) {
+  return `<div class="options" id="opts">
+    ${q.opts.map((o,i) => `<div class="opt" onclick="answerMC(${i})">${o}</div>`).join("")}
+  </div>`;
+}
+
+function renderInput(q) {
+  return `<div class="input-row">
+    <input type="text" class="answer-input" id="ansInput" placeholder="Antwort" onkeydown="if(event.key==='Enter')checkInput()">
+    <button class="check-btn" onclick="checkInput()">Prüfen</button>
+  </div>`;
+}
+
+function renderOrder(q) {
+  orderSlots = [];
+  const shuffled = [...q.items].sort(() => Math.random() - 0.5);
+  return `
+    <div class="order-slots" id="slots">
+      ${q.correctOrder.map((_,i) => `<div class="slot" onclick="removeSlot(${i})">&nbsp;</div>${i < q.correctOrder.length-1 ? '<span class="arrow">&lt;</span>' : ''}`).join("")}
+    </div>
+    <div class="order-items" id="orderItems">
+      ${shuffled.map(item => `<div class="order-item" onclick="pickItem(this,'${item}')">${item}</div>`).join("")}
+    </div>
+    <button class="check-btn" id="orderCheck" onclick="checkOrder()" ${orderSlots.length < q.correctOrder.length ? 'disabled' : ''}>Prüfen</button>
+  `;
+}
+
+function answerMC(idx) {
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  const opts = document.querySelectorAll(".opt");
+  opts.forEach(o => o.classList.add("disabled"));
+  const isCorrect = idx === q.correct;
+  opts[idx].classList.add(isCorrect ? "correct" : "wrong");
+  if (!isCorrect) opts[q.correct].classList.add("highlight");
+  showFeedback(isCorrect, q.explain);
+  recordAnswer(isCorrect);
+}
+
+function checkInput() {
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  const inp = $("ansInput");
+  const val = inp.value.trim().replace(/\s/g,"");
+  if (!val) return;
+
+  const btn = document.querySelector(".check-btn");
+  btn.disabled = true;
+  inp.disabled = true;
+
+  let correct = false;
+  const normalize = s => s.replace(",",".").replace(/\.0+$/,"").replace(/^0+(?=\d)/,"");
+  const nVal = normalize(val);
+  const nAns = normalize(q.answer);
+
+  if (nVal === nAns) {
+    correct = true;
+  } else if (q.accept) {
+    correct = q.accept.some(a => normalize(a) === nVal);
+  }
+
+  inp.classList.add(correct ? "correct" : "wrong");
+  showFeedback(correct, q.explain + (correct ? "" : ` → Richtige Antwort: ${q.answer}`));
+  recordAnswer(correct);
+}
+
+function pickItem(el, item) {
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  if (orderSlots.length >= q.correctOrder.length) return;
+  if (el.classList.contains("placed")) return;
+
+  el.classList.add("placed");
+  orderSlots.push(item);
+
+  const slots = document.querySelectorAll(".slot");
+  const slotEl = slots[orderSlots.length - 1];
+  slotEl.textContent = item;
+  slotEl.classList.add("filled");
+
+  const checkBtn = $("orderCheck");
+  if (checkBtn) checkBtn.disabled = orderSlots.length < q.correctOrder.length;
+}
+
+function removeSlot(idx) {
+  if (idx >= orderSlots.length) return;
+  const removed = orderSlots.splice(idx);
+
+  // Re-enable items
+  const items = document.querySelectorAll(".order-item");
+  removed.forEach(r => {
+    items.forEach(el => {
+      if (el.textContent === r) el.classList.remove("placed");
+    });
+  });
+
+  // Refresh slots display
+  const slots = document.querySelectorAll(".slot");
+  slots.forEach((s, i) => {
+    if (i < orderSlots.length) {
+      s.textContent = orderSlots[i];
+      s.classList.add("filled");
+    } else {
+      s.innerHTML = "&nbsp;";
+      s.classList.remove("filled");
+    }
+  });
+
+  const checkBtn = $("orderCheck");
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  if (checkBtn) checkBtn.disabled = orderSlots.length < q.correctOrder.length;
+}
+
+function checkOrder() {
+  const sec = SECTIONS[currentSection];
+  const q = sec.questions[currentQ];
+  const isCorrect = orderSlots.every((s,i) => s === q.correctOrder[i]);
+
+  document.querySelectorAll(".order-item").forEach(el => el.classList.add("placed"));
+  $("orderCheck").disabled = true;
+
+  showFeedback(isCorrect, q.explain + (isCorrect ? "" : ` → Richtige Reihenfolge: ${q.correctOrder.join("  <  ")}`));
+  recordAnswer(isCorrect);
+}
+
+function showFeedback(correct, text) {
+  const fb = $("feedback");
+  fb.innerHTML = `<div class="feedback ${correct ? 'ok' : 'nope'}">${correct ? '✅' : '❌'} ${text}</div>`;
+}
+
+function recordAnswer(correct) {
+  totalAnswered++;
+  if (correct) {
+    totalCorrect++;
+    sectionResults[currentSection].correct++;
+  }
+
+  setTimeout(() => {
+    const sec = SECTIONS[currentSection];
+    if (currentQ < sec.questions.length - 1) {
+      currentQ++;
+      orderSlots = [];
+      renderTest();
+    } else {
+      sectionResults[currentSection].done = true;
+      // Find next undone section
+      const nextKey = SECTION_KEYS.find(k => !sectionResults[k].done);
+      if (nextKey) {
+        currentSection = nextKey;
+        currentQ = 0;
+        orderSlots = [];
+        renderTest();
+      } else {
+        finishTest();
+      }
+    }
+  }, correct ? 1200 : 2200);
+}
+
+function switchSection(key) {
+  if (sectionResults[key].done) return;
+  currentSection = key;
+  currentQ = 0;
+  orderSlots = [];
+  renderTest();
+}
+
+function getGlobalIndex() {
+  let idx = 0;
+  for (const k of SECTION_KEYS) {
+    if (k === currentSection) return idx + currentQ;
+    idx += SECTIONS[k].questions.length;
+  }
+  return idx;
+}
+
+function finishTest() {
+  clearInterval(timerInterval);
+  state.view = "results";
+  render();
+}
+
+function renderResults() {
+  const pct = Math.round((totalCorrect / TOTAL_Q) * 100);
+  const emoji = pct === 100 ? "🏆" : pct >= 90 ? "🎉" : pct >= 70 ? "👏" : pct >= 50 ? "💪" : "📚";
+  const note = pct === 100 ? "Perfekt! Alle richtig!" : pct >= 90 ? "Hervorragend!" : pct >= 70 ? "Gut gemacht!" : pct >= 50 ? "Solide Basis, ein paar Lücken." : "Da müssen wir nochmal ran.";
+  const timeUsed = TEST_MINUTES * 60 - timeLeft;
+  const minUsed = Math.floor(timeUsed / 60);
+  const secUsed = timeUsed % 60;
+
+  app.innerHTML = `
+    <div class="results">
+      <div class="emoji">${emoji}</div>
+      <div class="score-big">${pct}%</div>
+      <div class="score-label">${totalCorrect} von ${TOTAL_Q} richtig · ${note}</div>
+      <div style="font-size:14px;color:#64748b;margin-bottom:16px">Zeit: ${minUsed}:${secUsed.toString().padStart(2,"0")} min</div>
+      <div class="breakdown">
+        ${SECTION_KEYS.map(k => {
+          const r = sectionResults[k];
+          const secPct = Math.round((r.correct / r.total) * 100);
+          const color = secPct >= 80 ? "green" : secPct >= 50 ? "" : "red";
+          return `<div class="row"><span class="name">${SECTIONS[k].title}</span><span class="val ${color}">${r.correct}/${r.total} (${secPct}%)</span></div>`;
+        }).join("")}
+      </div>
+      <button class="btn" onclick="startTest()">🔄 Nochmal</button>
+      <button class="btn outline" style="margin-left:8px" onclick="state.view='start';render()">← Zurück</button>
+    </div>
+  `;
+}
+
+// Init
+render();
+</script>
+</body>
+</html>

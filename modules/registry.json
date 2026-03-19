@@ -56,6 +56,14 @@
     "category": "lehrplan"
   },
   {
+    "id": "mathe-dezimalbrueche",
+    "name": "Dezimalbrüche-Test",
+    "description": "30 Aufgaben in 20 Minuten: Umwandeln, Vergleichen, Rechnen & Runden",
+    "icon": "🔢",
+    "path": "modules/mathe-dezimalbrueche/index.html",
+    "category": "aktuelles"
+  },
+  {
     "id": "stadtentwicklung",
     "name": "Stadtentwicklung",
     "description": "Standortfaktoren, Phasen, Funktionen & Potsdam",
