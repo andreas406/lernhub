@@ -84,6 +84,7 @@ header h1 {
 .section-icon.lehrplan { background: rgba(59, 130, 246, 0.15); }
 .section-icon.aktuelles { background: rgba(245, 158, 11, 0.15); }
 .section-icon.fussball { background: rgba(34, 197, 94, 0.15); }
+.section-icon.archiv { background: rgba(148, 163, 184, 0.15); }
 
 .section-label {
   display: flex;

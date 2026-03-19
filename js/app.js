@@ -10,9 +10,10 @@
 
   // Category definitions: order, label, icon, subtitle
   const categories = [
-    { key: 'lehrplan',  icon: '🎓', title: 'Lehrplan 6. Klasse', subtitle: 'Rahmenlehrplan Brandenburg' },
     { key: 'aktuelles', icon: '📌', title: 'Aktuelles',          subtitle: 'Aktuelle Themen & Tests' },
-    { key: 'fussball',  icon: '⚽', title: 'Fußball',            subtitle: 'Training & Mentalstärke' }
+    { key: 'fussball',  icon: '⚽', title: 'Fußball',            subtitle: 'Training & Mentalstärke' },
+    { key: 'lehrplan',  icon: '🎓', title: 'Lehrplan 6. Klasse', subtitle: 'Rahmenlehrplan Brandenburg' },
+    { key: 'archiv',    icon: '📦', title: 'Archiv',             subtitle: 'Ältere Module' }
   ];
 
   async function init() {

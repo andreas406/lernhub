@@ -69,7 +69,7 @@
     "description": "Standortfaktoren, Phasen, Funktionen & Potsdam",
     "icon": "🏙️",
     "path": "modules/stadtentwicklung/index.html",
-    "category": "aktuelles"
+    "category": "archiv"
   },
   {
     "id": "stadtentwicklung-v2",
@@ -77,7 +77,7 @@
     "description": "Erweiterte Version mit mehr Übungen",
     "icon": "🏰",
     "path": "modules/stadtentwicklung-v2/index.html",
-    "category": "aktuelles"
+    "category": "archiv"
   },
   {
     "id": "mentaltraining",
@@ -93,14 +93,6 @@
     "description": "Trainingsplan mit Übungen für Technik, Fitness & Mentalstärke",
     "icon": "⚽",
     "path": "modules/fussball-sommer/index.html",
-    "category": "fussball"
-  },
-  {
-    "id": "fussball-tagebuch",
-    "name": "Fußball-Tagebuch",
-    "description": "Trainingseinheiten dokumentieren, Fortschritte tracken & PDF-Export",
-    "icon": "📓",
-    "path": "modules/fussball-tagebuch/index.html",
     "category": "fussball"
   }
 ]
