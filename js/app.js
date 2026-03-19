@@ -20,6 +20,7 @@
       const res = await fetch('modules/registry.json');
       modules = await res.json();
       renderGrid();
+      handleHash(); // Open module if URL has #module-id
     } catch (e) {
       grid.innerHTML = `
         <div class="empty-state">
@@ -119,14 +120,40 @@
         moduleView.classList.remove('entering');
       });
     });
+
+    // Update URL hash for deep linking
+    if (location.hash !== '#' + id) {
+      history.pushState(null, '', '#' + id);
+    }
   }
 
   function closeModule() {
     moduleView.classList.add('hidden');
     moduleFrame.src = 'about:blank';
+
+    // Clear hash without triggering hashchange
+    if (location.hash) {
+      history.pushState(null, '', location.pathname + location.search);
+    }
   }
 
   backBtn.addEventListener('click', closeModule);
+
+  // Handle browser back/forward and initial deep link
+  function handleHash() {
+    const id = location.hash.replace('#', '');
+    if (id && modules.length > 0) {
+      const mod = modules.find(m => m.id === id);
+      if (mod) { openModule(id); return; }
+    }
+    // No valid hash → show home
+    if (!moduleView.classList.contains('hidden')) {
+      moduleView.classList.add('hidden');
+      moduleFrame.src = 'about:blank';
+    }
+  }
+
+  window.addEventListener('popstate', handleHash);
 
   window.addEventListener('message', (e) => {
     if (e.data && e.data.type === 'lernhub:close') {
