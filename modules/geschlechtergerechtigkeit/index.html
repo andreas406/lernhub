@@ -174,7 +174,7 @@ const sessions = [
     { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Gibt es Gefühle, die du dir nicht erlaubst zu zeigen? Warum?' },
     { type:'label', emoji:'🧠', text:'Wissensblock: Warum Jungs sich oft so verhalten' },
     { type:'collapsible', title:'Die "Man Box"', html:`<p>Forscher haben ein Konzept entwickelt, das sie die "Man Box" nennen. Es beschreibt die unsichtbaren Regeln, die Jungs und Männer einengen:</p>
-<ul><li><strong>Sei stark, zeig keine Schwäche</strong></li><li><strong>Kontrolliere deine Gefühle</strong> (außer Wut — die ist erlaubt)</li><li><strong>Sei dominant,</strong> nicht unterwürfig</li><li><strong>Sei sexuell erfahren</strong></li><li><strong>Verdien Geld,</strong> sei erfolgreich</li><li><strong>Bitte nicht um Hilfe</strong></li></ul>
+<ul><li>Sei stark, zeig keine Schwäche</li><li>Kontrolliere deine Gefühle (außer Wut — die ist erlaubt)</li><li>Sei dominant, nicht unterwürfig</li><li>Sei sexuell erfahren</li><li>Verdien Geld, sei erfolgreich</li><li>Bitte nicht um Hilfe</li></ul>
 <p>Diese Regeln lernen Jungs nicht in einem einzigen Moment. Sie sickern ein — durch Sprüche auf dem Schulhof ("Heul nicht, du Mädchen!"), durch Filme, durch Social Media, durch Vorbilder.</p>
 <p>Das Problem: Jungs, die sich streng an diese Regeln halten, haben nachweislich häufiger psychische Probleme, sind häufiger einsam und haben schlechtere Beziehungen.</p>` },
     { type:'collapsible', title:'Was Pubertät mit deinem Gehirn macht', html:`<p>Mit 12 bist du mitten in einer Phase, in der dein Gehirn sich komplett umbaut. Der präfrontale Kortex — der Teil, der für vorausschauendes Denken, Impulskontrolle und das Abwägen von Konsequenzen zuständig ist — ist erst mit Mitte 20 vollständig entwickelt. Gleichzeitig sind die emotionalen Zentren im Gehirn (die Amygdala) auf Hochtouren.</p>
@@ -185,7 +185,8 @@ const sessions = [
 <p>Die Fähigkeit, über Gefühle zu sprechen, ist keine "Mädchensache" — sie ist ein Überlebenswerkzeug.</p>` },
     { type:'quote', text:'Sich verletzlich zu zeigen erfordert mehr Mut als eine harte Fassade aufzusetzen. Echte Stärke heißt, zu wissen, was du fühlst — und es auch sagen zu können.' },
     { type:'label', emoji:'✏️', text:'Aktivität: Das Gefühlsvokabular' },
-    { type:'activity', title:'Gefühlsvokabular sammeln (15 Min)', html:'<p>Versucht gemeinsam, so viele Gefühlswörter wie möglich zu sammeln. Startet mit den offensichtlichen (glücklich, traurig, wütend) und dann feiner: <em>enttäuscht, beschämt, überfordert, eifersüchtig, stolz, dankbar, verlegen, sehnsüchtig...</em></p><p>Wer mehr Wörter für Gefühle hat, kann seine innere Welt besser verstehen. Das klingt simpel — ist aber ein echter Gamechanger.</p>' },
+    { type:'activity', title:'Gefühlsvokabular sammeln (15 Min)', html:`<p>Versucht gemeinsam, so viele Gefühlswörter wie möglich zu sammeln. Startet mit den offensichtlichen (glücklich, traurig, wütend) und dann feiner: <em>enttäuscht, beschämt, überfordert, eifersüchtig, stolz, dankbar, verlegen, sehnsüchtig...</em></p>
+<p>Wer mehr Wörter für Gefühle hat, kann seine innere Welt besser verstehen. Das klingt simpel — ist aber ein echter Gamechanger.</p>` },
     { type:'convo', html:'<strong>Gesprächsfrage:</strong> Welches dieser Gefühle hast du in der letzten Woche erlebt, ohne es jemandem zu sagen?' },
     { type:'label', emoji:'💡', text:'Exkurs: Männliche Vorbilder' },
     { type:'card', html:`<p>Denkt gemeinsam nach: Welche Männer bewunderst du? Das können reale Menschen sein oder Figuren aus Filmen und Serien. Was genau bewunderst du an ihnen? Und dann die Gegenfrage: Welche Eigenschaften haben sie, die <em>nicht</em> in die "Man Box" passen?</p>
@@ -195,144 +196,237 @@ const sessions = [
   ]
 },
 {
-  id: 3, title: 'Die Welt in deinem Handy', subtitle: 'Social Media und die Manosphere',
-  goal: 'Verstehen, wie Social-Media-Algorithmen funktionieren, was die Manosphere ist und wie man manipulative Inhalte erkennt.',
+  id: 3, title: 'Die Landkarte der Verführung', subtitle: 'Das Ökosystem der toxischen Männlichkeitsbewegung',
+  goal: 'Verstehen, dass es nicht nur EINE Szene gibt, sondern ein ganzes, miteinander verwobenes Ökosystem von Bewegungen, die Jungs und Männer ansprechen — oft mit verschiedenen Einstiegspunkten, aber ähnlichen Endstationen.',
   blocks: [
     { type:'label', emoji:'📱', text:'Einstieg: Dein Feed, deine Welt' },
-    { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Wenn du Videos bei YouTube schaust oder bei Freunden am Handy mitguckst — welche Inhalte siehst du am häufigsten? Hast du schon mal gemerkt, dass bestimmte Themen immer wieder auftauchen?' },
-    { type:'label', emoji:'🔍', text:'Wissensblock: Wie du zum Produkt wirst' },
-    { type:'collapsible', title:'Wie Algorithmen funktionieren', html:`<p>Social-Media-Plattformen wie TikTok, YouTube und Instagram verdienen Geld, wenn du möglichst lange auf der App bleibst. Dafür setzen sie Algorithmen ein — Programme, die lernen, was dich fesselt, und dir immer mehr davon zeigen.</p>
-<p>Das Problem: Algorithmen bevorzugen Inhalte, die starke Emotionen auslösen. Und die stärksten Emotionen sind Wut, Empörung und Angst. Das bedeutet: Dein Feed zeigt dir nicht die Wahrheit. Er zeigt dir das, was dich am meisten triggert.</p>
-<p>Auch wenn du selbst noch kein Social Media hast: Du wirst diese Inhalte trotzdem kennenlernen — bei Freunden, in der Schule, auf YouTube. Wenn jemand einmal ein Video über "Alpha Males" oder "Frauen verstehen" anklickt — selbst aus Neugier —, merkt sich das der Algorithmus. Innerhalb weniger Tage kann sich der Feed komplett verändern. Das nennt man den <strong>"Rabbit Hole"-Effekt</strong>. Gut, das vorher zu verstehen.</p>` },
-    { type:'collapsible', title:'Was ist die Manosphere?', html:`<p>Die Manosphere ist ein Sammelbegriff für Online-Communities, die sich um Männlichkeit, Frauenfeindlichkeit und Geschlechterverhältnisse drehen. Sie besteht aus verschiedenen Gruppen:</p>
-<h4>Red Pill</h4><p>Glauben, dass Feminismus Männer unterdrückt und die "Wahrheit" über Geschlechterrollen verschleiert wird. Der Name kommt aus dem Film "Matrix" — die rote Pille zeigt dir angeblich die harte Realität.</p>
-<h4>Pick-Up-Artists (PUA)</h4><p>Männer, die Techniken lehren, um Frauen zu "erobern". Behandeln Frauen als Objekte, die man mit den richtigen Tricks "bekommt".</p>
-<h4>MGTOW ("Men Going Their Own Way")</h4><p>Männer, die sich komplett von Beziehungen mit Frauen zurückziehen — angeblich aus freier Wahl, tatsächlich oft aus Frustration und Enttäuschung.</p>
-<h4>Incels ("Involuntary Celibates")</h4><p>Männer, die sich als Opfer sehen, weil sie keine Partnerin finden. In dieser Szene gibt es teils extreme Frauenfeindlichkeit bis hin zu Gewaltverherrlichung.</p>` },
-    { type:'collapsible', title:'Die Playbook-Taktiken — wie sie dich reinziehen', html:`<h4>1. Sie starten mit echten Problemen</h4>
-<p>"Jungs haben es heute schwer", "Niemand kümmert sich um Männer" — das sind Sätze, die einen wahren Kern haben. Jungs und Männer haben tatsächlich Probleme: höhere Suizidrate, weniger emotionale Unterstützung, sinkende Bildungsabschlüsse. Die Manosphere greift diese echten Probleme auf — aber bietet die falschen Lösungen.</p>
-<h4>2. Sie bieten einfache Erklärungen</h4>
-<p>"Frauen sind schuld", "Feminismus hat alles kaputt gemacht", "Die Gesellschaft hasst Männer". Einfache Feindbilder für komplexe Probleme.</p>
-<h4>3. Sie verkaufen ein Upgrade-Versprechen</h4>
-<p>"Werde ein Alpha", "Werde ein High-Value-Man", "Verdiene 10K im Monat und Frauen werden dich lieben". Das spricht direkt das Bedürfnis nach Kontrolle und Anerkennung an.</p>
-<h4>4. Sie isolieren dich</h4>
-<p>"Vertraue nur uns", "Die Mainstream-Medien lügen", "Deine Eltern verstehen das nicht". Je mehr du dich nur in diesen Welten bewegst, desto normaler werden extreme Ansichten.</p>` },
-    { type:'collapsible', title:'Wichtige Figuren (Stand 2025/26)', html:`<p>Namen wie Andrew Tate sind dir vielleicht bekannt. Tate wurde wegen Menschenhandel und Vergewaltigung angeklagt. Trotzdem hat er Millionen von Fans unter jungen Männern.</p>
-<p>Warum? Weil er Dinge ausspricht, die sich für verunsicherte Jungs wie Wahrheiten anfühlen: "Die Welt ist unfair zu Männern." Das stimmt teilweise — aber seine "Lösung" ist toxisch: Frauen dominieren, Geld als Maßstab für Wert, Gewalt als Stärke.</p>` },
-    { type:'quote', text:'Wenn jemand dir online einfache Antworten auf komplizierte Fragen gibt — sei misstrauisch. Die Welt ist komplex. Jeder, der dir sagt "Es ist ganz einfach", will meistens etwas von dir: deine Aufmerksamkeit, dein Geld oder deine Überzeugung.' },
+    { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Wenn du Videos bei YouTube schaust oder bei Freunden am Handy mitguckst — welche Inhalte siehst du am häufigsten? Hast du schon mal Content gesehen, bei dem es um "Alpha Male", "Sigma Grindset", "Looksmaxxing", Fitness-Transformation, Krypto-Reichtum oder "Frauen verstehen" ging? Falls ja — das ist kein Zufall.' },
+    { type:'label', emoji:'🔍', text:'Wissensblock Teil 1: Wie Algorithmen dich füttern' },
+    { type:'collapsible', title:'Die Aufmerksamkeitsökonomie', html:`<p>Social-Media-Plattformen wie TikTok, YouTube und Instagram sind keine neutralen Werkzeuge. Sie sind Maschinen, die Geld verdienen, indem sie deine Aufmerksamkeit verkaufen. Je länger du scrollst, desto mehr Werbung siehst du, desto mehr Geld verdienen sie.</p>
+<p>Dafür setzen sie Algorithmen ein — Programme, die lernen, was dich fesselt, und dir immer mehr davon zeigen. Das Problem: Algorithmen bevorzugen Inhalte, die starke Emotionen auslösen. Wut, Empörung, Angst, aber auch das Gefühl von Überlegenheit — all das hält dich auf der Plattform.</p>
+<p>Auch wenn du selbst noch kein Social Media hast: Du wirst diese Inhalte trotzdem kennenlernen — bei Freunden, in der Schule, auf YouTube. Wenn jemand einmal ein Video über "Alpha Males" oder "Frauen verstehen" anklickt — selbst aus Neugier —, merkt sich das der Algorithmus. Innerhalb weniger Tage kann sich der Feed komplett verändern. Das nennt man den <strong>"Rabbit Hole"-Effekt</strong>. Und dieser Effekt ist kein Bug — er ist ein Feature. Die Plattformen wollen das so.</p>` },
+    { type:'collapsible', title:'Warum Jungs besonders betroffen sind', html:`<p>Der Algorithmus weiß, dass du ein Junge um die 12 bist. Er weiß, dass Jungs in deinem Alter stark auf Inhalte reagieren, die mit Status, Wettbewerb, Zugehörigkeit und Geschlechteridentität zu tun haben. Also füttert er dich damit. Nicht weil es gut für dich ist — sondern weil es gut für die Plattform ist.</p>` },
+    { type:'label', emoji:'🗺️', text:'Wissensblock Teil 2: Die Landkarte — Das gesamte Ökosystem' },
+    { type:'card', html:`<p>Was jetzt kommt, ist keine einzelne "Szene". Es ist ein ganzes Universum von Bewegungen, Influencern und Ideologien, die unterschiedlich aussehen, aber untereinander vernetzt sind. Stell dir das wie eine Stadt vor mit verschiedenen Vierteln — manche wirken harmlos, manche sind gefährlich, und die Straßen dazwischen sind fließend.</p>` },
+    { type:'collapsible', title:'Viertel 1: Die Manosphere (das ideologische Zentrum)', html:`<p>Die Manosphere ist der Oberbegriff für Online-Communities, deren Kern die Überzeugung ist: Männer sind die wahren Opfer der modernen Gesellschaft. Sie besteht aus verschiedenen Strömungen:</p>
+<h4>Red Pill</h4>
+<p>Glauben, dass Feminismus Männer unterdrückt und die "Wahrheit" über Geschlechterrollen verschleiert wird. Der Name kommt aus dem Film "Matrix". Typische Aussage: "Frauen wollen nur Geld und Status — wenn du das durchschaust, hast du Macht."</p>
+<h4>Pick-Up-Artists (PUA)</h4>
+<p>Männer, die Techniken lehren, um Frauen zu "erobern". Behandeln Frauen als Objekte, die man mit den richtigen Tricks "bekommt". Klingt vielleicht erstmal wie Flirt-Tipps — ist aber ein System, das auf Manipulation und Entmenschlichung basiert.</p>
+<h4>MGTOW ("Men Going Their Own Way")</h4>
+<p>Männer, die sich komplett von Beziehungen mit Frauen zurückziehen — angeblich aus freier Wahl, tatsächlich oft aus Verbitterung und Enttäuschung. Ihre Foren sind voller Frauenhass, verkleidet als "Selbstbestimmung".</p>
+<h4>Incels ("Involuntary Celibates")</h4>
+<p>Männer, die sich als Opfer sehen, weil sie keine Partnerin finden. In dieser Szene gibt es teils extreme Frauenfeindlichkeit bis hin zu Gewaltverherrlichung und Terrorismus. Mehrere Anschläge weltweit wurden von Männern verübt, die sich als Incels bezeichneten.</p>
+<h4>Black Pill</h4>
+<p>Die düsterste Variante. Glaubt, dass dein Schicksal biologisch vorbestimmt ist — durch dein Aussehen, deine Gene, deine Größe. Wer nicht als "Chad" geboren wurde, hat verloren. Diese Ideologie führt bei manchen zu Hoffnungslosigkeit und bei anderen zu Gewalt.</p>` },
+    { type:'collapsible', title:'Viertel 2: Die Grindset- und Hustle-Kultur', html:`<p>Das ist die Business-Seite der toxischen Männlichkeit — und oft der erste Einstieg für Jungs, die gar nicht nach Frauenthemen suchen.</p>
+<h4>Sigma-Male-Grindset</h4>
+<p>Die Idee, dass der "wahre" Mann ein einsamer Wolf ist, der "grindet", während alle anderen schlafen. Klingt erstmal harmlos — wer will nicht erfolgreich sein? Aber die Botschaft darunter ist: Dein Wert als Mann wird durch Geld und Status definiert. Beziehungen sind Ablenkung. Gefühle sind Schwäche. Schlaf ist für Verlierer.</p>
+<h4>Hustle Culture / Krypto-Bros</h4>
+<p>Influencer, die dir mit Lamborghinis und Dubai-Villen im Hintergrund erklären, wie du mit 18 Millionär wirst. Ihre "Kurse" und "Masterclasses" kosten oft hunderte Euro. Das eigentliche Geschäftsmodell: DICH als Kunden.</p>
+<h4>Andrew Tate als Prototyp</h4>
+<p>Tate vereint fast alles in einer Person — Hustle Culture, Frauenfeindlichkeit, Luxus als Beweis für Männlichkeit und eine Opfererzählung ("Die Matrix will mich zum Schweigen bringen"). Er wurde wegen Menschenhandel und Vergewaltigung angeklagt. Trotzdem hat er Millionen Fans — weil er echte Verunsicherung anspricht und falsche Stärke verkauft.</p>
+<h4>Warum das gefährlich ist</h4>
+<p>Es beginnt mit "Arbeite hart, sei diszipliniert" — das sind erstmal keine schlechten Ratschläge. Aber die Grindset-Kultur bindet deinen gesamten Selbstwert an Geld und Leistung. Wer nicht erfolgreich ist, hat "nicht genug gewollt". Das macht krank — und es ist eine Lüge.</p>` },
+    { type:'collapsible', title:'Viertel 3: Looksmaxxing und der Körperkult', html:`<h4>Looksmaxxing</h4>
+<p>Die Szene, die behauptet, du könntest dein Aussehen systematisch "optimieren" — durch Ernährung, Gesichtsübungen ("mewing"), Körperhaltung. In der harmlosen Variante ist das normaler Selbstpflege-Content. In der extremen Variante ("hardmaxxing") geht es um Schönheitsoperationen und Kieferimplantate — bei 14-Jährigen.</p>
+<h4>Bonesmashing</h4>
+<p>Ein besonders verstörender Trend — Jungs, die sich wiederholt ins Gesicht schlagen, weil sie glauben, das würde ihre Kieferknochen "maskuliner" machen. Das ist nicht nur unwirksam, sondern gefährlich.</p>
+<h4>Fitness-Bro-Kultur / Roid Culture</h4>
+<p>Sport und Fitness sind großartig. Aber in der toxischen Variante wird der Körper zum einzigen Maßstab für Männlichkeit. Steroide werden normalisiert — auch bei Minderjährigen. Creators zeigen "natürliche Transformationen", die in Wahrheit nur mit Doping möglich sind.</p>
+<h4>Body Dysmorphia bei Jungs</h4>
+<p>Worüber kaum jemand spricht: Immer mehr Jungs haben ein gestörtes Verhältnis zu ihrem Körper. Essstörungen bei Jungen nehmen zu. Die Unzufriedenheit mit dem eigenen Körper ist bei männlichen Teenagern so hoch wie nie zuvor. Looksmaxxing-Content befeuert das massiv.</p>
+<h4>Warum das gefährlich ist</h4>
+<p>Es gibt nichts Falsches daran, auf sich zu achten. Aber wenn du mit 12 glaubst, dein Gesicht sei "zu schwach" und du müsstest dich operieren lassen — dann hat dich eine Ideologie erreicht, die deinen Selbstwert an dein Aussehen kettet.</p>` },
+    { type:'collapsible', title:'Viertel 4: Die Pseudo-Intellektuellen', html:`<h4>Jordan Peterson und die "Ordne dein Zimmer"-Fraktion</h4>
+<p>Peterson ist ein kanadischer Psychologe, der mit durchaus nützlichen Selbsthilfe-Ratschlägen begonnen hat. Das Problem: Von dort aus führt ein direkter Weg zu seinen Ansichten über "natürliche Geschlechterhierarchien" und seiner zunehmenden Nähe zu rechten Bewegungen. Er ist das perfekte Beispiel für die Pipeline: Man kommt wegen der Selbsthilfe — und bleibt für die Ideologie.</p>
+<h4>"Fakten kennen keine Gefühle"-Debattierkultur</h4>
+<p>Influencer, die komplexe soziale Fragen auf "Logik" und "Fakten" reduzieren. Typisch: Compilations, in denen ein Mann eine Feministin in einer Debatte "zerstört". Das trainiert eine Art zu denken, die auf Gewinnen statt auf Verstehen ausgelegt ist.</p>
+<h4>Stoizismus-Bros</h4>
+<p>Die Philosophie der Stoa wird in Social Media zu "Zeig keine Gefühle, sei unberührbar" verkürzt. Echte stoische Philosophen sprachen ausführlich über Mitgefühl und Gemeinschaft. Die TikTok-Version macht daraus: "Sei ein Roboter."</p>
+<h4>Evolutionspsychologie-Populismus</h4>
+<p>Aussagen wie "Männer sind von Natur aus Jäger" werden als Wissenschaft verkauft. In Wahrheit ist die Evolutionspsychologie ein komplexes, umstrittenes Feld, und diese vereinfachten Erklärungen dienen nur dazu, den Status quo zu rechtfertigen.</p>
+<h4>Warum das gefährlich ist</h4>
+<p>Diese Strömung ist besonders tückisch, weil sie sich als intellektuell und vernünftig tarnt. "Ich bin kein Frauenfeind, ich bin einfach rational." Aber die Grundbotschaft ist oft dieselbe.</p>` },
+    { type:'collapsible', title:'Viertel 5: Gaming-Kultur und Meme-Welten', html:`<h4>Toxische Gaming-Communities</h4>
+<p>In vielen Online-Spielen ist es normal, andere Spieler sexistisch oder rassistisch zu beleidigen. "Das ist doch nur Spaß" ist die Standard-Ausrede. Aber: Wenn du jeden Tag in einer Umgebung bist, in der Frauenhass als Humor gilt, verschiebt sich dein Kompass.</p>
+<h4>Meme-Kultur als Radikalisierungsweg</h4>
+<p>Memes sind die Sprache des Internets. Extreme Ideen lassen sich als Witze verpacken. Wer lacht, gehört dazu. Wer nicht lacht, wird als "Spaßbremse" aussortiert. Das nennt man "Ironic Radicalization" — Radikalisierung durch Humor.</p>
+<h4>Discord-Server und geschlossene Gruppen</h4>
+<p>Viel findet nicht auf öffentlichen Plattformen statt, sondern in geschlossenen Discord-Servern und Telegram-Gruppen. Dort gibt es keine Moderation, keine Gegenrede, nur Echokammern. Für Eltern: Das ist der Teil, den ihr nicht seht.</p>
+<h4>Der "Based"-Jargon</h4>
+<p>Eine ganze Sprache, die Zugehörigkeit signalisiert: "based", "cringe", "NPC", "red-pilled". Wer die Sprache spricht, gehört dazu. Wer sie nicht kennt, ist draußen.</p>` },
+    { type:'collapsible', title:'Viertel 6: Die Tradcon-Bewegung', html:`<h4>"Tradwife" und "Trad"-Ideologie</h4>
+<p>Content, der eine romantisierte Version der 1950er-Jahre verkauft — die Frau kocht in Pastellfarben, der Mann ist Versorger. Die Botschaft darunter: Frauen gehören ins Haus, Männer müssen die Kontrolle haben.</p>
+<h4>Religiös begründeter Antifeminismus</h4>
+<p>In manchen religiösen Communities wird Geschlechtergerechtigkeit als Angriff auf Gottes Ordnung dargestellt. Das betrifft nicht eine bestimmte Religion.</p>
+<h4>Die "Krise der Männlichkeit"-Erzählung</h4>
+<p>Konservative Kommentatoren behaupten, die Gesellschaft sei "zu weiblich" geworden. Manche Beobachtungen haben einen wahren Kern. Aber die vorgeschlagene Lösung — zurück zu traditionellen Geschlechterrollen — löst das Problem nicht.</p>` },
+    { type:'label', emoji:'🔗', text:'Wie alles zusammenhängt: Die Pipeline' },
+    { type:'card', html:`<p>Der typische Weg sieht so aus:</p>
+<p><strong>Einstieg:</strong> Du schaust ein Fitness-Transformationsvideo. Harmlos.</p>
+<p><strong>→ Stufe 1:</strong> Der Algorithmus zeigt dir "Sigma-Grindset"-Content.</p>
+<p><strong>→ Stufe 2:</strong> Du landest bei einem Podcast-Clip, in dem ein "Debattenkönig" eine Feministin "zerstört".</p>
+<p><strong>→ Stufe 3:</strong> Du bist auf einem Discord-Server mit Memes, die Frauen erniedrigen. "Ist doch lustig."</p>
+<p><strong>→ Stufe 4:</strong> Du siehst Red-Pill-Content als Erklärung für alles. "Jetzt verstehe ich."</p>
+<p><strong>→ Stufe 5:</strong> Du bist in einer Blase, in der Frauenfeindlichkeit, Verschwörungsdenken und politischer Extremismus normal sind.</p>
+<p>Das passiert nicht über Nacht. Es passiert über Wochen und Monate, und es fühlt sich nicht wie Radikalisierung an. Es fühlt sich an wie: endlich Antworten haben.</p>` },
+    { type:'label', emoji:'🎯', text:'Die Playbook-Taktiken — quer durch alle Viertel' },
+    { type:'card', html:`<p>Obwohl die Einstiege unterschiedlich sind, nutzen fast alle Strömungen dieselben psychologischen Tricks:</p>
+<p><strong>1. Sie starten mit echten Problemen:</strong> "Jungs haben es heute schwer" — das hat einen wahren Kern. Höhere Suizidrate, weniger emotionale Unterstützung, sinkende Bildungsabschlüsse. All diese Bewegungen greifen echte Probleme auf — aber bieten die falschen Lösungen.</p>
+<p><strong>2. Sie bieten einfache Feindbilder:</strong> "Frauen sind schuld", "Feminismus hat alles kaputt gemacht", "Die woke Kultur zerstört die Männlichkeit."</p>
+<p><strong>3. Sie verkaufen ein Upgrade-Versprechen:</strong> "Werde ein Alpha", "Maxe dein Aussehen", "Grinde bis du Millionär bist."</p>
+<p><strong>4. Sie nutzen Humor und Ironie als Tarnkappe:</strong> Extreme Aussagen werden als Memes verpackt. Wer Einwände hat, "versteht den Witz nicht."</p>
+<p><strong>5. Sie schaffen exklusive Sprache:</strong> "based", "red-pilled", "cope", "NPC" — Zugehörigkeit schaffen, Außenstehende ausgrenzen.</p>
+<p><strong>6. Sie isolieren dich:</strong> "Vertraue nur uns", "Deine Eltern sind blue-pilled."</p>
+<p><strong>7. Sie monetarisieren deine Verunsicherung:</strong> Fast alle verkaufen etwas — Kurse, Supplemente, Coaching. Du bist nicht ihre Community. Du bist ihr Kunde.</p>` },
+    { type:'quote', text:'Es gibt nicht DIE eine gefährliche Szene im Internet. Es gibt ein ganzes Netzwerk von Strömungen — manche tarnen sich als Fitness-Tipps, manche als Finanz-Coaching, manche als Philosophie, manche als Humor. Was sie verbindet: Sie alle wollen dir sagen, wer du als Mann zu sein hast. Und sie alle verdienen Geld oder Macht mit deiner Verunsicherung.' },
     { type:'label', emoji:'✏️', text:'Aktivität: Der Algorithmus-Check' },
-    { type:'activity', title:'Übung (20 Min)', html:'<p>Schaut euch zusammen auf YouTube einen Clip an, der für "Sigma Male Mindset" oder "Alpha Male" wirbt (einfach mal danach suchen). Analysiert gemeinsam:</p><ul><li>Was wird versprochen?</li><li>Welche Emotionen soll das auslösen?</li><li>Wer verdient an diesem Content Geld?</li><li>Welche Beweise werden geliefert? Ist die "Lösung" realistisch?</li><li>Wem nützt es, wenn du das glaubst?</li></ul>' },
-    { type:'convo', html:'<strong>Die Gretchenfrage:</strong> "Stell dir vor, dein bester Freund schickt dir ein Video und sagt: \'Der Typ hat echt recht, Feminismus ist das Problem.\' Was würdest du antworten?" — Es geht darum, eine eigene Position zu üben. Nicht "Ja, voll!" und nicht "Nein, du bist dumm!" — sondern: "Was genau meinst du damit? Und woher hat der Typ seine Infos?"' },
+    { type:'activity', title:'Übung (20 Min)', html:`<p>Schaut euch zusammen auf YouTube einen Clip an, der für "Sigma Male Grindset" oder "Looksmaxxing Guide" wirbt. Analysiert gemeinsam:</p>
+<ul><li>Was wird versprochen?</li><li>Welche Emotionen soll das auslösen?</li><li>In welches "Viertel" gehört das?</li><li>Wer verdient an diesem Content Geld?</li><li>Wohin könnte der Algorithmus dich von hier aus schicken?</li></ul>` },
+    { type:'convo', html:`<strong>Die Gretchenfrage:</strong> "Stell dir vor, dein bester Freund sagt: 'Jordan Peterson hat echt recht, Jungs werden heute benachteiligt.' Was würdest du antworten?" — Es geht darum, eine eigene Position zu üben. Vielleicht so: "In manchen Punkten hat er nicht unrecht. Aber was genau sind seine Lösungen? Und wohin führen die?"` },
     { type:'label', emoji:'🛡️', text:'Abschluss: Drei Fragen als Schutzschild' },
-    { type:'card', html:'<p>Merkt euch diese drei Fragen für jeden Inhalt, der euch online begegnet:</p><ol><li><strong>Wer hat das gemacht — und warum?</strong> Will jemand Geld verdienen? Follower gewinnen? Meine Meinung beeinflussen?</li><li><strong>Was fehlt?</strong> Welche Perspektive wird ausgeblendet? Gibt es Gegenargumente?</li><li><strong>Wie fühle ich mich danach?</strong> Wütend? Überlegen? Verängstigt? Wenn ja — ist das Absicht?</li></ol>' },
+    { type:'card', html:`<p>Merkt euch diese drei Fragen für jeden Inhalt online:</p>
+<ol><li><strong>Wer hat das gemacht — und was verkauft er?</strong> Aufmerksamkeit? Kurse? Eine Ideologie? Alle drei?</li><li><strong>Was fehlt?</strong> Welche Perspektive wird ausgeblendet? Warum? Welche Nuance geht verloren?</li><li><strong>Wie fühle ich mich danach?</strong> Wütend? Überlegen? Verängstigt? Einsam-unter-Eingeweihten? Wenn ja — ist das Absicht?</li></ol>` },
     { type:'reflect', label:'Was nimmst du aus dieser Session mit? Besprecht das.' }
   ]
 },
 {
   id: 4, title: 'Wenn Verunsicherung kippt', subtitle: 'Von Frust zu Extremismus',
-  goal: 'Verstehen, wie berechtigte Verunsicherung in Radikalisierung münden kann, und lernen, Warnsignale zu erkennen — bei sich selbst und bei anderen.',
+  goal: 'Verstehen, wie berechtigte Verunsicherung in Radikalisierung münden kann, und lernen, Warnsignale zu erkennen.',
   blocks: [
     { type:'label', emoji:'🗺️', text:'Einstieg: Die Verunsicherungs-Landkarte' },
     { type:'activity', title:'Gedankenexperiment (10 Min)', html:'<p>Stellt euch eine Landkarte vor: In der Mitte steht <strong>"ICH"</strong>. Welche Bereiche drumherum machen euch manchmal unsicher? Schule, Freundschaften, Aussehen, Zukunft, Familie, Social Media... Besprecht, was davon am meisten beschäftigt.</p>' },
     { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Unsicherheit ist normal. Jeder Mensch kennt sie. Die Frage ist: Was machst du mit dem Gefühl?' },
     { type:'label', emoji:'📚', text:'Wissensblock: Der Weg von Unsicherheit zu Extremismus' },
-    { type:'collapsible', title:'Warum gerade junge Männer?', html:`<p>Es gibt ein echtes Paradox in unserer Gesellschaft: Einerseits sind Frauen heute formal gleichberechtigt, und das ist gut so. Andererseits haben viele junge Männer das Gefühl, dass ihnen niemand sagt, was ihre Rolle eigentlich sein soll. Die alten Modelle ("Mann ernährt Familie") funktionieren nicht mehr richtig, aber neue Modelle sind noch nicht klar.</p>
-<p>Dazu kommt: Jungs werden in der Schule oft seltener gefördert, erhalten weniger emotionale Unterstützung und haben weniger Anlaufstellen, wenn sie Hilfe brauchen. Die Suizidrate bei jungen Männern ist erschreckend hoch — in Deutschland sterben dreimal so viele Männer wie Frauen durch Suizid.</p>
-<p>Das sind reale Probleme, die ernst genommen werden müssen.</p>` },
-    { type:'collapsible', title:'Das Trichter-Modell der Radikalisierung', html:`<p>Stellt euch einen Trichter vor:</p>
-<h4>1. Ganz oben (breiter Rand)</h4><p>Normale Verunsicherung. "Wer bin ich? Wo gehöre ich hin? Warum fühle ich mich manchmal so verloren?"</p>
-<h4>2. Erste Verengung</h4><p>Jemand bietet Erklärungen an. "Feminismus hat alles kaputt gemacht." "Die Gesellschaft bevorzugt Frauen." Diese Erklärungen fühlen sich plausibel an, weil sie einen wahren Kern haben — aber sie vereinfachen massiv.</p>
-<h4>3. Weiter nach unten</h4><p>Du umgibst dich nur noch mit Menschen, die genauso denken. Andere Meinungen werden als "Lügen" oder "Propaganda" abgetan. Du bist in einer Blase.</p>
-<h4>4. Unten im Trichter</h4><p>Extreme Ansichten werden normal. Frauenfeindlichkeit, Gewaltfantasien, Verschwörungstheorien. Manche Menschen werden hier zu einer echten Gefahr — für sich selbst und andere.</p>` },
+    { type:'collapsible', title:'Warum gerade junge Männer?', html:`<p>Es gibt ein echtes Paradox in unserer Gesellschaft: Einerseits sind Frauen heute formal gleichberechtigt, und das ist gut so. Andererseits haben viele junge Männer das Gefühl, dass ihnen niemand sagt, was ihre Rolle eigentlich sein soll. Die alten Modelle funktionieren nicht mehr richtig, aber neue Modelle sind noch nicht klar. Es gibt eine echte "Männlichkeitslücke" — nicht weil Männlichkeit abgeschafft wurde, sondern weil die alten Bilder nicht mehr tragen und niemand etwas Neues anbietet. In dieses Vakuum stoßen die Bewegungen aus Session 3.</p>
+<p>Dazu kommt: Jungs werden in der Schule oft seltener individuell gefördert, erhalten weniger emotionale Unterstützung. In Deutschland machen deutlich mehr Mädchen Abitur als Jungs. Die Suizidrate bei jungen Männern ist erschreckend hoch — dreimal so hoch wie bei Frauen. Das sind reale Probleme, die ernst genommen werden müssen.</p>` },
+    { type:'collapsible', title:'Pfad 1: Der Leistungs-Pfad (Grindset → Verachtung)', html:`<p>Du fängst an mit dem Wunsch, erfolgreich zu sein. Du schaust Motivationsvideos. Dann lernst du, dass "echte" Männer Millionäre sind. Du arbeitest hart, aber der Erfolg kommt nicht. Statt zu erkennen, dass das System komplexer ist, lernst du: "Die anderen sind schuld." Frauen wollen nur dein Geld. Die Gesellschaft hält dich klein. Du beginnst, alle Menschen in "High Value" und "Low Value" einzuteilen — dich selbst eingeschlossen.</p>
+<p>Das Ergebnis: Verachtung für andere und Selbsthass, wenn du deine eigenen unrealistischen Maßstäbe nicht erreichst.</p>` },
+    { type:'collapsible', title:'Pfad 2: Der Körper-Pfad (Fitness → Dysmorphie → Frauenfeindlichkeit)', html:`<p>Du willst fitter werden — ein guter Impuls. Aber der Algorithmus zeigt dir Influencer mit Steroid-Körpern und behauptet, das sei "natürlich". Du wirst unzufrieden mit deinem eigenen Körper. Du landest bei Looksmaxxing-Content, der dir sagt, dein Gesicht sei "zu schwach". Von dort ist es nicht weit zu Red-Pill-Content, der erklärt: "Frauen wollen nur Männer mit Jawline und Geld."</p>
+<p>Das Ergebnis: Dein Körper wird zum Feind, und Frauen werden zur Jury, deren Urteil du fürchtest.</p>` },
+    { type:'collapsible', title:'Pfad 3: Der Intellektuellen-Pfad (Selbsthilfe → Ideologie → Überlegenheit)', html:`<p>Du suchst nach Sinn und Orientierung. Du findest einen Psychologen oder Philosophen, der kluge Sachen sagt — "Übernimm Verantwortung", "Sei ehrlich". Dann merkst du nicht, wie die Botschaft sich verschiebt: "Geschlechterhierarchien sind natürlich", "Feminismus hat die Gesellschaft zerstört." Du fühlst dich intellektuell überlegen, weil du die "Wahrheit" erkannt hast.</p>
+<p>Das Ergebnis: Du verwechselst Arroganz mit Intelligenz und hörst auf, andere Perspektiven ernst zu nehmen.</p>` },
+    { type:'collapsible', title:'Pfad 4: Der Humor-Pfad (Memes → Ironie → Normalisierung)', html:`<p>Du lachst über ein Meme. Dann noch eins. Die Memes werden extremer, aber du lachst weiter — es ist ja nur Spaß. Auf Discord teilst du Bilder, die du vor einem Jahr noch abstoßend gefunden hättest. Du merkst nicht, dass sich dein Kompass verschoben hat, weil alles in Ironie verpackt war.</p>
+<p>Das Ergebnis: Du hast keine klare Position mehr, weil du gelernt hast, dass alles "nur ein Witz" ist — auch Frauenhass, Rassismus und Gewalt.</p>` },
+    { type:'collapsible', title:'Pfad 5: Der Traditions-Pfad (Sehnsucht → Idealisierung → Rigidität)', html:`<p>Du sehnst dich nach Klarheit und Ordnung. Du findest Content, der eine "einfachere" Zeit verspricht: klare Rollen, die Familie als Zentrum. Das fühlt sich warm und sicher an. Aber: Diese idealisierte Vergangenheit hat es nie gegeben. Und die "klaren Rollen" bedeuten in der Praxis: Frauen verlieren ihre Freiheit, Männer werden auf die Versorger-Rolle reduziert.</p>
+<p>Das Ergebnis: Rigidität statt Stabilität — und Feindseligkeit gegen alle, die anders leben wollen.</p>` },
+    { type:'collapsible', title:'Was alle Pfade gemeinsam haben', html:`<p>Egal welchen Weg jemand nimmt — am Ende landen viele an einem ähnlichen Ort:</p>
+<ul><li>Ein Weltbild, in dem Geschlechter gegeneinander stehen statt miteinander</li><li>Verachtung für Schwäche (bei sich selbst und bei anderen)</li><li>Misstrauen gegen "das System", Medien, Bildung, Institutionen</li><li>Das Gefühl, einer erleuchteten Minderheit anzugehören</li><li>Und oft: Einsamkeit, verkleidet als Unabhängigkeit</li></ul>` },
     { type:'collapsible', title:'Der politische Kontext — Potsdam und Brandenburg', html:`<p>In Brandenburg und ganz Ostdeutschland zeigt sich eine Tendenz: Junge Männer wählen deutlich häufiger rechtsextreme Parteien wie die AfD als junge Frauen. Bei der Europawahl 2024 war die AfD bei jungen Männern zwischen 16 und 24 die stärkste Partei.</p>
-<p>Warum? Die AfD bietet genau das, was verunsicherte junge Männer suchen: klare Feindbilder ("Ausländer", "Genderideologie", "Eliten"), das Versprechen einer "starken" Ordnung und die Botschaft "Ihr seid die wahren Opfer". Das ist verführerisch — aber es ist eine Falle. Denn die "Lösungen" der AfD machen niemanden stärker. Sie machen die Gesellschaft für alle ärmer.</p>` },
-    { type:'collapsible', title:'Manosphere und politischer Extremismus', html:`<p>Die Manosphere und der Rechtsextremismus überschneiden sich an vielen Stellen:</p>
-<ul><li>Beide arbeiten mit dem Narrativ <strong>"Männer werden unterdrückt"</strong></li><li>Beide bieten einfache Feindbilder (Frauen, Migranten, "das System")</li><li>Beide versprechen: <strong>"Wir verstehen dich, die anderen nicht"</strong></li><li>Beide nutzen Humor, Memes und Provokation, um extreme Inhalte normal erscheinen zu lassen</li></ul>` },
-    { type:'quote', text:'Verunsicherung ist menschlich. Aber wer dir sagt, dass andere Menschen schuld an deinen Problemen sind — egal ob Frauen, Migranten oder "die Elite" — der will dich nicht stärken. Der will dich benutzen.' },
+<p>Die AfD nutzt exakt dieselben Mechanismen wie das Männlichkeits-Ökosystem:</p>
+<ul><li><strong>Echte Probleme, falsche Antworten:</strong> "Jobs werden weniger, Mieten steigen" — alles real. Die AfD-Antwort: "Die Ausländer sind schuld."</li>
+<li><strong>Männlichkeit als politisches Versprechen:</strong> Die AfD inszeniert sich als Partei der "echten Männer" — gegen "Genderideologie", gegen "woke Eliten".</li>
+<li><strong>Provokation als Markenzeichen:</strong> "Das wird man ja wohl noch sagen dürfen" — derselbe Mechanismus wie die Meme-Kultur.</li>
+<li><strong>Die Spirale von Online zu Offline:</strong> Studien zeigen, dass der Konsum von Manosphere-Content einer der stärksten Prädiktoren für rechtsextremes Wahlverhalten bei jungen Männern ist.</li></ul>` },
+    { type:'collapsible', title:'Internationale Dimension', html:`<p>Das ist kein deutsches Problem. In den USA wählen junge Männer zunehmend republikanisch, in Südkorea gibt es eine massive antifeministische Bewegung unter jungen Männern, in Italien und Frankreich dasselbe Muster. Die Verunsicherung junger Männer ist global — und die Antworten, die sie im Internet finden, sind es auch.</p>` },
+    { type:'quote', text:'Verunsicherung ist menschlich. Die Probleme, die junge Männer haben, sind real. Aber wer dir sagt, dass andere Menschen schuld an deinen Problemen sind — egal ob Frauen, Migranten, "die Elite" oder "das System" — der will dich nicht stärken. Der will dich benutzen. Für Klicks. Für Geld. Für Wählerstimmen.' },
     { type:'label', emoji:'⚠️', text:'Aktivität: Warnsignale erkennen' },
-    { type:'card', html:`<p>Geht diese Liste durch und überlegt gemeinsam — welche dieser Warnsignale kennt ihr, bei euch selbst, bei Freunden, online?</p>
-<ul><li><strong>"Alle Frauen sind so und so"</strong> — pauschale Aussagen über ganze Gruppen</li><li><strong>"Die Wahrheit wird unterdrückt"</strong> — Verschwörungsdenken</li><li><strong>"Du bist ein Opfer des Systems"</strong> — Opferrolle als Identität</li><li><strong>"Nur wir verstehen die Realität"</strong> — Abschottung von anderen Meinungen</li><li><strong>"Das darf man ja nicht mehr sagen"</strong> — Provokation als Selbstzweck</li><li>Zunehmendes Misstrauen gegenüber Freunden, Familie, Lehrern</li><li>Rückzug in eine bestimmte Online-Community</li></ul>` },
+    { type:'collapsible', title:'Teil 1: Warnsignale im Verhalten', html:`<ul><li>"Alle Frauen sind so und so" / "Alle Männer sind so und so" (pauschale Aussagen)</li>
+<li>"Die Wahrheit wird unterdrückt" (Verschwörungsdenken)</li>
+<li>"Ich bin ein Opfer des Systems" (Opferrolle als Selbstbild)</li>
+<li>"Nur wir verstehen die Realität" (Abschottung)</li>
+<li>"Das darf man ja nicht mehr sagen" (Provokation als Selbstzweck)</li>
+<li>Zunehmendes Misstrauen gegenüber Freunden, Familie, Lehrern</li>
+<li>Rückzug in eine bestimmte Online-Community</li>
+<li>Das Gefühl, "aufgewacht" zu sein, während alle anderen "schlafen"</li></ul>` },
+    { type:'collapsible', title:'Teil 2: Warnsignale im Sprachgebrauch', html:`<p>Neue Wörter können ein Signal sein:</p>
+<ul><li>"alpha", "beta", "sigma", "high value", "low value"</li>
+<li>"based", "red-pilled", "blue-pilled", "cope", "NPC"</li>
+<li>"the matrix", "clown world"</li>
+<li>"grindset", "no excuses", "level up"</li>
+<li>"body count", "hypergamy", "the wall"</li></ul>
+<p>Wenn du oder ein Freund plötzlich diese Sprache benutzt, ist das kein Beweis für Radikalisierung — aber ein Signal, genauer hinzuschauen.</p>` },
+    { type:'collapsible', title:'Teil 3: Was tun, wenn ein Freund abdriftet?', html:`<ul><li><strong>Nicht angreifen, sondern nachfragen:</strong> "Woher hast du das? Was genau meinst du damit?" Fragen sind mächtiger als Belehrungen.</li>
+<li><strong>Die Person von der Idee trennen:</strong> "Ich mag dich. Aber was du gerade sagst, macht mir Sorgen."</li>
+<li><strong>Nicht aufgeben:</strong> Radikalisierung passiert oft, weil Menschen sich isoliert fühlen. Kontakt abbrechen bestätigt das Narrativ.</li>
+<li><strong>Hilfe holen:</strong> Wenn jemand Gewaltfantasien äußert oder sich komplett zurückzieht — sprich mit einem Erwachsenen. Das ist kein Verrat. Das ist Fürsorge.</li></ul>` },
     { type:'convo', html:'<strong>Gesprächsfrage:</strong> Was würdest du tun, wenn du merkst, dass ein Freund sich verändert und immer extremere Dinge sagt?' },
-    { type:'label', emoji:'🏛️', text:'Exkurs: Was ist politische Mündigkeit?' },
-    { type:'card', html:`<p>In einer Demokratie hat jeder das Recht, seine Meinung zu haben — auch eine unbequeme. Aber politische Mündigkeit bedeutet nicht nur, eine Meinung zu haben. Es bedeutet:</p>
-<ul><li>Zu prüfen, <strong>woher</strong> deine Meinung kommt</li><li>Andere Perspektiven <strong>anzuhören</strong>, bevor du urteilst</li><li>Zwischen <strong>Fakten und Gefühlen</strong> unterscheiden zu können</li><li>Bereit zu sein, deine Meinung zu <strong>ändern</strong>, wenn du neue Informationen bekommst</li></ul>
-<p>Das ist anstrengender als einfach einer lauten Stimme im Internet zu folgen. Aber es ist der Unterschied zwischen einem mündigen Bürger und jemandem, der benutzt wird.</p>` },
-    { type:'label', emoji:'🪞', text:'Abschluss: Der Kompass-Satz' },
-    { type:'reflect', label:'Formuliert zusammen einen Satz, den ihr als Kompass mitnehmt — z.B.: "Wenn mir jemand sagt, wer mein Feind ist, frage ich zuerst: Was hat diese Person davon?"' }
+    { type:'label', emoji:'🏛️', text:'Exkurs: Politische Mündigkeit' },
+    { type:'card', html:`<p>In einer Demokratie hat jeder das Recht auf seine Meinung — auch eine unbequeme. Und: Nicht jeder, der konservative Werte hat, ist extremistisch. Nicht jeder, der sagt, dass Jungs es manchmal schwer haben, ist ein Frauenfeind. Die Grenze verläuft nicht zwischen links und rechts, sondern zwischen differenziertem Denken und Schwarz-Weiß-Denken.</p>
+<p>Politische Mündigkeit bedeutet:</p>
+<ul><li>Zu prüfen, woher deine Meinung kommt (Hast du sie selbst gebildet — oder hat ein Algorithmus sie dir gefüttert?)</li>
+<li>Andere Perspektiven anzuhören, bevor du urteilst</li>
+<li>Zwischen Fakten und Gefühlen unterscheiden zu können — und beides ernst zu nehmen</li>
+<li>Bereit zu sein, deine Meinung zu ändern, wenn du neue Informationen bekommst</li>
+<li>Zu erkennen, wenn jemand deine Meinung als Werkzeug benutzt — für Klicks, Geld oder Macht</li></ul>` },
+    { type:'label', emoji:'🪞', text:'Abschluss' },
+    { type:'reflect', label:'Formuliert zusammen einen Kompass-Satz, z.B.: "Wenn mir jemand sagt, wer mein Feind ist, frage ich zuerst: Was hat diese Person davon, dass ich das glaube?"' }
   ]
 },
 {
   id: 5, title: 'Stark auf die gute Art', subtitle: 'Gesunde Männlichkeit und echte Beziehungen',
-  goal: 'Ein positives Bild von Männlichkeit entwickeln, das auf Respekt, Verantwortung und echten Verbindungen basiert — nicht auf Dominanz.',
+  goal: 'Ein positives Bild von Männlichkeit entwickeln, das auf Respekt, Verantwortung und echten Verbindungen basiert.',
   blocks: [
     { type:'label', emoji:'🌟', text:'Einstieg: Der beste Mann, den ich kenne' },
     { type:'activity', title:'Übung (10 Min)', html:'<p>Jeder denkt an einen Mann (real, nicht fiktiv), den er wirklich respektiert. Das kann der Opa sein, ein Trainer, ein Lehrer, ein Nachbar. Beschreibt: Was macht ihn zu einem guten Mann?</p>' },
     { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Tauchen in euren Beschreibungen Worte wie "reich", "stark", "dominant" auf? Oder eher "zuverlässig", "lustig", "hört zu", "fair"?' },
     { type:'label', emoji:'💪', text:'Wissensblock: Was gesunde Männlichkeit bedeuten kann' },
-    { type:'card', html:`<h3>Es gibt nicht DIE Männlichkeit — und das ist eine gute Nachricht</h3>
-<p>Männlichkeit ist kein einzelner Bauplan. Es gibt unzählige Wege, ein Mann zu sein. Die Forschung zeigt, dass sogenannte "positive Männlichkeit" einige gemeinsame Merkmale hat:</p>
-<ul><li><strong>Emotionale Offenheit:</strong> Die Fähigkeit, Gefühle zu erkennen, zu benennen und mitzuteilen. Nicht: immer alles rauslassen. Sondern: wissen, was in dir vorgeht.</li>
-<li><strong>Verantwortung übernehmen:</strong> Nicht für alles und jeden — aber für dein eigenes Handeln. Fehler zugeben können, ohne dich selbst zu zerstören.</li>
-<li><strong>Fürsorge:</strong> Sich um andere kümmern — Freunde, Familie, Schwächere. Das ist keine "weibliche" Eigenschaft. Das ist menschlich.</li>
-<li><strong>Integrität:</strong> Deine Werte auch dann leben, wenn es unbequem ist. Nicht mitmachen, wenn die Gruppe jemanden fertigmacht, nur weil alle es tun.</li>
-<li><strong>Verbindung:</strong> Echte Freundschaften, in denen du ehrlich sein kannst. Nicht nur "Bro-Kultur", in der man zusammen abhängt, aber nie über etwas Echtes spricht.</li></ul>` },
-    { type:'collapsible', title:'Warum Respekt keine Einbahnstraße ist', html:`<p>Geschlechtergerechtigkeit heißt nicht: "Mädchen sind besser als Jungs." Es heißt: Alle Menschen verdienen den gleichen Respekt, die gleichen Chancen und die gleiche Freiheit, ihr Leben so zu leben, wie es zu ihnen passt.</p>
+    { type:'card', html:`<p>Es gibt nicht DIE Männlichkeit — und das ist eine gute Nachricht.</p>
+<p>Männlichkeit ist kein einzelner Bauplan. Die Forschung zeigt, dass "positive Männlichkeit" gemeinsame Merkmale hat:</p>
+<ul><li><strong>Emotionale Offenheit:</strong> Wissen, was in dir vorgeht.</li>
+<li><strong>Verantwortung übernehmen:</strong> Fehler zugeben können, ohne dich selbst zu zerstören.</li>
+<li><strong>Fürsorge:</strong> Sich um andere kümmern — keine "weibliche" Eigenschaft, sondern menschlich.</li>
+<li><strong>Integrität:</strong> Deine Werte auch dann leben, wenn es unbequem ist.</li>
+<li><strong>Verbindung:</strong> Echte Freundschaften, in denen du ehrlich sein kannst.</li></ul>` },
+    { type:'collapsible', title:'Warum Respekt keine Einbahnstraße ist', html:`<p>Geschlechtergerechtigkeit heißt nicht: "Mädchen sind besser als Jungs." Es heißt: Alle Menschen verdienen den gleichen Respekt, die gleichen Chancen und die gleiche Freiheit.</p>
 <p>Das gilt auch für dich. Wenn dir jemand sagt, du bist "toxisch", nur weil du ein Junge bist — dann ist das genauso unfair wie wenn jemand ein Mädchen auf ihr Aussehen reduziert. Geschlechtergerechtigkeit schützt alle.</p>` },
-    { type:'collapsible', title:'Freundschaften zwischen Jungs — das unterschätzte Thema', html:`<p>Eine der größten Herausforderungen für Jungs in deinem Alter: echte, tiefe Freundschaften aufbauen. Studien zeigen, dass Jungs ab etwa 12 Jahren anfangen, ihre Freundschaften "abzuflachen" — sie sprechen weniger über Gefühle, zeigen weniger Zuneigung, halten mehr Distanz. Nicht weil sie das wollen, sondern weil sie Angst haben, als "schwul" oder "weich" zu gelten.</p>
-<p>Das Ergebnis: Einsamkeit. Und Einsamkeit ist einer der stärksten Faktoren, die junge Männer anfällig für Radikalisierung machen.</p>
-<p>Die Gegenstrategie: Freundschaften pflegen, in denen du ehrlich sein kannst. Das muss nicht bedeuten, stundenlang über Gefühle zu reden. Es kann auch heißen: Da sein, wenn es drauf ankommt. Nachfragen, wenn jemand still wird. Sagen können: "Mir geht's gerade nicht gut."</p>` },
-    { type:'collapsible', title:'Beziehungen und Partnerschaft — ein erstes Gespräch', html:`<p>Mit 12 fängt man an, sich für Beziehungen zu interessieren — vielleicht ist das schon ein Thema, vielleicht noch nicht. Egal wo du stehst, ein paar Grundsätze gelten immer:</p>
-<ul><li>Niemand "gehört" dir — weder eine Freundin noch ein Freund</li><li>"Nein" ist ein vollständiger Satz und verdient immer Respekt</li><li>Echte Anziehung hat nichts mit Tricks oder Manipulation zu tun</li><li>Verliebt sein kann großartig sein — und wehtun. Beides ist okay</li></ul>` },
+    { type:'collapsible', title:'Freundschaften zwischen Jungs', html:`<p>Eine der größten Herausforderungen für Jungs in deinem Alter: echte, tiefe Freundschaften aufbauen. Studien zeigen, dass Jungs ab etwa 12 Jahren anfangen, ihre Freundschaften "abzuflachen" — sie sprechen weniger über Gefühle, halten mehr Distanz. Nicht weil sie das wollen, sondern weil sie Angst haben, als "weich" zu gelten.</p>
+<p>Das Ergebnis: Einsamkeit. Und Einsamkeit ist einer der stärksten Faktoren, die anfällig für Radikalisierung machen.</p>
+<p>Die Gegenstrategie: Da sein, wenn es drauf ankommt. Nachfragen, wenn jemand still wird. Sagen können: "Mir geht's gerade nicht gut."</p>` },
+    { type:'collapsible', title:'Beziehungen und Partnerschaft', html:`<p>Mit 12 fängt man an, sich für Beziehungen zu interessieren — vielleicht. Egal wo du stehst, ein paar Grundsätze gelten immer:</p>
+<ul><li>Niemand "gehört" dir</li><li>"Nein" ist ein vollständiger Satz und verdient immer Respekt</li><li>Echte Anziehung hat nichts mit Tricks oder Manipulation zu tun</li><li>Verliebt sein kann großartig sein — und wehtun. Beides ist okay</li></ul>` },
     { type:'quote', text:'Ein starker Mann ist nicht jemand, der andere klein macht. Es ist jemand, der stark genug ist, andere neben sich wachsen zu lassen.' },
     { type:'label', emoji:'✏️', text:'Aktivität: Schwierige Situationen durchspielen' },
-    { type:'card', html:`<p>Besprecht diese Situationen als Gedankenexperiment — es gibt keine perfekten Antworten. Es geht darum, zu üben, in solchen Momenten nicht einfach mitzuschwimmen:</p>
-<ol><li><strong>In der Schule:</strong> Deine Kumpels machen sich über ein Mädchen lustig. Du findest das nicht okay. Was sagst du?</li>
-<li><strong>Online:</strong> Jemand postet ein Meme, das frauenfeindlich ist, und alle lachen. Was tust du?</li>
-<li><strong>In der Freundschaft:</strong> Dein bester Freund ist total down, sagt aber "Alles gut." Was machst du?</li>
-<li><strong>In der Familie:</strong> Dein Vater sagt etwas über Frauen, das dich stört. Wie gehst du damit um?</li></ol>` },
-    { type:'label', emoji:'🪞', text:'Abschluss: Der Werte-Satz' },
+    { type:'card', html:`<p>Besprecht diese Situationen als Gedankenexperiment:</p>
+<ol><li><strong>Schule:</strong> Deine Kumpels machen sich über ein Mädchen lustig. Was sagst du?</li>
+<li><strong>Online:</strong> Jemand postet ein frauenfeindliches Meme und alle lachen. Was tust du?</li>
+<li><strong>Freundschaft:</strong> Dein bester Freund ist total down, sagt aber "Alles gut." Was machst du?</li>
+<li><strong>Familie:</strong> Dein Vater sagt etwas über Frauen, das dich stört. Wie gehst du damit um?</li></ol>` },
+    { type:'label', emoji:'🪞', text:'Abschluss' },
     { type:'reflect', label:'Vervollständigt gemeinsam: "Der Mann, der ich sein will, ist jemand, der..."' }
   ]
 },
 {
   id: 6, title: 'Gewappnet für die Welt', subtitle: 'Dein persönliches Toolkit',
-  goal: 'Alle Erkenntnisse zusammenführen und ein persönliches "Survival Kit" für den Alltag entwickeln.',
+  goal: 'Alle Erkenntnisse zusammenführen und ein persönliches "Survival Kit" entwickeln.',
   blocks: [
     { type:'label', emoji:'🔄', text:'Rückblick' },
     { type:'convo', html:'<strong>Gesprächsimpuls:</strong> Geht die letzten fünf Sessions kurz durch. Was ist hängengeblieben? Was war das Wichtigste? Was hat überrascht?' },
     { type:'label', emoji:'🧰', text:'Dein Medienkompetenz-Toolkit' },
     { type:'collapsible', title:'Werkzeug 1: Der Quellen-Check', html:`<p>Bevor du einen Inhalt glaubst oder teilst:</p>
-<ul><li>Wer hat das veröffentlicht? (Person, Medium, Organisation?)</li><li>Gibt es ein Impressum, einen Klarnamen, eine Qualifikation?</li><li>Wird die Behauptung von mehreren unabhängigen Quellen bestätigt?</li><li>Tipp: Nutze Seiten wie <strong>correctiv.org</strong> oder <strong>mimikama.org</strong> für Faktencheck</li></ul>` },
+<ul><li>Wer hat das veröffentlicht? (Person, Medium, Organisation?)</li><li>Gibt es ein Impressum, einen Klarnamen, eine Qualifikation?</li><li>Wird die Behauptung von mehreren unabhängigen Quellen bestätigt?</li><li>Tipp: Nutze <strong>correctiv.org</strong> oder <strong>mimikama.org</strong> für Faktencheck</li></ul>` },
     { type:'collapsible', title:'Werkzeug 2: Das Emotions-Radar', html:`<p>Algorithmen zielen auf deine Emotionen. Mach dir das bewusst:</p>
-<ul><li>Wenn du nach dem Scrollen wütend, frustriert oder ängstlich bist — war das der Inhalt oder der Algorithmus?</li><li><strong>Regel:</strong> Bevor du etwas kommentierst, teilst oder glaubst — warte 10 Sekunden. Frag dich: "Würde ich das auch morgen früh noch so sehen?"</li></ul>` },
-    { type:'collapsible', title:'Werkzeug 3: Der Perspektiv-Wechsel', html:`<p>Wenn du eine starke Meinung hast, versuche aktiv die Gegenposition zu verstehen:</p>
+<ul><li>Wenn du nach dem Scrollen wütend, frustriert oder ängstlich bist — war das der Inhalt oder der Algorithmus?</li><li><strong>Regel:</strong> Bevor du etwas kommentierst, teilst oder glaubst — warte 10 Sekunden. "Würde ich das auch morgen früh noch so sehen?"</li></ul>` },
+    { type:'collapsible', title:'Werkzeug 3: Der Perspektiv-Wechsel', html:`<p>Bei einer starken Meinung, versuche aktiv die Gegenposition zu verstehen:</p>
 <ul><li>"Was würde jemand sagen, der das Gegenteil glaubt?"</li><li>"Welche Erfahrungen könnten zu dieser anderen Meinung führen?"</li></ul>
 <p>Das heißt nicht, dass du deine Meinung aufgibst. Es heißt, dass du sie stärker machst, weil du sie geprüft hast.</p>` },
     { type:'collapsible', title:'Werkzeug 4: Die Bubble-Brechung', html:`<p>Jeder lebt in einer Blase — auch ohne eigenes Social Media. Brich sie bewusst auf:</p>
-<ul><li>Wenn du mal Social Media nutzt: Folge Menschen, die anders denken, aber sachlich argumentieren</li><li>Lies oder schau Nachrichten aus verschiedenen Quellen</li><li>Sprich mit Menschen, die andere Erfahrungen haben als du</li></ul>` },
+<ul><li>Wenn du mal Social Media nutzt: Folge Menschen, die anders denken, aber sachlich argumentieren</li><li>Lies oder schau Nachrichten aus verschiedenen Quellen</li><li>Sprich mit Menschen, die andere Erfahrungen haben</li></ul>` },
     { type:'collapsible', title:'Werkzeug 5: Das Hilfe-Netz', html:`<p>Wissen, wo du Hilfe findest, ist kein Zeichen von Schwäche:</p>
-<ul><li>Vertrauensperson in der Familie (wer ist das bei euch?)</li><li>Vertrauenslehrer:in in der Schule</li><li><strong>Nummer gegen Kummer:</strong> 116 111 (Mo–Sa 14–20 Uhr, kostenlos, anonym)</li><li><strong>Online-Beratung:</strong> jugendnotmail.de</li><li><strong>Telefonseelsorge:</strong> 0800 111 0 111 (rund um die Uhr, kostenlos)</li><li>Wenn ein Freund sich verändert oder du dir Sorgen machst: Sprich mit einem Erwachsenen, dem du vertraust</li></ul>` },
+<ul><li>Vertrauensperson in der Familie</li><li>Vertrauenslehrer:in in der Schule</li><li><strong>Nummer gegen Kummer:</strong> 116 111 (Mo–Sa 14–20 Uhr, kostenlos, anonym)</li><li><strong>Online-Beratung:</strong> jugendnotmail.de</li><li><strong>Telefonseelsorge:</strong> 0800 111 0 111 (rund um die Uhr, kostenlos)</li></ul>` },
     { type:'label', emoji:'🧭', text:'Aktivität: Der persönliche Kompass' },
-    { type:'activity', title:'Kompass besprechen (20 Min)', html:'<p>Besprecht zusammen vier Richtungen:</p><ul><li><strong>Norden (Werte):</strong> Was sind deine drei wichtigsten Werte?</li><li><strong>Osten (Vorbilder):</strong> Welche 2–3 Menschen inspirieren dich? Was genau an ihnen?</li><li><strong>Süden (Warnsignale):</strong> Was sind deine persönlichen Warnsignale, dass du in eine schlechte Richtung driftest?</li><li><strong>Westen (Hilfe):</strong> An wen wendest du dich, wenn es dir nicht gut geht?</li></ul>' },
+    { type:'activity', title:'Kompass besprechen (20 Min)', html:`<p>Besprecht zusammen vier Richtungen:</p>
+<ul><li><strong>Norden (Werte):</strong> Was sind deine drei wichtigsten Werte?</li><li><strong>Osten (Vorbilder):</strong> Welche 2–3 Menschen inspirieren dich?</li><li><strong>Süden (Warnsignale):</strong> Deine persönlichen Warnsignale, dass du in eine schlechte Richtung driftest?</li><li><strong>Westen (Hilfe):</strong> An wen wendest du dich, wenn es dir nicht gut geht?</li></ul>` },
     { type:'label', emoji:'❓', text:'Offene Fragen' },
-    { type:'card', html:`<p>Dies ist der Moment für alles, was in den letzten Wochen aufgekommen ist. Mögliche Gesprächsstarter:</p>
+    { type:'card', html:`<p>Mögliche Gesprächsstarter:</p>
 <ul><li>"Gibt es etwas, das du online gesehen hast und das dich beschäftigt?"</li><li>"Hat sich dein Blick auf irgendetwas verändert?"</li><li>"Was war die schwierigste Frage in diesem Modul?"</li><li>"Worüber möchtest du weiter nachdenken?"</li></ul>` },
     { type:'quote', text:'Du bist kein Produkt und kein Algorithmus. Du bist ein Mensch mit der Freiheit, selbst zu entscheiden, was für dich richtig ist. Nutz diese Freiheit. Hinterfrage. Bleib neugierig. Sei mutig genug, auch mal unsicher zu sein. Das ist keine Schwäche — das ist der Anfang von allem, was sich lohnt.' },
     { type:'label', emoji:'🤝', text:'Abschluss-Ritual' },
-    { type:'card', html:'<p>Gebt euch einen Handschlag (oder eine andere Geste, die zu euch passt) und sprecht ein gemeinsames Versprechen aus:</p><p style="text-align:center;font-size:16px;font-weight:700;margin:12px 0;color:var(--accent2)">"Wir bleiben im Gespräch — auch wenn es unbequem wird."</p>' },
+    { type:'card', html:'<p>Gebt euch einen Handschlag und sprecht ein gemeinsames Versprechen aus:</p><p style="text-align:center;font-size:16px;font-weight:700;margin:12px 0;color:var(--accent2)">"Wir bleiben im Gespräch — auch wenn es unbequem wird."</p>' },
     { type:'reflect', label:'Was ist dein wichtigstes Learning aus dem gesamten Modul? Besprecht das zusammen.' },
     { type:'label', emoji:'📚', text:'Ressourcen und Hilfsangebote' },
-    { type:'collapsible', title:'Bücher', html:'<ul><li><strong>"Jungen!" von Steve Biddulph</strong> — Ein Klassiker über Jungs-Erziehung, gut lesbar für Eltern</li><li><strong>"Von Jungs für alle" von Jack Urwin</strong> — Über toxische Männlichkeit, verständlich geschrieben</li></ul>' },
-    { type:'collapsible', title:'Websites', html:'<ul><li><strong>correctiv.org</strong> — Deutschlands größtes Faktencheck-Team</li><li><strong>mimikama.org</strong> — Überprüfung von Internet-Hoaxes und Fakes</li><li><strong>klicksafe.de</strong> — Medienkompetenz für Jugendliche und Eltern</li><li><strong>jugendschutz.net</strong> — Schutz vor extremistischen Inhalten</li><li><strong>boys-day.de</strong> — Angebote für Jungs jenseits traditioneller Rollenbilder</li></ul>' },
-    { type:'collapsible', title:'Hilfsangebote', html:'<ul><li><strong>Nummer gegen Kummer:</strong> 116 111 (Mo–Sa 14–20 Uhr, kostenlos, anonym)</li><li><strong>jugendnotmail.de</strong> — Online-Beratung per Mail</li><li><strong>Telefonseelsorge:</strong> 0800 111 0 111 (rund um die Uhr, kostenlos)</li></ul>' },
+    { type:'collapsible', title:'Bücher', html:`<ul><li><strong>"Jungen!" von Steve Biddulph</strong> — Klassiker über Jungs-Erziehung</li><li><strong>"Von Jungs für alle" von Jack Urwin</strong> — Über toxische Männlichkeit</li><li><strong>"Unsichtbare Frauen" von Caroline Criado Perez</strong> — Wie die Welt um männliche Perspektiven herum gebaut ist</li></ul>` },
+    { type:'collapsible', title:'Websites', html:`<ul><li><strong>correctiv.org</strong> — Faktencheck</li><li><strong>mimikama.org</strong> — Internet-Hoaxes</li><li><strong>klicksafe.de</strong> — Medienkompetenz</li><li><strong>jugendschutz.net</strong> — Schutz vor Extremismus</li><li><strong>boys-day.de</strong> — Angebote für Jungs</li></ul>` },
+    { type:'collapsible', title:'Hilfsangebote', html:`<ul><li><strong>Nummer gegen Kummer:</strong> 116 111</li><li><strong>jugendnotmail.de</strong></li><li><strong>Telefonseelsorge:</strong> 0800 111 0 111</li></ul>` },
     { type:'collapsible', title:'Hinweise für Eltern', html:`<h4>Haltung ist wichtiger als Wissen</h4>
-<p>Ihr müsst nicht auf alles eine Antwort haben. Die wichtigste Botschaft: "Ich nehme dich ernst. Ich höre dir zu. Und wir können über alles reden."</p>
+<p>Die wichtigste Botschaft: "Ich nehme dich ernst. Ich höre dir zu."</p>
 <h4>Wenn es stockt</h4>
-<p>Nicht jede Session wird perfekt laufen. Wenn ein Gespräch nicht in Gang kommt: Nicht erzwingen. Manchmal wirken Gespräche erst Tage später nach.</p>
+<p>Nicht erzwingen. Manchmal wirken Gespräche erst Tage später nach.</p>
 <h4>Vorsicht vor Verboten</h4>
-<p>"Du darfst dir das nicht anschauen" funktioniert bei 12-Jährigen selten. Besser: "Schau es dir an — und dann lass uns darüber reden, was du davon hältst." Verbotenes wird interessanter. Verstandenes wird langweiliger.</p>
+<p>"Schau es dir an — und dann lass uns darüber reden." Verbotenes wird interessanter. Verstandenes wird langweiliger.</p>
 <h4>Regelmäßigkeit</h4>
-<p>Dieses Modul ist ein Anfang, kein Endpunkt. Plant regelmäßige Check-ins ein — beim Abendessen, beim Spaziergang, beim Autofahren. Die besten Gespräche entstehen oft nebenbei.</p>` }
+<p>Dieses Modul ist ein Anfang. Plant regelmäßige Check-ins ein — beim Abendessen, beim Spaziergang, beim Autofahren.</p>` }
   ]
 }
 ];
