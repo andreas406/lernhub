@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lernhub-v4';
+const CACHE_NAME = 'lernhub-v5';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -45,17 +45,16 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // Shell files: cache first, then network
+  // All other files: network first, cache as offline fallback
   e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
+    fetch(e.request)
+      .then(res => {
         if (res.ok) {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
         }
         return res;
-      });
-    })
+      })
+      .catch(() => caches.match(e.request))
   );
 });
