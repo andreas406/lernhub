@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stark ohne Maske</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
+      --text: #f1f5f9; --muted: #94a3b8; --accent: #8b5cf6;
+      --accent2: #a78bfa; --warm: #f59e0b; --green: #22c55e;
+      --radius: 14px;
+    }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    body { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* Layout */
+    .app { max-width: 640px; margin: 0 auto; padding: 20px 16px 40px; min-height: 100vh; }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 28px; }
+    .header-icon { font-size: 48px; margin-bottom: 8px; }
+    .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .header p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    /* Progress bar */
+    .progress-bar { background: var(--surface); border-radius: 8px; height: 8px; margin-bottom: 24px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 8px; transition: width 0.5s ease; }
+    .progress-label { text-align: center; font-size: 12px; color: var(--muted); margin-top: -18px; margin-bottom: 20px; }
+
+    /* Session cards on overview */
+    .session-list { display: flex; flex-direction: column; gap: 12px; }
+    .session-card {
+      background: var(--surface); border-radius: var(--radius); padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px; cursor: pointer;
+      border: 1px solid transparent; transition: all 0.2s;
+    }
+    .session-card:hover, .session-card:focus { background: var(--surface2); border-color: var(--accent); outline: none; }
+    .session-card.completed { border-left: 3px solid var(--green); }
+    .session-num {
+      width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; flex-shrink: 0;
+      background: rgba(139,92,246,0.15); color: var(--accent2);
+    }
+    .session-card.completed .session-num { background: rgba(34,197,94,0.15); color: var(--green); }
+    .session-info { flex: 1; min-width: 0; }
+    .session-name { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+    .session-desc { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .session-badge { font-size: 18px; flex-shrink: 0; }
+
+    /* Session detail view */
+    .session-view { display: none; }
+    .session-view.active { display: block; }
+
+    .back-btn {
+      background: none; border: none; color: var(--accent2); font-size: 14px; font-weight: 600;
+      cursor: pointer; padding: 8px 0; margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
+    }
+    .back-btn svg { width: 18px; height: 18px; }
+
+    .session-header { margin-bottom: 24px; }
+    .session-header .num-badge {
+      display: inline-block; background: rgba(139,92,246,0.15); color: var(--accent2);
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; margin-bottom: 8px;
+    }
+    .session-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .session-header .goal { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* Content blocks */
+    .block { margin-bottom: 24px; }
+    .block-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--accent2); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+    }
+    .block-label .emoji { font-size: 14px; }
+
+    .card {
+      background: var(--surface); border-radius: var(--radius); padding: 16px 18px;
+      margin-bottom: 12px; line-height: 1.65; font-size: 14px;
+    }
+    .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    .card h4 { font-size: 13px; font-weight: 700; margin: 12px 0 6px; color: var(--accent2); }
+    .card p { margin-bottom: 10px; }
+    .card p:last-child { margin-bottom: 0; }
+    .card ul, .card ol { padding-left: 20px; margin-bottom: 10px; }
+    .card li { margin-bottom: 6px; }
+    .card strong { color: var(--text); }
+
+    /* Quote / Kernbotschaft */
+    .quote {
+      background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(245,158,11,0.08));
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 18px; font-size: 15px; font-weight: 500; line-height: 1.6;
+      font-style: italic; margin-bottom: 16px;
+    }
+
+    /* Activity box */
+    .activity {
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
+    }
+    .activity h3 { color: var(--warm); font-size: 14px; margin-bottom: 8px; }
+    .activity p, .activity li { font-size: 13px; line-height: 1.6; }
+
+    /* Conversation prompt */
+    .convo {
+      background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; font-size: 13px;
+    }
+    .convo strong { color: var(--green); }
+
+    /* Reflection prompt (read-only) */
+    .reflect-prompt {
+      background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(34,197,94,0.06));
+      border: 1px solid rgba(139,92,246,0.2); border-radius: var(--radius);
+      padding: 14px 16px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;
+    }
+    .reflect-prompt strong { color: var(--accent2); }
+
+    /* Complete button */
+    .complete-btn {
+      display: block; width: 100%; padding: 14px; border: none; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent), #7c3aed); color: #fff;
+      font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: opacity 0.2s;
+    }
+    .complete-btn:hover { opacity: 0.9; }
+    .complete-btn:disabled { opacity: 0.4; cursor: default; }
+    .complete-btn.done { background: var(--green); }
+
+    /* Collapsible sections */
+    .collapsible-toggle {
+      background: var(--surface); border: 1px solid var(--surface2); border-radius: var(--radius);
+      padding: 14px 16px; width: 100%; text-align: left; color: var(--text); font-size: 14px;
+      font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2px; transition: background 0.2s;
+    }
+    .collapsible-toggle:hover { background: var(--surface2); }
+    .collapsible-toggle .arrow { transition: transform 0.2s; font-size: 12px; color: var(--muted); }
+    .collapsible-toggle.open .arrow { transform: rotate(90deg); }
+    .collapsible-content { display: none; padding: 4px 0 12px; }
+    .collapsible-content.open { display: block; }
+
+    /* Resources list */
+    .resource-list { list-style: none; padding: 0; }
+    .resource-list li { padding: 10px 0; border-bottom: 1px solid var(--surface2); font-size: 13px; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-list .res-title { font-weight: 600; }
+    .resource-list .res-desc { color: var(--muted); font-size: 12px; }
+
+    /* Footer */
+    .footer { text-align: center; padding: 30px 0 10px; font-size: 11px; color: var(--surface2); }
+  </style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+const STORAGE_KEY = 'starkOhneMaskeProgress';
+
+const sessions = [
+  {
+    id: 1,
+    title: 'Wie es wurde, wie es ist',
+    subtitle: 'Geschlechterrollen im Wandel der Zeit',
+    goal: 'Verstehen, dass Vorstellungen von "männlich" und "weiblich" sich über die Jahrhunderte stark verändert haben und nicht in Stein gemeißelt sind.',
+    blocks: [
+      { type: 'label', emoji: '💬', text: 'Einstieg: Was ist eigentlich "männlich"?' },
+      { type: 'activity', title: 'Übung (10 Min)', html: '<p>Überlegt euch jeweils fünf Antworten auf: <strong>"Ein richtiger Mann ist jemand, der..."</strong> — und vergleicht eure Antworten.</p>' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Woher kommen diese Ideen? Wer hat dir das beigebracht — Schule, Freunde, Filme, TikTok, Familie?' },
+
+      { type: 'label', emoji: '📚', text: 'Wissensblock: Eine Reise durch die Geschichte' },
+      { type: 'collapsible', title: 'Steinzeit und Antike', html: '<p>In der Frühgeschichte gab es Arbeitsteilung — aber viel flexibler als man denkt. Archäologische Funde zeigen, dass auch Frauen jagten und Männer sich um Kinder kümmerten.</p><p>Im antiken Griechenland galten Männer, die weinten, als besonders ehrenhaft — Odysseus weint in Homers Erzählungen ständig, und niemand fand das schwach. Männlichkeit bedeutete damals etwas völlig anderes als heute.</p>' },
+      { type: 'collapsible', title: 'Mittelalter und Ritterzeit', html: '<p>Das Ritterideal verlangte von Männern Tapferkeit, aber auch Höflichkeit, Dichtkunst und Gefühlsausdruck. Ein Ritter, der nicht über Liebe dichten konnte, galt als unvollständig.</p>' },
+      { type: 'collapsible', title: 'Industrialisierung (ab ca. 1800)', html: '<p>Erst mit der Industrialisierung entstand das Modell, das viele heute als "traditionell" empfinden: Der Mann geht arbeiten, die Frau bleibt zu Hause. Vorher arbeiteten die meisten Familien zusammen. Das "klassische" Familienmodell ist gerade einmal 200 Jahre alt.</p>' },
+      { type: 'collapsible', title: 'DDR und BRD', html: '<p>In der DDR war es selbstverständlich, dass Frauen arbeiten gingen — fast 90% waren berufstätig. In der BRD dominierte das Hausfrauen-Modell bis in die 1970er. Bis 1977 konnte ein Ehemann in der BRD seiner Frau verbieten, arbeiten zu gehen.</p>' },
+      { type: 'collapsible', title: 'Heute', html: '<p>Formal sind Männer und Frauen gleichberechtigt. In der Praxis gibt es weiterhin Unterschiede: beim Gehalt, bei der Verteilung von Hausarbeit und bei der Frage, wer in Führungspositionen sitzt. Gleichzeitig hat sich enorm viel verändert.</p>' },
+
+      { type: 'quote', text: 'Männlichkeit ist kein feststehendes Ding. Was als "männlich" gilt, hat sich in jeder Epoche verändert. Auch du hast die Freiheit, selbst zu definieren, was für dich ein guter Mann sein heißt.' },
+
+      { type: 'label', emoji: '✏️', text: 'Aktivität: Die Zeitstrahl-Übung' },
+      { type: 'activity', title: 'Zeitstrahl-Quiz (15 Min)', html: '<p>Ratet mal — wann war was? Dann schaut euch die Antworten an:</p><ul><li>Frauenwahlrecht in Deutschland: <strong>1918</strong></li><li>Frauenwahlrecht in der Schweiz: <strong>1971!</strong></li><li>Frauen dürfen ohne Erlaubnis des Mannes arbeiten: <strong>1977</strong></li><li>Elternzeit für Väter in Deutschland: <strong>2007</strong></li></ul>' },
+      { type: 'convo', html: '<strong>Gesprächsfrage:</strong> Was davon hat dich überrascht? Was wird sich wohl in den nächsten 50 Jahren noch verändern?' },
+
+      { type: 'label', emoji: '🪞', text: 'Abschluss' },
+      { type: 'reflect', label: '"Ich wusste nicht, dass..." — Vervollständige den Satz:', key: 's1_reflect' }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Was in deinem Kopf passiert',
+    subtitle: 'Psychologie der Männlichkeit',
+    goal: 'Verstehen, warum sich Jungs oft unter Druck gesetzt fühlen, bestimmte Erwartungen zu erfüllen — und lernen, dass Verletzlichkeit keine Schwäche ist.',
+    blocks: [
+      { type: 'label', emoji: '🎭', text: 'Einstieg: Die Masken-Übung' },
+      { type: 'activity', title: 'Gedankenexperiment (10 Min)', html: '<p>Stellt euch vor, ihr habt zwei Gesichter: Eines, das ihr der Welt zeigt, und eines, das nur ihr selbst kennt. Welche Gefühle zeigt ihr nach außen? Welche versteckt ihr? Besprecht das.</p>' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Gibt es Gefühle, die du dir nicht erlaubst zu zeigen? Warum?' },
+
+      { type: 'label', emoji: '🧠', text: 'Wissensblock: Warum Jungs sich oft so verhalten' },
+      { type: 'collapsible', title: 'Die "Man Box"', html: '<p>Forscher haben die unsichtbaren Regeln beschrieben, die Jungs und Männer einengen:</p><ul><li>Sei stark, zeig keine Schwäche</li><li>Kontrolliere deine Gefühle (außer Wut)</li><li>Sei dominant, nicht unterwürfig</li><li>Bitte nicht um Hilfe</li></ul><p>Jungs, die sich streng an diese Regeln halten, haben nachweislich häufiger psychische Probleme, sind häufiger einsam und haben schlechtere Beziehungen.</p>' },
+      { type: 'collapsible', title: 'Was Pubertät mit deinem Gehirn macht', html: '<p>Mit 12 baut sich dein Gehirn komplett um. Der präfrontale Kortex — zuständig für vorausschauendes Denken — ist erst mit Mitte 20 fertig. Gleichzeitig sind die emotionalen Zentren auf Hochtouren.</p><p>Starke Gefühle, Unsicherheit, Wut, Sehnsucht nach Zugehörigkeit — das ist nicht deine Schwäche. Das ist Biologie.</p>' },
+      { type: 'collapsible', title: 'Emotionale Intelligenz — die wahre Stärke', html: '<p>Studien zeigen: Männer, die ihre Gefühle benennen und ausdrücken können, sind nicht schwächer — sie sind resilienter. Sie haben stabilere Freundschaften, bessere Beziehungen und sind psychisch gesünder.</p>' },
+
+      { type: 'quote', text: 'Sich verletzlich zu zeigen erfordert mehr Mut als eine harte Fassade aufzusetzen. Echte Stärke heißt, zu wissen, was du fühlst — und es auch sagen zu können.' },
+
+      { type: 'label', emoji: '✏️', text: 'Aktivität: Das Gefühlsvokabular' },
+      { type: 'activity', title: 'Gefühlsvokabular (15 Min)', html: '<p>Versucht gemeinsam, so viele Gefühlswörter wie möglich zu sammeln. Startet mit den offensichtlichen (glücklich, traurig, wütend) und dann feiner: <em>enttäuscht, beschämt, überfordert, eifersüchtig, stolz, dankbar, verlegen, sehnsüchtig...</em></p><p>Wer mehr Wörter für Gefühle hat, kann seine innere Welt besser verstehen.</p>' },
+      { type: 'convo', html: '<strong>Gesprächsfrage:</strong> Welches dieser Gefühle hast du in der letzten Woche erlebt, ohne es jemandem zu sagen?' },
+
+      { type: 'card', html: '<h3>Exkurs: Männliche Vorbilder</h3><p>Welche Männer bewunderst du? Was genau bewunderst du an ihnen? Und: Welche Eigenschaften haben sie, die <em>nicht</em> in die "Man Box" passen?</p><p>Per Mertesacker sprach über seine Angst vor Spielen, Michael Phelps über Depressionen. Ist das schwach? Oder mutig?</p>' },
+
+      { type: 'label', emoji: '🪞', text: 'Abschluss' },
+      { type: 'reflect', label: 'Stell dir vor, du könntest deinem 16- oder 18-jährigen Ich eine Nachricht schicken. Was würdest du sagen? Besprecht das.', key: 's2_reflect' }
+    ]
+  },
+  {
+    id: 3,
+    title: 'Die Welt in deinem Handy',
+    subtitle: 'Social Media und die Manosphere',
+    goal: 'Verstehen, wie Social-Media-Algorithmen funktionieren, was die Manosphere ist und wie man manipulative Inhalte erkennt.',
+    blocks: [
+      { type: 'label', emoji: '📱', text: 'Einstieg: Dein Feed, deine Welt' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Wenn du dein Handy öffnest — welche Inhalte siehst du am häufigsten? Hast du das Gefühl, dass <em>du</em> entscheidest, was du siehst — oder entscheidet das jemand anders?' },
+
+      { type: 'label', emoji: '🔍', text: 'Wissensblock: Wie du zum Produkt wirst' },
+      { type: 'collapsible', title: 'Wie Algorithmen funktionieren', html: '<p>TikTok, YouTube, Instagram verdienen Geld, wenn du möglichst lange auf der App bleibst. Algorithmen bevorzugen Inhalte, die starke Emotionen auslösen — vor allem Wut, Empörung und Angst.</p><p>Wenn du einmal ein Video über "Alpha Males" anklickst — selbst aus Neugier —, kann sich dein Feed innerhalb von Tagen komplett verändern: der <strong>Rabbit-Hole-Effekt</strong>.</p>' },
+      { type: 'collapsible', title: 'Was ist die Manosphere?', html: '<p>Ein Sammelbegriff für Online-Communities rund um Männlichkeit und Frauenfeindlichkeit:</p><ul><li><strong>Red Pill:</strong> Glauben, dass Feminismus Männer unterdrückt</li><li><strong>Pick-Up-Artists:</strong> Behandeln Frauen als Objekte</li><li><strong>MGTOW:</strong> Ziehen sich von Frauen zurück — oft aus Frustration</li><li><strong>Incels:</strong> Sehen sich als Opfer, teils extreme Frauenfeindlichkeit</li></ul>' },
+      { type: 'collapsible', title: 'Die Playbook-Taktiken — wie sie dich reinziehen', html: '<ol><li><strong>Sie starten mit echten Problemen:</strong> "Jungs haben es schwer" — das hat einen wahren Kern. Aber sie bieten die falschen Lösungen.</li><li><strong>Einfache Erklärungen:</strong> "Frauen sind schuld", "Feminismus hat alles kaputt gemacht"</li><li><strong>Upgrade-Versprechen:</strong> "Werde ein Alpha", "Verdiene 10K im Monat"</li><li><strong>Isolation:</strong> "Vertraue nur uns", "Die Mainstream-Medien lügen"</li></ol>' },
+
+      { type: 'quote', text: 'Wenn jemand dir online einfache Antworten auf komplizierte Fragen gibt — sei misstrauisch. Jeder, der dir sagt "Es ist ganz einfach", will meistens etwas von dir: deine Aufmerksamkeit, dein Geld oder deine Überzeugung.' },
+
+      { type: 'label', emoji: '✏️', text: 'Aktivität: Der Algorithmus-Check' },
+      { type: 'activity', title: 'Übung (20 Min)', html: '<p>Öffnet zusammen TikTok oder YouTube Shorts. Scrollt durch den Feed und analysiert gemeinsam:</p><ul><li>Was für Inhalte tauchen auf?</li><li>Welche Emotionen lösen sie aus?</li><li>Wer verdient an diesem Content Geld?</li><li>Wird ein Problem benannt? Ist die Lösung realistisch?</li></ul>' },
+      { type: 'convo', html: '<strong>Die Gretchenfrage:</strong> "Stell dir vor, dein bester Freund schickt dir ein Video und sagt: \'Der Typ hat echt recht, Feminismus ist das Problem.\' Was würdest du antworten?"' },
+
+      { type: 'label', emoji: '🛡️', text: 'Abschluss: Drei Fragen als Schutzschild' },
+      { type: 'card', html: '<p>Merkt euch diese drei Fragen für jeden Inhalt online:</p><ol><li><strong>Wer hat das gemacht — und warum?</strong></li><li><strong>Was fehlt?</strong> Welche Perspektive wird ausgeblendet?</li><li><strong>Wie fühle ich mich danach?</strong> Wütend? Überlegen? — Ist das Absicht?</li></ol>' },
+      { type: 'reflect', label: 'Was nimmst du aus dieser Session mit?', key: 's3_reflect' }
+    ]
+  },
+  {
+    id: 4,
+    title: 'Wenn Verunsicherung kippt',
+    subtitle: 'Von Frust zu Extremismus',
+    goal: 'Verstehen, wie berechtigte Verunsicherung in Radikalisierung münden kann, und lernen, Warnsignale zu erkennen.',
+    blocks: [
+      { type: 'label', emoji: '🗺️', text: 'Einstieg: Die Verunsicherungs-Landkarte' },
+      { type: 'activity', title: 'Gedankenexperiment (10 Min)', html: '<p>Stellt euch eine Landkarte vor: In der Mitte steht <strong>"ICH"</strong>. Welche Bereiche drumherum machen euch manchmal unsicher? Schule, Freundschaften, Aussehen, Zukunft, Familie, Social Media... Besprecht, was davon am meisten beschäftigt.</p>' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Unsicherheit ist normal. Die Frage ist: Was machst du mit dem Gefühl?' },
+
+      { type: 'label', emoji: '📚', text: 'Wissensblock: Der Weg zu Extremismus' },
+      { type: 'collapsible', title: 'Warum gerade junge Männer?', html: '<p>Die alten Modelle ("Mann ernährt Familie") funktionieren nicht mehr richtig, aber neue Modelle sind noch nicht klar. Jungs werden in der Schule oft seltener gefördert, erhalten weniger emotionale Unterstützung. Die Suizidrate bei jungen Männern ist erschreckend hoch — dreimal so hoch wie bei Frauen.</p><p>Das sind reale Probleme, die ernst genommen werden müssen.</p>' },
+      { type: 'collapsible', title: 'Das Trichter-Modell der Radikalisierung', html: '<ol><li><strong>Oben:</strong> Normale Verunsicherung. "Wer bin ich? Wo gehöre ich hin?"</li><li><strong>Erste Verengung:</strong> Jemand bietet Erklärungen. "Feminismus hat alles kaputt gemacht."</li><li><strong>Weiter unten:</strong> Nur noch Gleichgesinnte. Andere Meinungen werden als "Lügen" abgetan.</li><li><strong>Ganz unten:</strong> Extreme Ansichten werden normal. Frauenfeindlichkeit, Gewaltfantasien.</li></ol>' },
+      { type: 'collapsible', title: 'Manosphere und politischer Extremismus', html: '<p>Beide Welten überschneiden sich an vielen Stellen:</p><ul><li>Beide arbeiten mit dem Narrativ "Männer werden unterdrückt"</li><li>Beide bieten einfache Feindbilder</li><li>Beide versprechen: "Wir verstehen dich, die anderen nicht"</li><li>Beide nutzen Humor, Memes und Provokation</li></ul>' },
+
+      { type: 'quote', text: 'Verunsicherung ist menschlich. Aber wer dir sagt, dass andere Menschen schuld an deinen Problemen sind — der will dich nicht stärken. Der will dich benutzen.' },
+
+      { type: 'label', emoji: '⚠️', text: 'Aktivität: Warnsignale erkennen' },
+      { type: 'card', html: '<p>Geht diese Liste durch — welche kennt ihr?</p><ul><li>"Alle Frauen sind so und so" (pauschale Aussagen)</li><li>"Die Wahrheit wird unterdrückt" (Verschwörungsdenken)</li><li>"Du bist ein Opfer des Systems" (Opferrolle als Identität)</li><li>"Nur wir verstehen die Realität" (Abschottung)</li><li>"Das darf man ja nicht mehr sagen" (Provokation als Selbstzweck)</li><li>Zunehmendes Misstrauen gegenüber Freunden und Familie</li><li>Rückzug in eine bestimmte Online-Community</li></ul>' },
+      { type: 'convo', html: '<strong>Gesprächsfrage:</strong> Was würdest du tun, wenn du merkst, dass ein Freund sich verändert und immer extremere Dinge sagt?' },
+
+      { type: 'label', emoji: '🪞', text: 'Abschluss: Der Kompass-Satz' },
+      { type: 'reflect', label: 'Formuliert einen Satz, den ihr als "Kompass" mitnehmt, z.B.: "Wenn mir jemand sagt, wer mein Feind ist, frage ich zuerst: Was hat diese Person davon?"', key: 's4_reflect' }
+    ]
+  },
+  {
+    id: 5,
+    title: 'Stark auf die gute Art',
+    subtitle: 'Gesunde Männlichkeit und echte Beziehungen',
+    goal: 'Ein positives Bild von Männlichkeit entwickeln, das auf Respekt, Verantwortung und echten Verbindungen basiert.',
+    blocks: [
+      { type: 'label', emoji: '🌟', text: 'Einstieg: Der beste Mann, den ich kenne' },
+      { type: 'activity', title: 'Übung (10 Min)', html: '<p>Jeder denkt an einen Mann (real, nicht fiktiv), den er wirklich respektiert. Beschreibt: Was macht ihn zu einem guten Mann?</p>' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Tauchen Worte wie "reich", "stark", "dominant" auf? Oder eher "zuverlässig", "lustig", "hört zu", "fair"?' },
+
+      { type: 'label', emoji: '💪', text: 'Wissensblock: Gesunde Männlichkeit' },
+      { type: 'card', html: '<h3>Positive Männlichkeit hat gemeinsame Merkmale:</h3><ul><li><strong>Emotionale Offenheit:</strong> Wissen, was in dir vorgeht</li><li><strong>Verantwortung:</strong> Fehler zugeben können, ohne dich selbst zu zerstören</li><li><strong>Fürsorge:</strong> Sich um andere kümmern — keine "weibliche" Eigenschaft, sondern menschlich</li><li><strong>Integrität:</strong> Deine Werte auch dann leben, wenn es unbequem ist</li><li><strong>Verbindung:</strong> Echte Freundschaften, in denen du ehrlich sein kannst</li></ul>' },
+      { type: 'collapsible', title: 'Freundschaften zwischen Jungs', html: '<p>Ab etwa 12 Jahren fangen Jungs an, ihre Freundschaften "abzuflachen" — weniger über Gefühle sprechen, mehr Distanz halten. Nicht weil sie das wollen, sondern aus Angst, als "weich" zu gelten.</p><p>Das Ergebnis: Einsamkeit. Und Einsamkeit ist einer der stärksten Faktoren, die anfällig für Radikalisierung machen.</p><p>Die Gegenstrategie: Da sein, wenn es drauf ankommt. Nachfragen, wenn jemand still wird.</p>' },
+      { type: 'collapsible', title: 'Beziehungen und Partnerschaft', html: '<p>Ein paar Grundsätze, die immer gelten:</p><ul><li>Niemand "gehört" dir</li><li>"Nein" ist ein vollständiger Satz und verdient immer Respekt</li><li>Echte Anziehung hat nichts mit Tricks oder Manipulation zu tun</li><li>Verliebt sein kann großartig sein — und wehtun. Beides ist okay</li></ul>' },
+
+      { type: 'quote', text: 'Ein starker Mann ist nicht jemand, der andere klein macht. Es ist jemand, der stark genug ist, andere neben sich wachsen zu lassen.' },
+
+      { type: 'label', emoji: '✏️', text: 'Aktivität: Schwierige Situationen durchspielen' },
+      { type: 'card', html: '<p>Besprecht diese Situationen — kein Richtig oder Falsch:</p><ol><li><strong>In der Schule:</strong> Deine Kumpels machen sich über ein Mädchen lustig. Was sagst du?</li><li><strong>Online:</strong> Jemand postet ein frauenfeindliches Meme und alle lachen. Was tust du?</li><li><strong>Freundschaft:</strong> Dein bester Freund ist total down, sagt aber "Alles gut." Was machst du?</li><li><strong>Familie:</strong> Dein Vater sagt etwas über Frauen, das dich stört. Wie gehst du damit um?</li></ol>' },
+
+      { type: 'label', emoji: '🪞', text: 'Abschluss: Der Werte-Satz' },
+      { type: 'reflect', label: 'Vervollständige: "Der Mann, der ich sein will, ist jemand, der..."', key: 's5_reflect' }
+    ]
+  },
+  {
+    id: 6,
+    title: 'Gewappnet für die Welt',
+    subtitle: 'Dein persönliches Toolkit',
+    goal: 'Alle Erkenntnisse zusammenführen und ein persönliches "Survival Kit" für den Alltag entwickeln.',
+    blocks: [
+      { type: 'label', emoji: '🔄', text: 'Rückblick' },
+      { type: 'convo', html: '<strong>Gesprächsimpuls:</strong> Was ist aus den letzten fünf Sessions hängengeblieben? Was war das Wichtigste? Was hat überrascht?' },
+
+      { type: 'label', emoji: '🧰', text: 'Dein Medienkompetenz-Toolkit' },
+      { type: 'collapsible', title: '1. Der Quellen-Check', html: '<ul><li>Wer hat das veröffentlicht?</li><li>Gibt es ein Impressum, einen Klarnamen?</li><li>Wird die Behauptung von mehreren unabhängigen Quellen bestätigt?</li><li>Tipp: correctiv.org oder mimikama.org für Faktencheck</li></ul>' },
+      { type: 'collapsible', title: '2. Das Emotions-Radar', html: '<p>Wenn du nach dem Scrollen wütend, frustriert oder ängstlich bist — war das der Inhalt oder der Algorithmus?</p><p><strong>Regel:</strong> Bevor du etwas kommentierst oder teilst — warte 10 Sekunden. "Würde ich das auch morgen früh noch so sehen?"</p>' },
+      { type: 'collapsible', title: '3. Der Perspektiv-Wechsel', html: '<p>Bei einer starken Meinung, versuche aktiv die Gegenposition zu verstehen:</p><ul><li>"Was würde jemand sagen, der das Gegenteil glaubt?"</li><li>"Welche Erfahrungen könnten zu dieser anderen Meinung führen?"</li></ul>' },
+      { type: 'collapsible', title: '4. Die Bubble-Brechung', html: '<ul><li>Folge Menschen, die anders denken — aber sachlich argumentieren</li><li>Abonniere eine Nachrichtenquelle, die du normalerweise nicht liest</li><li>Sprich mit Menschen, die andere Erfahrungen haben</li></ul>' },
+      { type: 'collapsible', title: '5. Das Hilfe-Netz', html: '<ul><li>Vertrauensperson in der Familie</li><li>Vertrauenslehrer:in in der Schule</li><li><strong>Nummer gegen Kummer:</strong> 116 111 (kostenlos, anonym)</li><li><strong>Online-Beratung:</strong> jugendnotmail.de</li><li><strong>Telefonseelsorge:</strong> 0800 111 0 111 (rund um die Uhr)</li></ul>' },
+
+      { type: 'label', emoji: '🧭', text: 'Aktivität: Der persönliche Kompass' },
+      { type: 'activity', title: 'Der persönliche Kompass (20 Min)', html: '<p>Besprecht zusammen vier Richtungen:</p><ul><li><strong>Norden (Werte):</strong> Was sind deine drei wichtigsten Werte?</li><li><strong>Osten (Vorbilder):</strong> Welche 2–3 Menschen inspirieren dich?</li><li><strong>Süden (Warnsignale):</strong> Was sind deine persönlichen Warnsignale, dass du in eine schlechte Richtung driftest?</li><li><strong>Westen (Hilfe):</strong> An wen wendest du dich, wenn es dir nicht gut geht?</li></ul>' },
+
+      { type: 'quote', text: 'Du bist kein Produkt und kein Algorithmus. Du bist ein Mensch mit der Freiheit, selbst zu entscheiden, was für dich richtig ist. Nutz diese Freiheit. Hinterfrage. Bleib neugierig. Sei mutig genug, auch mal unsicher zu sein.' },
+
+      { type: 'label', emoji: '🤝', text: 'Abschluss-Ritual' },
+      { type: 'card', html: '<p>Gebt euch einen Handschlag und sprecht ein gemeinsames Versprechen aus:</p><p style="text-align:center;font-size:16px;font-weight:700;margin:12px 0;color:var(--accent2)">"Wir bleiben im Gespräch — auch wenn es unbequem wird."</p>' },
+      { type: 'reflect', label: 'Was ist dein wichtigstes Learning aus dem gesamten Modul?', key: 's6_reflect' }
+    ]
+  }
+];
+
+// State
+let state = loadState();
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return { completed: s.completed || [], reflections: s.reflections || {}, currentSession: null };
+  } catch { return { completed: [], reflections: {}, currentSession: null }; }
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ completed: state.completed, reflections: state.reflections }));
+}
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.currentSession) {
+    app.innerHTML = renderSession(state.currentSession);
+    bindSession();
+  } else {
+    app.innerHTML = renderOverview();
+    bindOverview();
+  }
+}
+
+function renderOverview() {
+  const done = state.completed.length;
+  const pct = Math.round((done / sessions.length) * 100);
+  return `
+    <div class="header">
+      <div class="header-icon">🎭</div>
+      <h1>Stark ohne Maske</h1>
+      <p>Geschlechtergerechtigkeit, Männlichkeit & Social Media<br>6 Sessions für Eltern und Söhne</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="progress-label">${done} von ${sessions.length} Sessions abgeschlossen</div>
+    <div class="session-list">
+      ${sessions.map(s => {
+        const isDone = state.completed.includes(s.id);
+        return `
+          <div class="session-card ${isDone ? 'completed' : ''}" data-id="${s.id}" tabindex="0" role="button">
+            <div class="session-num">${isDone ? '✓' : s.id}</div>
+            <div class="session-info">
+              <div class="session-name">${s.title}</div>
+              <div class="session-desc">${s.subtitle}</div>
+            </div>
+            <div class="session-badge">${isDone ? '🏆' : '→'}</div>
+          </div>`;
+      }).join('')}
+    </div>
+    <div class="footer">Stark ohne Maske — LernHub Familie Grimm</div>`;
+}
+
+function renderSession(id) {
+  const s = sessions.find(x => x.id === id);
+  if (!s) return '';
+  const isDone = state.completed.includes(s.id);
+  return `
+    <button class="back-btn" id="back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Übersicht
+    </button>
+    <div class="session-header">
+      <span class="num-badge">Session ${s.id} von 6</span>
+      <h2>${s.title}</h2>
+      <div class="goal">${s.goal}</div>
+    </div>
+    ${s.blocks.map(b => renderBlock(b)).join('')}
+    <button class="complete-btn ${isDone ? 'done' : ''}" id="complete-btn">
+      ${isDone ? '✓ Session abgeschlossen' : 'Session als erledigt markieren'}
+    </button>`;
+}
+
+function renderBlock(b) {
+  switch (b.type) {
+    case 'label':
+      return `<div class="block-label"><span class="emoji">${b.emoji}</span> ${b.text}</div>`;
+    case 'card':
+      return `<div class="card">${b.html}</div>`;
+    case 'quote':
+      return `<div class="quote">${b.text}</div>`;
+    case 'activity':
+      return `<div class="activity"><h3>${b.title}</h3>${b.html}</div>`;
+    case 'convo':
+      return `<div class="convo">${b.html}</div>`;
+    case 'collapsible':
+      return `
+        <button class="collapsible-toggle" data-col><span>${b.title}</span><span class="arrow">▶</span></button>
+        <div class="collapsible-content"><div class="card">${b.html}</div></div>`;
+    case 'reflect':
+      return `<div class="reflect-prompt"><strong>Zum Nachdenken:</strong> ${b.label}</div>`;
+    default: return '';
+  }
+}
+
+function bindOverview() {
+  document.querySelectorAll('.session-card').forEach(c => {
+    const handler = () => { state.currentSession = +c.dataset.id; render(); window.scrollTo(0, 0); };
+    c.addEventListener('click', handler);
+    c.addEventListener('keydown', e => { if (e.key === 'Enter') handler(); });
+  });
+}
+
+function bindSession() {
+  document.getElementById('back').addEventListener('click', () => { state.currentSession = null; render(); window.scrollTo(0, 0); });
+
+  document.querySelectorAll('[data-col]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('open');
+      btn.nextElementSibling.classList.toggle('open');
+    });
+  });
+
+  document.getElementById('complete-btn').addEventListener('click', () => {
+    const id = state.currentSession;
+    if (!state.completed.includes(id)) {
+      state.completed.push(id);
+      saveState();
+      render();
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  });
+}
+
+render();
+</script>
+</body>
+</html>

@@ -56,6 +56,14 @@
     "category": "lehrplan"
   },
   {
+    "id": "geschlechtergerechtigkeit",
+    "name": "Stark ohne Maske",
+    "description": "Geschlechtergerechtigkeit, Männlichkeit & Social Media — 6 Sessions",
+    "icon": "🎭",
+    "path": "modules/geschlechtergerechtigkeit/index.html",
+    "category": "aktuelles"
+  },
+  {
     "id": "mathe-dezimalbrueche",
     "name": "Dezimalbrüche-Test",
     "description": "30 Aufgaben in 20 Minuten: Umwandeln, Vergleichen, Rechnen & Runden",
