@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Richards Lernmodul - 19. Mai 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --primary: #4a6cf7;
+    --primary-light: #6b8aff;
+    --primary-pale: #e8edff;
+    --green: #22c55e;
+    --green-pale: #dcfce7;
+    --green-dark: #16a34a;
+    --orange: #f59e0b;
+    --orange-pale: #fef3c7;
+    --red: #ef4444;
+    --red-pale: #fee2e2;
+    --purple: #8b5cf6;
+    --purple-pale: #ede9fe;
+    --teal: #14b8a6;
+    --teal-pale: #ccfbf1;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --nature-green: #3a7d44;
+    --nature-green-light: #5aab68;
+    --forest-green: #1e3d0f;
+    --forest-bg: #e8f0e2;
+    --math-blue: #2563eb;
+    --math-bg: #eff6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* ===== START SCREEN ===== */
+  .start-screen {
+    text-align: center;
+    padding: 60px 20px;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .start-screen .greeting { font-size: 48px; margin-bottom: 8px; }
+  .start-screen h1 { font-size: 32px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+  .start-screen .date { color: var(--text-muted); font-size: 16px; margin-bottom: 40px; }
+
+  .topic-cards { display: flex; flex-direction: column; gap: 16px; max-width: 500px; margin: 0 auto 40px; }
+
+  .topic-card {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--card); border-radius: 16px; padding: 20px;
+    border: 2px solid var(--border);
+    text-align: left;
+    transition: all 0.2s;
+  }
+
+  .topic-card .icon { font-size: 36px; flex-shrink: 0; }
+  .topic-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .topic-card p { font-size: 13px; color: var(--text-muted); }
+
+  .start-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; border: none; border-radius: 16px;
+    padding: 18px 48px; font-size: 18px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(74,108,247,0.3);
+    transition: transform 0.15s;
+  }
+  .start-btn:hover { transform: scale(1.03); }
+
+  /* ===== NAV ===== */
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; padding: 8px 0;
+  }
+  .top-bar .back-btn {
+    background: var(--card); border: 2px solid var(--border); border-radius: 12px;
+    padding: 8px 16px; font-size: 14px; font-family: inherit; font-weight: 600;
+    cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+  }
+  .top-bar .back-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .top-bar .progress-text { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+  /* ===== MODULE MENU ===== */
+  .module-menu { animation: fadeIn 0.4s ease; }
+  .module-menu h2 { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+  .module-menu .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+  .module-sections { display: flex; flex-direction: column; gap: 12px; }
+
+  .section-card {
+    display: flex; align-items: center; gap: 16px;
+    background: var(--card); border-radius: 16px; padding: 20px;
+    border: 2px solid var(--border); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .section-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .section-card.completed { border-color: var(--green); }
+
+  .section-card .sec-icon { font-size: 32px; flex-shrink: 0; }
+  .section-card .sec-info { flex: 1; }
+  .section-card .sec-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+  .section-card .sec-info p { font-size: 13px; color: var(--text-muted); }
+  .section-card .sec-status { font-size: 24px; }
+
+  .final-quiz-btn {
+    display: block; width: 100%; margin-top: 24px;
+    background: linear-gradient(135deg, var(--purple), #a78bfa);
+    color: white; border: none; border-radius: 16px;
+    padding: 20px; font-size: 18px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    box-shadow: 0 4px 20px rgba(139,92,246,0.3);
+    transition: transform 0.15s;
+  }
+  .final-quiz-btn:hover { transform: scale(1.02); }
+  .final-quiz-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ===== LEARN SECTION ===== */
+  .learn-section { animation: fadeIn 0.4s ease; }
+  .learn-section h2 { font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+
+  .learn-card {
+    background: var(--card); border-radius: 16px; padding: 24px;
+    border: 2px solid var(--border); margin-bottom: 16px;
+  }
+  .learn-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .learn-card p, .learn-card li { font-size: 15px; line-height: 1.7; color: var(--text); }
+  .learn-card ul { padding-left: 20px; }
+  .learn-card li { margin-bottom: 6px; }
+
+  .info-box {
+    background: var(--primary-pale); border-radius: 12px; padding: 14px 16px;
+    margin: 12px 0; border-left: 4px solid var(--primary);
+  }
+  .info-box.green { background: var(--green-pale); border-left-color: var(--green); }
+  .info-box.orange { background: var(--orange-pale); border-left-color: var(--orange); }
+
+  .info-box strong { display: block; margin-bottom: 4px; }
+  .info-box p { font-size: 14px !important; }
+
+  .triangle-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px; margin: 12px 0;
+  }
+  .triangle-item {
+    background: var(--math-bg); border-radius: 12px; padding: 14px;
+    text-align: center; border: 1px solid #bfdbfe;
+  }
+  .triangle-item .tri-icon { font-size: 36px; margin-bottom: 6px; }
+  .triangle-item h4 { font-size: 14px; font-weight: 700; color: var(--math-blue); margin-bottom: 4px; }
+  .triangle-item p { font-size: 12px; color: var(--text-muted); }
+
+  .layer-stack { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+  .layer {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 12px; font-size: 14px; font-weight: 600;
+  }
+  .layer .layer-icon { font-size: 24px; }
+
+  .continue-btn {
+    display: block; width: 100%; margin-top: 20px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; border: none; border-radius: 14px;
+    padding: 16px; font-size: 16px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .continue-btn:hover { transform: scale(1.02); }
+  .continue-btn.green { background: linear-gradient(135deg, var(--green), var(--green-dark)); }
+
+  /* ===== QUIZ ===== */
+  .quiz-section { animation: fadeIn 0.4s ease; }
+
+  .quiz-progress {
+    margin-bottom: 20px;
+  }
+  .quiz-progress .info-row {
+    display: flex; justify-content: space-between; font-size: 13px;
+    color: var(--text-muted); font-weight: 600; margin-bottom: 6px;
+  }
+  .progress-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    transition: width 0.4s ease;
+  }
+
+  .quiz-card {
+    background: var(--card); border-radius: 16px; padding: 24px;
+    border: 2px solid var(--border); margin-bottom: 16px;
+  }
+
+  .q-badge {
+    display: inline-block; background: var(--primary-pale); color: var(--primary);
+    border-radius: 8px; padding: 4px 12px; font-size: 12px;
+    font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .q-text { font-size: 17px; font-weight: 700; line-height: 1.55; margin-bottom: 20px; }
+
+  .option-btn {
+    display: block; width: 100%; text-align: left;
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; font-size: 15px;
+    font-family: inherit; color: var(--text); cursor: pointer;
+    margin-bottom: 10px; transition: all 0.2s; line-height: 1.5;
+  }
+  .option-btn:hover:not(.answered) { border-color: var(--primary); background: var(--primary-pale); }
+  .option-btn .letter {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--primary-pale); color: var(--primary);
+    font-weight: 800; font-size: 13px; margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .option-btn.selected { border-color: var(--primary); background: var(--primary-pale); }
+  .option-btn.correct { border-color: var(--green); background: var(--green-pale); color: #166534; }
+  .option-btn.correct .letter { background: var(--green); color: white; }
+  .option-btn.wrong { border-color: var(--red); background: var(--red-pale); color: #991b1b; }
+  .option-btn.wrong .letter { background: var(--red); color: white; }
+  .option-btn.dimmed { opacity: 0.45; }
+
+  .explanation {
+    margin-top: 14px; padding: 14px 16px; border-radius: 12px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .explanation.correct-exp { background: var(--green-pale); border: 1px solid #86efac; }
+  .explanation.wrong-exp { background: var(--orange-pale); border: 1px solid #fcd34d; }
+  .explanation .exp-label { font-weight: 800; margin-bottom: 4px; display: block; }
+
+  .quiz-actions { display: flex; gap: 12px; margin-top: 16px; }
+
+  .confirm-btn, .next-btn {
+    flex: 1; border: none; border-radius: 14px; padding: 14px;
+    font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .confirm-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; box-shadow: 0 4px 16px rgba(74,108,247,0.25);
+  }
+  .confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .next-btn {
+    background: linear-gradient(135deg, var(--green), var(--green-dark));
+    color: white; box-shadow: 0 4px 16px rgba(34,197,94,0.25);
+  }
+  .next-btn:hover { transform: scale(1.02); }
+
+  /* ===== RESULTS ===== */
+  .results { text-align: center; animation: fadeIn 0.4s ease; }
+  .results .emoji { font-size: 72px; margin-bottom: 12px; }
+  .results h2 { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+  .results .score { font-size: 52px; font-weight: 800; margin: 12px 0; }
+  .results .pct { font-size: 16px; color: var(--text-muted); margin-bottom: 20px; }
+  .results .msg { font-size: 17px; margin-bottom: 24px; line-height: 1.5; }
+
+  .wrong-review { text-align: left; margin: 20px 0; }
+  .wrong-review-toggle {
+    width: 100%; background: var(--card); border: 2px solid var(--border);
+    border-radius: 12px; padding: 12px 16px; font-family: inherit;
+    font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text-muted);
+  }
+  .wrong-item {
+    background: #fff8f0; border-radius: 12px; padding: 14px;
+    border: 1px solid #fed7aa; margin-top: 12px;
+  }
+  .wrong-item .wi-q { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+  .wrong-item .wi-wrong { color: var(--red); font-size: 13px; }
+  .wrong-item .wi-correct { color: var(--green-dark); font-size: 13px; }
+  .wrong-item .wi-exp { color: var(--text-muted); font-size: 13px; font-style: italic; margin-top: 6px; }
+
+  /* ===== FINAL RESULTS ===== */
+  .final-results { animation: fadeIn 0.5s ease; text-align: center; }
+  .final-results h1 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+
+  .final-scores {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px; margin: 24px 0; text-align: center;
+  }
+  .final-score-card {
+    background: var(--card); border-radius: 16px; padding: 20px;
+    border: 2px solid var(--border);
+  }
+  .final-score-card .fsc-icon { font-size: 32px; margin-bottom: 6px; }
+  .final-score-card .fsc-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+  .final-score-card .fsc-score { font-size: 28px; font-weight: 800; }
+
+  /* ===== VIDEO LINKS ===== */
+  .video-link {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card); border-radius: 12px; padding: 14px 16px;
+    border: 2px solid var(--border); margin: 8px 0;
+    text-decoration: none; color: var(--text); transition: all 0.2s;
+  }
+  .video-link:hover { border-color: var(--primary); transform: translateY(-1px); }
+  .video-link .vl-icon { font-size: 28px; }
+  .video-link .vl-text { font-size: 14px; font-weight: 600; }
+  .video-link .vl-sub { font-size: 12px; color: var(--text-muted); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .start-screen h1 { font-size: 24px; }
+    .triangle-grid { grid-template-columns: 1fr 1fr; }
+    .final-scores { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+
+<script>
+// ===================================================================
+// DATA
+// ===================================================================
+
+const TOPICS = [
+  {
+    id: "dreiecke",
+    title: "Dreiecksarten",
+    icon: "\u{1F4D0}",
+    subject: "Mathematik",
+    color: "#2563eb",
+    bgColor: "#eff6ff",
+  },
+  {
+    id: "wiese",
+    title: "Leben in der Wiese",
+    icon: "\u{1F33E}",
+    subject: "Biologie",
+    color: "#3a7d44",
+    bgColor: "#f0f4e8",
+  },
+  {
+    id: "wald",
+    title: "Lebensgemeinschaft Wald",
+    icon: "\u{1F332}",
+    subject: "Biologie",
+    color: "#1e3d0f",
+    bgColor: "#e8f0e2",
+  }
+];
+
+const LEARN_CONTENT = {
+  dreiecke: [
+    {
+      title: "\u{1F4D0} Was ist ein Dreieck?",
+      html: `<p>Ein <strong>Dreieck</strong> besteht aus <strong>drei Ecken</strong>, <strong>drei Seiten</strong> und <strong>drei Innenwinkeln</strong>. Die Summe der Innenwinkel beträgt immer <strong>180°</strong>.</p>
+      <div class="info-box"><strong>\u{1F4A1} Merksatz</strong><p>Die längste Seite liegt immer gegenüber dem größten Winkel!</p></div>
+      <p>Dreiecke kann man auf zwei Arten einteilen: <strong>nach Seiten</strong> und <strong>nach Winkeln</strong>. Beide Einteilungen kann man auch kombinieren!</p>`
+    },
+    {
+      title: "\u{1F4CF} Einteilung nach Seiten",
+      html: `<div class="triangle-grid">
+        <div class="triangle-item">
+          <div class="tri-icon">△</div>
+          <h4>Gleichseitig</h4>
+          <p><strong>a = b = c</strong><br>Alle 3 Seiten gleich lang<br>Alle Winkel = 60°</p>
+        </div>
+        <div class="triangle-item">
+          <div class="tri-icon">▵</div>
+          <h4>Gleichschenklig</h4>
+          <p><strong>a = b ≠ c</strong><br>2 Seiten gleich lang (Schenkel)<br>2 gleiche Basiswinkel</p>
+        </div>
+        <div class="triangle-item">
+          <div class="tri-icon">▿</div>
+          <h4>Ungleichseitig</h4>
+          <p><strong>a ≠ b ≠ c</strong><br>Alle Seiten verschieden<br>Alle Winkel verschieden</p>
+        </div>
+      </div>`
+    },
+    {
+      title: "\u{1F4D0} Einteilung nach Winkeln",
+      html: `<div class="triangle-grid">
+        <div class="triangle-item">
+          <div class="tri-icon">\u{1F53A}</div>
+          <h4>Spitzwinklig</h4>
+          <p>Alle 3 Winkel<br><strong>kleiner als 90°</strong></p>
+        </div>
+        <div class="triangle-item">
+          <div class="tri-icon">\u{1F4D0}</div>
+          <h4>Rechtwinklig</h4>
+          <p>Genau 1 Winkel<br><strong>= 90°</strong><br>Hypotenuse + 2 Katheten</p>
+        </div>
+        <div class="triangle-item">
+          <div class="tri-icon">\u{1F536}</div>
+          <h4>Stumpfwinklig</h4>
+          <p>Genau 1 Winkel<br><strong>größer als 90°</strong></p>
+        </div>
+      </div>
+      <div class="info-box green"><strong>✅ Wichtig für die Prüfung</strong><p>Beim rechtwinkligen Dreieck heißt die Seite gegenüber dem rechten Winkel <strong>Hypotenuse</strong> – sie ist immer die längste Seite. Die anderen beiden Seiten heißen <strong>Katheten</strong>.</p></div>`
+    },
+    {
+      title: "\u{1F9E9} Kombinationen",
+      html: `<p>Man kann beide Einteilungen <strong>kombinieren</strong>! Zum Beispiel:</p>
+      <ul>
+        <li><strong>Rechtwinklig-gleichschenklig:</strong> Ein rechter Winkel + zwei gleich lange Katheten</li>
+        <li><strong>Spitzwinklig-gleichseitig:</strong> Jedes gleichseitige Dreieck ist automatisch spitzwinklig (alle Winkel = 60°)</li>
+        <li><strong>Stumpfwinklig-ungleichseitig:</strong> Ein stumpfer Winkel + alle Seiten verschieden</li>
+      </ul>
+      <div class="info-box orange"><strong>⚠️ Achtung</strong><p>Ein gleichseitiges Dreieck kann NICHT rechtwinklig oder stumpfwinklig sein – denn alle Winkel sind immer genau 60°!</p></div>`
+    }
+  ],
+  wiese: [
+    {
+      title: "\u{1F33E} Die Wiese – ein besonderer Lebensraum",
+      html: `<p>Wiesen sind ein <strong>Lebensraum auf Zeit</strong>. Ohne regelmäßige <strong>Mahd</strong> (Mähen) oder <strong>Beweidung</strong> (Tiere grasen lassen) würde jede Wiese langsam von Bäumen überwachsen und zum <strong>Wald</strong> werden.</p>
+      <div class="info-box green"><strong>\u{1F4A1} Wichtig</strong><p>Mahd und Beweidung halten den Wald in Schach! So bleibt die Wiese als offener Lebensraum erhalten.</p></div>
+      <p>Der Lebensraum Wiese ist heute <strong>bedroht</strong> – durch intensive Landwirtschaft, übermäßige Düngung und das Brachliegen (Nicht-Bewirtschaften).</p>`
+    },
+    {
+      title: "\u{1F33B} Pflanzen der Wiese",
+      html: `<p>Auf einer naturbelassenen Wiese wachsen viele verschiedene <strong>Blütenpflanzen</strong>, Gräser und Kräuter.</p>
+      <ul>
+        <li><strong>Lungenenzian:</strong> Eine besondere Pflanze, die als Lebensraum für andere Tiere dient – z.B. für den Moorbläuling</li>
+      </ul>
+      <div class="info-box orange"><strong>⚠️ Fettwiese</strong><p>Wird eine Wiese zu stark <strong>gedüngt</strong>, verwandelt sie sich in eine <strong>Fettwiese</strong>: Sie liefert zwar viel Viehfutter, aber die Artenvielfalt geht verloren. Es wachsen dann nur noch wenige, schnellwachsende Gräser.</p></div>`
+    },
+    {
+      title: "\u{1F98B} Tiere der Wiese",
+      html: `<p>Die Wiese beherbergt eine Vielzahl von Tieren:</p>
+      <ul>
+        <li><strong>Moorbläuling:</strong> Ein Schmetterling, dessen Raupe Knotenameisen mit <strong>Pheromonen</strong> betört, damit sie von ihnen geschützt wird</li>
+        <li><strong>Feldgrillen:</strong> Sind territorial und streiten um ihr <strong>Revier</strong></li>
+        <li><strong>Störche:</strong> Gehen auf der Wiese auf die Pirsch nach Mäusen</li>
+        <li><strong>Ameisen, Schmetterlinge, Käfer</strong> und viele mehr</li>
+      </ul>
+      <div class="info-box"><strong>\u{1F517} Symbiose</strong><p><strong>Symbiose</strong> = eine Lebensgemeinschaft, bei der <strong>beide Partner</strong> voneinander profitieren. Beispiel: Blütenpflanzen bieten Nektar, Insekten bestäuben die Blüten.</p></div>`
+    }
+  ],
+  wald: [
+    {
+      title: "\u{1F332} Der Wald – Deutschlands größtes Ökosystem",
+      html: `<p>Deutschland ist ein <strong>Waldland</strong> – rund <strong>ein Drittel (33 %)</strong> der Gesamtfläche ist von Wald bedeckt.</p>
+      <p>Alle Tiere, Pflanzen, Pilze und Bakterien, die gemeinsam in einem Lebensraum leben, bilden eine <strong>Lebensgemeinschaft (Biozönose)</strong>.</p>
+      <div class="info-box green"><strong>\u{1F4A1} Merke</strong><p>Der Wald ist nicht nur Bäume! Er ist ein komplexes <strong>Ökosystem</strong> mit unzähligen Wechselbeziehungen zwischen Tieren, Pflanzen, Pilzen und dem Boden.</p></div>`
+    },
+    {
+      title: "\u{1F3DA}️ Die Stockwerke des Waldes",
+      html: `<p>Der Wald ist wie ein Hochhaus – er hat verschiedene <strong>Stockwerke (Schichten)</strong>:</p>
+      <div class="layer-stack">
+        <div class="layer" style="background:#c6f6d5"><span class="layer-icon">\u{1F333}</span><div><strong>4. Baumschicht</strong> (ganz oben) – Kronen der großen Bäume, hier ist das meiste Licht</div></div>
+        <div class="layer" style="background:#d9f99d"><span class="layer-icon">\u{1FAB4}</span><div><strong>3. Strauchschicht</strong> – Büsche, junge Bäume, Sträucher mit Beeren</div></div>
+        <div class="layer" style="background:#fef08a"><span class="layer-icon">\u{1F33F}</span><div><strong>2. Krautschicht</strong> – Gräser, Farne, Blumen, kleine Pflanzen</div></div>
+        <div class="layer" style="background:#fed7aa"><span class="layer-icon">\u{1F344}</span><div><strong>1. Bodenschicht</strong> (ganz unten) – Moose, Pilze, Laub, Totholz</div></div>
+      </div>
+      <div class="info-box"><strong>\u{1F4DD} Reihenfolge von unten nach oben</strong><p>Bodenschicht → Krautschicht → Strauchschicht → Baumschicht</p></div>`
+    },
+    {
+      title: "\u{1F517} Nahrungsketten im Wald",
+      html: `<p>Im Wald gibt es drei wichtige Gruppen von Lebewesen:</p>
+      <ul>
+        <li><strong>\u{1F331} Produzenten (Erzeuger):</strong> Pflanzen – stellen mit <strong>Photosynthese</strong> aus Sonnenlicht und CO₂ eigene Nahrung her</li>
+        <li><strong>\u{1F43F}️ Konsumenten (Verbraucher):</strong>
+          <ul>
+            <li><strong>1. Ordnung:</strong> Pflanzenfresser (z.B. Reh, Raupe)</li>
+            <li><strong>2. Ordnung:</strong> Kleine Fleischfresser (z.B. Vogel frisst Raupe)</li>
+            <li><strong>3. Ordnung:</strong> Große Fleischfresser (z.B. Greifvogel frisst Vogel)</li>
+          </ul>
+        </li>
+        <li><strong>\u{1F344} Destruenten (Zersetzer):</strong> Pilze, Bakterien, Würmer – bauen tote Reste ab und schließen den <strong>Kreislauf</strong></li>
+      </ul>
+      <div class="info-box green"><strong>\u{1F504} Kreislauf</strong><p>Produzenten stehen am Anfang, Destruenten schließen den Kreislauf ab. So werden Nährstoffe immer wieder recycelt!</p></div>`
+    },
+    {
+      title: "\u{1FAB5} Waldboden und Totholz",
+      html: `<p>Der <strong>Waldboden</strong> ist ein wichtiger <strong>Wasserspeicher</strong>. Durch Verdunstung des gespeicherten Wassers kann der Wald die Luft im Sommer kühlen.</p>
+      <div class="info-box"><strong>\u{1FAB5} Warum ist Totholz wichtig?</strong><p><strong>Totholz</strong> (abgestorbene Bäume und Äste) ist ein wertvoller Lebensraum für zahlreiche Tiere (Käfer, Spechte, Fledermäuse), Pilze und Bakterien. Es sollte <strong>nicht entfernt</strong> werden!</p></div>`
+    }
+  ]
+};
+
+const QUIZ_DATA = {
+  dreiecke: [
+    {
+      q: "Wie groß ist die Winkelsumme in jedem Dreieck?",
+      opts: ["90°", "180°", "270°", "360°"],
+      correct: 1,
+      exp: "Die Summe aller drei Innenwinkel in einem Dreieck beträgt immer genau 180°."
+    },
+    {
+      q: "Bei einem gleichseitigen Dreieck sind alle Winkel ...",
+      opts: ["45°", "60°", "90°", "120°"],
+      correct: 1,
+      exp: "Bei einem gleichseitigen Dreieck sind alle drei Seiten gleich lang und alle drei Winkel betragen genau 60°."
+    },
+    {
+      q: "Wie viele gleich lange Seiten hat ein gleichschenkliges Dreieck?",
+      opts: ["Keine", "Genau zwei", "Alle drei", "Mindestens zwei"],
+      correct: 1,
+      exp: "Ein gleichschenkliges Dreieck hat genau zwei gleich lange Seiten – die sogenannten Schenkel. Die dritte Seite heißt Grundseite."
+    },
+    {
+      q: "Wie heißt die längste Seite im rechtwinkligen Dreieck?",
+      opts: ["Kathete", "Hypotenuse", "Schenkel", "Grundseite"],
+      correct: 1,
+      exp: "Die Seite gegenüber dem rechten Winkel heißt Hypotenuse – sie ist immer die längste Seite im rechtwinkligen Dreieck."
+    },
+    {
+      q: "Ein Dreieck mit einem Winkel von 120° ist ...",
+      opts: ["spitzwinklig", "rechtwinklig", "stumpfwinklig", "gleichseitig"],
+      correct: 2,
+      exp: "Ein Dreieck mit einem Winkel größer als 90° (hier 120°) ist stumpfwinklig."
+    },
+    {
+      q: "Welche Aussage stimmt? Die längste Seite eines Dreiecks liegt ...",
+      opts: ["gegenüber dem kleinsten Winkel", "gegenüber dem größten Winkel", "neben dem größten Winkel", "immer unten"],
+      correct: 1,
+      exp: "Die längste Seite liegt immer gegenüber dem größten Winkel."
+    },
+    {
+      q: "Kann ein gleichseitiges Dreieck rechtwinklig sein?",
+      opts: ["Ja, immer", "Ja, manchmal", "Nein, niemals", "Nur wenn es groß ist"],
+      correct: 2,
+      exp: "Nein! Ein gleichseitiges Dreieck hat immer drei Winkel von je 60°. Es kann daher weder rechtwinklig (90°) noch stumpfwinklig sein."
+    },
+    {
+      q: "Wie heißen die beiden kürzeren Seiten im rechtwinkligen Dreieck?",
+      opts: ["Schenkel", "Katheten", "Grundseiten", "Diagonalen"],
+      correct: 1,
+      exp: "Die beiden Seiten, die den rechten Winkel einschließen, heißen Katheten."
+    },
+    {
+      q: "Ein Dreieck hat die Winkel 50°, 60° und 70°. Welche Art ist es?",
+      opts: ["Rechtwinklig", "Stumpfwinklig", "Spitzwinklig", "Gleichseitig"],
+      correct: 2,
+      exp: "Alle drei Winkel sind kleiner als 90°, daher ist das Dreieck spitzwinklig."
+    },
+    {
+      q: "Was bedeutet „ungleichseitig“?",
+      opts: ["Alle Seiten gleich lang", "Zwei Seiten gleich lang", "Alle drei Seiten verschieden lang", "Keine Seiten vorhanden"],
+      correct: 2,
+      exp: "Bei einem ungleichseitigen (auch: allgemeinen) Dreieck sind alle drei Seiten verschieden lang und alle drei Winkel verschieden groß."
+    }
+  ],
+  wiese: [
+    {
+      q: "Was würde mit einer Wiese passieren, wenn sie nicht regelmäßig gemäht würde?",
+      opts: ["Sie würde immer bunter werden", "Sie würde bald von Bäumen überwachsen", "Sie würde zur Wüste", "Sie würde zu einem Teich"],
+      correct: 1,
+      exp: "Wiesen sind ein Lebensraum auf Zeit. Ohne regelmäßige Mahd oder Beweidung würden Bäume und Sträucher die Wiese überwachsen – sie würde zum Wald."
+    },
+    {
+      q: "Was ist ein Lungenenzian?",
+      opts: ["Ein Insekt auf der Wiese", "Eine Tierart in der Wiese", "Eine Pflanze, die als Lebensraum dient", "Ein Pilz unter der Erde"],
+      correct: 2,
+      exp: "Der Lungenenzian ist eine Pflanze, die als besonderer Lebensraum für andere Tiere dient – zum Beispiel für den Moorbläuling."
+    },
+    {
+      q: "Wie bringt die Raupe des Moorbläulings die Ameisen dazu, sie zu schützen?",
+      opts: ["Sie imitiert den Geruch der Ameisenkönigin", "Sie kämpft gegen die Feinde der Ameisen", "Sie lockt die Ameisen mit Pheromonen", "Sie bringt den Ameisen Futter"],
+      correct: 2,
+      exp: "Die Raupe des Moorbläulings betört die Knotenameisen mit speziellen Pheromonen, sodass diese sie schützen und pflegen."
+    },
+    {
+      q: "Was passiert mit einer Wiese, wenn sie zu stark gedüngt wird?",
+      opts: ["Sie wird zu einer artenreichen Blumenwiese", "Sie trocknet aus und stirbt ab", "Sie wird zu einer eintönigen Fettwiese", "Sie wird zu einem Wald"],
+      correct: 2,
+      exp: "Durch starke Düngung verwandelt sich eine bunte Blumenwiese in eine eintönige Fettwiese mit wenig Artenvielfalt."
+    },
+    {
+      q: "Welche Tiere gehen auf der Wiese auf die Jagd nach Mäusen?",
+      opts: ["Füchse", "Störche", "Ameisen", "Schmetterlinge"],
+      correct: 1,
+      exp: "Störche gehen auf der Wiese auf die Pirsch nach Mäusen und anderen Kleintieren."
+    },
+    {
+      q: "Womit halten Mahd und Beweidung auf Wiesen in Schach?",
+      opts: ["Die Insekten", "Das Wasser", "Den Wald", "Die Mäuse"],
+      correct: 2,
+      exp: "Durch regelmäßige Mahd oder Beweidung wird verhindert, dass sich auf der Wiese Bäume und Sträucher ausbreiten – also der Wald."
+    },
+    {
+      q: "Was beschreibt den Begriff „Symbiose“?",
+      opts: ["Ein Tier frisst ein anderes", "Zwei Lebewesen leben zusammen und beide profitieren davon", "Eine Pflanze lebt ohne Tiere", "Ein Tier schadet einer Pflanze"],
+      correct: 1,
+      exp: "Symbiose bezeichnet eine Lebensgemeinschaft, bei der beide Partner voneinander profitieren."
+    },
+    {
+      q: "Was macht die Wiese zu einem bedrohten Lebensraum?",
+      opts: ["Zu viel Regen", "Zu viele Tiere", "Intensivlandwirtschaft, Düngung und das Brachliegen", "Zu wenig Sonnenlicht"],
+      correct: 2,
+      exp: "Der Lebensraum Wiese ist durch intensive Landwirtschaft, übermäßige Düngung und das Brachliegen bedroht."
+    },
+    {
+      q: "Warum streiten Feldgrillen untereinander?",
+      opts: ["Um Nahrung", "Um ihr Revier", "Um eine Pflanze", "Um Wasser"],
+      correct: 1,
+      exp: "Feldgrillen sind territorial und streiten untereinander um ihr Revier auf der Wiese."
+    },
+    {
+      q: "Was ist eine „Fettwiese“?",
+      opts: ["Eine Wiese mit sehr fettem Boden", "Eine stark gedüngte Wiese mit wenig Artenvielfalt", "Eine Wiese in der Nähe eines Sees", "Eine Wiese mit besonders vielen Blumen"],
+      correct: 1,
+      exp: "Eine Fettwiese entsteht durch starke Düngung. Sie liefert zwar viel Viehfutter, aber die Artenvielfalt geht stark zurück."
+    }
+  ],
+  wald: [
+    {
+      q: "Wie viel Prozent der Gesamtfläche Deutschlands ist von Wald bedeckt?",
+      opts: ["etwa ein Fünftel (20 %)", "etwa ein Drittel (33 %)", "etwa die Hälfte (50 %)", "etwa drei Viertel (75 %)"],
+      correct: 1,
+      exp: "Deutschland ist ein Waldland – rund ein Drittel der Gesamtfläche ist von Wald bedeckt."
+    },
+    {
+      q: "Wie nennt man alle Tiere und Pflanzen, die gemeinsam in einem Lebensraum leben?",
+      opts: ["Biosphäre", "Ökosystem", "Lebensgemeinschaft (Biozönose)", "Nahrungsnetz"],
+      correct: 2,
+      exp: "Alle Lebewesen eines Lebensraums bilden zusammen eine Lebensgemeinschaft (Biozönose)."
+    },
+    {
+      q: "Welche Reihenfolge der Waldschichten stimmt – von unten nach oben?",
+      opts: [
+        "Baumschicht → Strauchschicht → Krautschicht → Bodenschicht",
+        "Bodenschicht → Krautschicht → Strauchschicht → Baumschicht",
+        "Krautschicht → Bodenschicht → Baumschicht → Strauchschicht",
+        "Strauchschicht → Krautschicht → Bodenschicht → Baumschicht"
+      ],
+      correct: 1,
+      exp: "Von unten nach oben: Bodenschicht → Krautschicht → Strauchschicht → Baumschicht."
+    },
+    {
+      q: "Pflanzen stellen mit Photosynthese eigene Nahrung her. Wie nennt man sie?",
+      opts: ["Konsumenten", "Destruenten", "Produzenten (Erzeuger)", "Zersetzer"],
+      correct: 2,
+      exp: "Pflanzen heißen Produzenten oder Erzeuger, weil sie aus CO₂ und Wasser mithilfe von Sonnenlicht organische Stoffe herstellen."
+    },
+    {
+      q: "Ein Reh frisst Gras und Blätter. Welche Stufe nimmt es in der Nahrungskette ein?",
+      opts: ["Produzent", "Konsument 1. Ordnung (Pflanzenfresser)", "Konsument 2. Ordnung", "Destruent"],
+      correct: 1,
+      exp: "Das Reh ist ein Pflanzenfresser und damit Konsument 1. Ordnung (Erstverbraucher)."
+    },
+    {
+      q: "Raupe frisst Blätter → Vogel frisst Raupe → Greifvogel frisst Vogel. Der Greifvogel ist ...",
+      opts: ["Konsument 1. Ordnung", "Konsument 2. Ordnung", "Konsument 3. Ordnung", "Produzent"],
+      correct: 2,
+      exp: "Raupe = Konsument 1. Ordnung, Vogel = 2. Ordnung, Greifvogel = 3. Ordnung (Endverbraucher)."
+    },
+    {
+      q: "Bakterien und Pilze zersetzen tote Pflanzen- und Tierreste. Wie werden sie genannt?",
+      opts: ["Konsumenten", "Produzenten", "Destruenten (Zersetzer)", "Endverbraucher"],
+      correct: 2,
+      exp: "Destruenten (Zersetzer) wie Pilze, Bakterien und Würmer bauen tote organische Stoffe ab und führen Nährstoffe in den Kreislauf zurück."
+    },
+    {
+      q: "Welche wichtige Funktion hat der Waldboden für den Wasserhaushalt?",
+      opts: [
+        "Er leitet Regenwasser direkt in Flüsse ab.",
+        "Er wirkt als Wasserspeicher und kühlt die Luft durch Verdunstung.",
+        "Er verhindert, dass Regen den Boden erreicht.",
+        "Er hat keinen Einfluss auf den Wasserhaushalt."
+      ],
+      correct: 1,
+      exp: "Der Waldboden ist ein wichtiger Wasserspeicher. Durch die Verdunstung des gespeicherten Wassers kann der Wald die Luft im Sommer kühlen."
+    },
+    {
+      q: "Welche Aussage über Nahrungsketten im Wald stimmt?",
+      opts: [
+        "Eine Nahrungskette beginnt immer mit einem Tier.",
+        "Nahrungsketten haben in der Regel 8–10 Glieder.",
+        "Produzenten stehen am Anfang, Destruenten schließen den Kreislauf ab.",
+        "Destruenten sind immer die stärksten Tiere im Wald."
+      ],
+      correct: 2,
+      exp: "Produzenten (Pflanzen) stehen am Anfang der Nahrungskette, Destruenten (Zersetzer) schließen den Kreislauf ab."
+    },
+    {
+      q: "Warum ist Totholz im Wald wichtig?",
+      opts: [
+        "Es ist nutzlos und sollte immer entfernt werden.",
+        "Es dient vielen Tieren, Pilzen und Bakterien als Lebensraum.",
+        "Es verhindert, dass neue Bäume wachsen.",
+        "Es schützt den Wald vor Lawinen."
+      ],
+      correct: 1,
+      exp: "Totholz ist ein wertvoller Lebensraum für zahlreiche Tiere (Käfer, Spechte, Fledermäuse), Pilze und Bakterien."
+    }
+  ]
+};
+
+const VIDEO_LINKS = [
+  { title: "Dreiecksarten", sub: "Studyflix · Mathematik", icon: "\u{1F4D0}", url: "https://studyflix.de/mathematik/dreiecksarten-3992" },
+  { title: "Leben in der Wiese – Tiere und Pflanzen", sub: "Planet Schule · ARD", icon: "\u{1F33E}", url: "https://www.ardmediathek.de/video/planet-schule/leben-in-der-wiese-tiere-und-pflanzen/ard/Y3JpZDovL3BsYW5ldC1zY2h1bGUuZGUvQVJEXzgyOTdfdmlkZW8" },
+  { title: "Ökosystem Wald einfach erklärt", sub: "YouTube", icon: "\u{1F332}", url: "https://youtu.be/fj_TbIM2MBA" },
+  { title: "Lebensgemeinschaft Wald", sub: "ARD Schulfernsehen", icon: "\u{1F3DE}️", url: "https://www.ardmediathek.de/video/schulfernsehen/lebensgemeinschaft-wald/ard/Y3JpZDovL2JyLmRlL2Jyb2FkY2FzdC9GMjAxN1dPMDI3MTQ1QTA" }
+];
+
+// ===================================================================
+// APP STATE
+// ===================================================================
+let state = {
+  screen: "start", // start, menu, learn, quiz, results, final
+  currentTopic: null,
+  learnPage: 0,
+  quizIdx: 0,
+  quizSelected: null,
+  quizConfirmed: false,
+  quizScore: 0,
+  quizWrong: [],
+  showWrongReview: false,
+  completed: { dreiecke: false, wiese: false, wald: false },
+  scores: { dreiecke: 0, wiese: 0, wald: 0 },
+};
+
+function setState(patch) {
+  Object.assign(state, patch);
+  render();
+}
+
+// ===================================================================
+// RENDER
+// ===================================================================
+function render() {
+  const app = document.getElementById("app");
+  switch (state.screen) {
+    case "start": app.innerHTML = renderStart(); break;
+    case "menu": app.innerHTML = renderMenu(); break;
+    case "learn": app.innerHTML = renderLearn(); break;
+    case "quiz": app.innerHTML = renderQuiz(); break;
+    case "results": app.innerHTML = renderResults(); break;
+    case "final": app.innerHTML = renderFinal(); break;
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ===== START =====
+function renderStart() {
+  return `
+    <div class="start-screen">
+      <div class="greeting">\u{1F44B}</div>
+      <h1>Hallo Richard!</h1>
+      <div class="date">Dein Lernmodul für Montag, 19. Mai 2026</div>
+      <div class="topic-cards">
+        ${TOPICS.map(t => `
+          <div class="topic-card">
+            <div class="icon">${t.icon}</div>
+            <div>
+              <h3>${t.title}</h3>
+              <p>${t.subject}</p>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <p style="color:var(--text-muted); font-size:14px; margin-bottom:24px;">3 Themen · Lernen + Quiz · ca. 30–45 Minuten</p>
+      <button class="start-btn" onclick="setState({screen:'menu'})">Los geht's! \u{1F680}</button>
+    </div>
+  `;
+}
+
+// ===== MENU =====
+function renderMenu() {
+  const allDone = Object.values(state.completed).every(Boolean);
+  const totalScore = Object.values(state.scores).reduce((a,b) => a+b, 0);
+  const totalMax = 30;
+
+  return `
+    <div class="module-menu">
+      <div class="top-bar">
+        <button class="back-btn" onclick="setState({screen:'start'})">← Zurück</button>
+        <span class="progress-text">${Object.values(state.completed).filter(Boolean).length}/3 Themen abgeschlossen</span>
+      </div>
+      <h2>\u{1F4DA} Dein Lernplan</h2>
+      <p class="subtitle">Arbeite die Themen der Reihe nach durch: erst Lernen, dann Quiz.</p>
+
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:14px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">\u{1F4F9} Quellen zum Anschauen</h3>
+        ${VIDEO_LINKS.map(v => `
+          <a href="${v.url}" target="_blank" class="video-link">
+            <span class="vl-icon">${v.icon}</span>
+            <div>
+              <div class="vl-text">${v.title}</div>
+              <div class="vl-sub">${v.sub}</div>
+            </div>
+          </a>
+        `).join("")}
+      </div>
+
+      <h3 style="font-size:14px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">\u{1F4D6} Lernmodule</h3>
+      <div class="module-sections">
+        ${TOPICS.map(t => {
+          const done = state.completed[t.id];
+          const score = state.scores[t.id];
+          return `
+            <div class="section-card ${done ? 'completed' : ''}" onclick="startTopic('${t.id}')">
+              <div class="sec-icon">${t.icon}</div>
+              <div class="sec-info">
+                <h3>${t.title}</h3>
+                <p>${t.subject} ${done ? `· Quiz: ${score}/10` : '· Lernen + 10 Fragen'}</p>
+              </div>
+              <div class="sec-status">${done ? '✅' : '\u{1F449}'}</div>
+            </div>
+          `;
+        }).join("")}
+      </div>
+
+      <button class="final-quiz-btn" ${allDone ? '' : 'disabled'} onclick="${allDone ? "startFinalQuiz()" : ''}">
+        \u{1F3C6} Abschlusstest ${allDone ? '(alle 30 Fragen gemischt)' : '– erst alle Themen abschließen!'}
+      </button>
+
+      ${allDone ? `
+        <div style="text-align:center; margin-top:20px; padding:20px; background:var(--green-pale); border-radius:16px;">
+          <div style="font-size:36px; margin-bottom:8px;">\u{1F389}</div>
+          <div style="font-size:18px; font-weight:700; color:#166534;">Alle Themen geschafft!</div>
+          <div style="font-size:14px; color:#166534; margin-top:4px;">Gesamt: ${totalScore}/${totalMax} Punkte (${Math.round(totalScore/totalMax*100)}%)</div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function startTopic(id) {
+  setState({
+    screen: "learn",
+    currentTopic: id,
+    learnPage: 0,
+  });
+}
+
+// ===== LEARN =====
+function renderLearn() {
+  const topic = TOPICS.find(t => t.id === state.currentTopic);
+  const content = LEARN_CONTENT[state.currentTopic];
+  const page = content[state.learnPage];
+  const isLast = state.learnPage === content.length - 1;
+
+  return `
+    <div class="learn-section">
+      <div class="top-bar">
+        <button class="back-btn" onclick="setState({screen:'menu'})">← Menü</button>
+        <span class="progress-text">${topic.icon} ${topic.title} · Seite ${state.learnPage + 1}/${content.length}</span>
+      </div>
+
+      <div class="quiz-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${((state.learnPage + 1) / content.length) * 100}%; background: linear-gradient(90deg, ${topic.color}, ${topic.color}88);"></div>
+        </div>
+      </div>
+
+      <div class="learn-card">
+        <h3>${page.title}</h3>
+        ${page.html}
+      </div>
+
+      <div style="display:flex; gap:12px;">
+        ${state.learnPage > 0 ? `<button class="continue-btn" style="background:var(--card); color:var(--text); border:2px solid var(--border); flex:1;" onclick="setState({learnPage: state.learnPage - 1})">← Zurück</button>` : ''}
+        ${isLast
+          ? `<button class="continue-btn green" style="flex:2;" onclick="startTopicQuiz()">Jetzt zum Quiz! \u{1F3AF}</button>`
+          : `<button class="continue-btn" style="flex:2;" onclick="setState({learnPage: state.learnPage + 1})">Weiter →</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function startTopicQuiz() {
+  setState({
+    screen: "quiz",
+    quizIdx: 0,
+    quizSelected: null,
+    quizConfirmed: false,
+    quizScore: 0,
+    quizWrong: [],
+  });
+}
+
+// ===== QUIZ =====
+function renderQuiz() {
+  const topic = TOPICS.find(t => t.id === state.currentTopic);
+  const questions = QUIZ_DATA[state.currentTopic];
+  const q = questions[state.quizIdx];
+  const letters = ["A", "B", "C", "D"];
+
+  return `
+    <div class="quiz-section">
+      <div class="top-bar">
+        <button class="back-btn" onclick="setState({screen:'menu'})">← Menü</button>
+        <span class="progress-text">${topic.icon} Quiz: ${state.quizScore} richtig</span>
+      </div>
+
+      <div class="quiz-progress">
+        <div class="info-row">
+          <span>Frage ${state.quizIdx + 1} von ${questions.length}</span>
+          <span>${Math.round(((state.quizIdx) / questions.length) * 100)}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${((state.quizIdx) / questions.length) * 100}%; background: linear-gradient(90deg, ${topic.color}, ${topic.color}88);"></div>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="q-badge">Frage ${state.quizIdx + 1}</div>
+        <div class="q-text">${q.q}</div>
+
+        ${q.opts.map((opt, idx) => {
+          let cls = "option-btn";
+          if (state.quizConfirmed) {
+            cls += " answered";
+            if (idx === q.correct) cls += " correct";
+            else if (idx === state.quizSelected && idx !== q.correct) cls += " wrong";
+            else cls += " dimmed";
+          } else if (state.quizSelected === idx) {
+            cls += " selected";
+          }
+          return `<button class="${cls}" onclick="quizSelect(${idx})">
+            <span class="letter">${letters[idx]}</span>${opt}
+          </button>`;
+        }).join("")}
+
+        ${state.quizConfirmed ? `
+          <div class="explanation ${state.quizSelected === q.correct ? 'correct-exp' : 'wrong-exp'}">
+            <span class="exp-label">${state.quizSelected === q.correct ? '✅ Richtig!' : '❌ Leider falsch.'}</span>
+            ${q.exp}
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="quiz-actions">
+        ${!state.quizConfirmed
+          ? `<button class="confirm-btn" ${state.quizSelected === null ? 'disabled' : ''} onclick="quizConfirm()">Antwort prüfen</button>`
+          : `<button class="next-btn" onclick="quizNext()">${state.quizIdx + 1 < questions.length ? 'Nächste Frage →' : 'Ergebnis anzeigen \u{1F3C6}'}</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function quizSelect(idx) {
+  if (state.quizConfirmed) return;
+  setState({ quizSelected: idx });
+}
+
+function quizConfirm() {
+  if (state.quizSelected === null) return;
+  const q = QUIZ_DATA[state.currentTopic][state.quizIdx];
+  const isCorrect = state.quizSelected === q.correct;
+  const newWrong = isCorrect ? state.quizWrong : [...state.quizWrong, {
+    question: q.q, chosen: q.opts[state.quizSelected], correct: q.opts[q.correct], exp: q.exp
+  }];
+  setState({
+    quizConfirmed: true,
+    quizScore: isCorrect ? state.quizScore + 1 : state.quizScore,
+    quizWrong: newWrong,
+  });
+}
+
+function quizNext() {
+  const questions = QUIZ_DATA[state.currentTopic];
+  if (state.quizIdx + 1 >= questions.length) {
+    const newCompleted = { ...state.completed, [state.currentTopic]: true };
+    const newScores = { ...state.scores, [state.currentTopic]: state.quizScore };
+    setState({ screen: "results", completed: newCompleted, scores: newScores });
+  } else {
+    setState({ quizIdx: state.quizIdx + 1, quizSelected: null, quizConfirmed: false });
+  }
+}
+
+// ===== RESULTS =====
+function renderResults() {
+  const topic = TOPICS.find(t => t.id === state.currentTopic);
+  const total = 10;
+  const score = state.quizScore;
+  const pct = Math.round((score / total) * 100);
+
+  let emoji, msg, color;
+  if (pct >= 90) { emoji = "\u{1F31F}"; msg = "Ausgezeichnet, Richard! Du hast das Thema super drauf!"; color = "#16a34a"; }
+  else if (pct >= 70) { emoji = "\u{1F44D}"; msg = "Gut gemacht! Du hast viel gelernt!"; color = "#2563eb"; }
+  else if (pct >= 50) { emoji = "\u{1F4AA}"; msg = "Solide Basis! Schau dir die Fehler nochmal an."; color = "#f59e0b"; }
+  else { emoji = "\u{1F4D6}"; msg = "Lies die Lernseiten nochmal und versuch's erneut – du schaffst das!"; color = "#ef4444"; }
+
+  return `
+    <div class="results">
+      <div class="emoji">${emoji}</div>
+      <h2>${topic.icon} ${topic.title}</h2>
+      <div class="score" style="color:${color}">${score}/${total}</div>
+      <div class="pct">${pct}% richtig</div>
+      <div class="msg">${msg}</div>
+
+      ${state.quizWrong.length > 0 ? `
+        <div class="wrong-review">
+          <button class="wrong-review-toggle" onclick="setState({showWrongReview: !state.showWrongReview})">
+            ${state.showWrongReview ? '▲ Fehler ausblenden' : '▼ ' + state.quizWrong.length + ' falsche Antwort(en) ansehen'}
+          </button>
+          ${state.showWrongReview ? state.quizWrong.map(w => `
+            <div class="wrong-item">
+              <div class="wi-q">${w.question}</div>
+              <div class="wi-wrong">✗ Deine Antwort: ${w.chosen}</div>
+              <div class="wi-correct">✓ Richtig: ${w.correct}</div>
+              <div class="wi-exp">\u{1F4A1} ${w.exp}</div>
+            </div>
+          `).join("") : ''}
+        </div>
+      ` : ''}
+
+      <div style="display:flex; gap:12px; margin-top:20px;">
+        <button class="continue-btn" style="flex:1; background:var(--card); color:var(--text); border:2px solid var(--border);" onclick="startTopic('${state.currentTopic}')">Nochmal lernen</button>
+        <button class="continue-btn green" style="flex:2;" onclick="setState({screen:'menu'})">Weiter zum Menü →</button>
+      </div>
+    </div>
+  `;
+}
+
+// ===== FINAL QUIZ =====
+let finalQuestions = [];
+let finalIdx = 0;
+let finalSelected = null;
+let finalConfirmed = false;
+let finalScore = 0;
+let finalWrong = [];
+let finalShowReview = false;
+
+function startFinalQuiz() {
+  finalQuestions = [];
+  Object.keys(QUIZ_DATA).forEach(topicId => {
+    const topic = TOPICS.find(t => t.id === topicId);
+    QUIZ_DATA[topicId].forEach(q => {
+      finalQuestions.push({ ...q, topicId, topicIcon: topic.icon, topicTitle: topic.title });
+    });
+  });
+  // Shuffle
+  for (let i = finalQuestions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [finalQuestions[i], finalQuestions[j]] = [finalQuestions[j], finalQuestions[i]];
+  }
+  finalIdx = 0; finalSelected = null; finalConfirmed = false; finalScore = 0; finalWrong = []; finalShowReview = false;
+  state.screen = "final";
+  render();
+}
+
+function renderFinal() {
+  if (finalIdx >= finalQuestions.length) return renderFinalResults();
+
+  const q = finalQuestions[finalIdx];
+  const letters = ["A", "B", "C", "D"];
+  const total = finalQuestions.length;
+
+  return `
+    <div class="quiz-section">
+      <div class="top-bar">
+        <button class="back-btn" onclick="setState({screen:'menu'})">← Abbrechen</button>
+        <span class="progress-text">\u{1F3C6} Abschlusstest · ${finalScore} richtig</span>
+      </div>
+
+      <div class="quiz-progress">
+        <div class="info-row">
+          <span>Frage ${finalIdx + 1} von ${total}</span>
+          <span>${q.topicIcon} ${q.topicTitle}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${((finalIdx) / total) * 100}%; background: linear-gradient(90deg, #8b5cf6, #a78bfa);"></div>
+        </div>
+      </div>
+
+      <div class="quiz-card">
+        <div class="q-badge" style="background:var(--purple-pale); color:var(--purple);">Frage ${finalIdx + 1} · ${q.topicIcon} ${q.topicTitle}</div>
+        <div class="q-text">${q.q}</div>
+
+        ${q.opts.map((opt, idx) => {
+          let cls = "option-btn";
+          if (finalConfirmed) {
+            cls += " answered";
+            if (idx === q.correct) cls += " correct";
+            else if (idx === finalSelected && idx !== q.correct) cls += " wrong";
+            else cls += " dimmed";
+          } else if (finalSelected === idx) {
+            cls += " selected";
+          }
+          return `<button class="${cls}" onclick="finalSelect(${idx})">
+            <span class="letter">${letters[idx]}</span>${opt}
+          </button>`;
+        }).join("")}
+
+        ${finalConfirmed ? `
+          <div class="explanation ${finalSelected === q.correct ? 'correct-exp' : 'wrong-exp'}">
+            <span class="exp-label">${finalSelected === q.correct ? '✅ Richtig!' : '❌ Leider falsch.'}</span>
+            ${q.exp}
+          </div>
+        ` : ''}
+      </div>
+
+      <div class="quiz-actions">
+        ${!finalConfirmed
+          ? `<button class="confirm-btn" style="background:linear-gradient(135deg, var(--purple), #a78bfa);" ${finalSelected === null ? 'disabled' : ''} onclick="finalConfirm()">Antwort prüfen</button>`
+          : `<button class="next-btn" style="background:linear-gradient(135deg, var(--purple), #a78bfa);" onclick="finalNext()">${finalIdx + 1 < total ? 'Nächste Frage →' : 'Gesamtergebnis anzeigen \u{1F3C6}'}</button>`
+        }
+      </div>
+    </div>
+  `;
+}
+
+function finalSelect(idx) {
+  if (finalConfirmed) return;
+  finalSelected = idx;
+  render();
+}
+
+function finalConfirm() {
+  if (finalSelected === null) return;
+  const q = finalQuestions[finalIdx];
+  if (finalSelected === q.correct) finalScore++;
+  else finalWrong.push({ question: q.q, chosen: q.opts[finalSelected], correct: q.opts[q.correct], exp: q.exp, topic: q.topicIcon + " " + q.topicTitle });
+  finalConfirmed = true;
+  render();
+}
+
+function finalNext() {
+  finalIdx++;
+  finalSelected = null;
+  finalConfirmed = false;
+  render();
+}
+
+function renderFinalResults() {
+  const total = finalQuestions.length;
+  const pct = Math.round((finalScore / total) * 100);
+
+  let emoji, msg, color, note;
+  if (pct >= 90) { emoji = "\u{1F3C6}"; msg = "Herausragend, Richard! Du beherrschst alle drei Themen!"; color = "#16a34a"; note = "Sehr gut"; }
+  else if (pct >= 75) { emoji = "\u{1F31F}"; msg = "Klasse Leistung! Du hast viel gelernt!"; color = "#2563eb"; note = "Gut"; }
+  else if (pct >= 60) { emoji = "\u{1F44D}"; msg = "Guter Durchschnitt! Schau dir die Fehler an."; color = "#f59e0b"; note = "Befriedigend"; }
+  else if (pct >= 45) { emoji = "\u{1F4AA}"; msg = "Knapp bestanden – lies die Lernseiten nochmal!"; color = "#f97316"; note = "Ausreichend"; }
+  else { emoji = "\u{1F4D6}"; msg = "Da geht noch was! Wiederhole die Themen und versuch's nochmal."; color = "#ef4444"; note = "Noch üben"; }
+
+  // Per-topic scores
+  const topicScores = {};
+  finalQuestions.forEach((q, i) => {
+    if (!topicScores[q.topicId]) topicScores[q.topicId] = { correct: 0, total: 0, icon: q.topicIcon, title: q.topicTitle };
+    topicScores[q.topicId].total++;
+  });
+  // We need to recalculate per-topic...
+  finalQuestions.forEach((q, i) => {
+    // Check if this question was answered correctly
+    // We'll track it differently - from finalWrong
+  });
+  // Simpler approach: count from wrong answers
+  Object.keys(topicScores).forEach(id => {
+    const wrongCount = finalWrong.filter(w => w.topic.includes(topicScores[id].title)).length;
+    topicScores[id].correct = topicScores[id].total - wrongCount;
+  });
+
+  return `
+    <div class="final-results">
+      <div style="font-size:72px; margin-bottom:12px;">${emoji}</div>
+      <h1>Abschlusstest - Ergebnis</h1>
+      <div style="font-size:52px; font-weight:800; color:${color}; margin:12px 0;">${finalScore}/${total}</div>
+      <div style="font-size:18px; color:${color}; font-weight:700; margin-bottom:4px;">${note}</div>
+      <div style="font-size:16px; color:var(--text-muted); margin-bottom:20px;">${pct}% richtig beantwortet</div>
+      <div style="font-size:16px; margin-bottom:24px;">${msg}</div>
+
+      <div class="final-scores">
+        ${Object.values(topicScores).map(ts => `
+          <div class="final-score-card">
+            <div class="fsc-icon">${ts.icon}</div>
+            <div class="fsc-label">${ts.title}</div>
+            <div class="fsc-score" style="color:${ts.correct >= 8 ? '#16a34a' : ts.correct >= 5 ? '#f59e0b' : '#ef4444'}">${ts.correct}/${ts.total}</div>
+          </div>
+        `).join("")}
+      </div>
+
+      ${finalWrong.length > 0 ? `
+        <div class="wrong-review">
+          <button class="wrong-review-toggle" onclick="finalShowReview = !finalShowReview; render();">
+            ${finalShowReview ? '▲ Fehler ausblenden' : '▼ ' + finalWrong.length + ' falsche Antwort(en) ansehen'}
+          </button>
+          ${finalShowReview ? finalWrong.map(w => `
+            <div class="wrong-item">
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">${w.topic}</div>
+              <div class="wi-q">${w.question}</div>
+              <div class="wi-wrong">✗ Deine Antwort: ${w.chosen}</div>
+              <div class="wi-correct">✓ Richtig: ${w.correct}</div>
+              <div class="wi-exp">\u{1F4A1} ${w.exp}</div>
+            </div>
+          `).join("") : ''}
+        </div>
+      ` : ''}
+
+      <div style="display:flex; gap:12px; margin-top:24px;">
+        <button class="continue-btn" style="flex:1; background:var(--card); color:var(--text); border:2px solid var(--border);" onclick="startFinalQuiz()">Nochmal versuchen</button>
+        <button class="continue-btn" style="flex:1;" onclick="setState({screen:'menu'})">Zum Menü</button>
+      </div>
+
+      <p style="text-align:center; color:var(--text-muted); font-size:12px; margin-top:24px;">
+        Richards Lernmodul · 19. Mai 2026 · Quellen: Studyflix, Planet Schule (ARD), ARD Schulfernsehen
+      </p>
+    </div>
+  `;
+}
+
+// ===== INIT =====
+render();
+</script>
+</body>
+</html>

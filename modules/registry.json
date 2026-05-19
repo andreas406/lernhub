@@ -1,5 +1,13 @@
 [
   {
+    "id": "ad-hoc-19-mai",
+    "name": "Ad-hoc: Dreiecke, Wiese & Wald",
+    "description": "Dreiecksarten (Mathe), Leben in der Wiese & Lebensgemeinschaft Wald — Lernen + 30 Quizfragen",
+    "icon": "🎯",
+    "path": "modules/ad-hoc-19-mai/index.html",
+    "category": "aktuelles"
+  },
+  {
     "id": "deutsch-6",
     "name": "Deutsch",
     "description": "Satzglieder, Zeitformen, Wortarten, Satzbau, Balladen & Rechtschreibung",
