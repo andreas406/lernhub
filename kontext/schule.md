@@ -44,7 +44,7 @@ A- und B-Wochen: Der Plan wechselt wöchentlich. In der A-Woche gilt montags Ges
 
 ## Freitag
 
-- 08:00–09:30 Sport (Halle „Blau")
+- 08:00–09:30 Sport = Schwimmunterricht im blu (Sport- und Freizeitbad Potsdam, Brauhausberg 1). Treffen 07:20 vor Ort am blu, nicht in der Schule. Gilt im 1. Halbjahr.
 - 09:50–11:20 Französisch (01-20)
 - 12:00–13:30 Mathematik (01-20)
 
@@ -52,5 +52,5 @@ A- und B-Wochen: Der Plan wechselt wöchentlich. In der A-Woche gilt montags Ges
 
 - „Was habe ich morgen?" oder „Wann ist Mathe?" mit dem Plan beantworten; bei A/B-Stunden die passende Woche nehmen, wenn sie bekannt ist, sonst beide Fächer nennen.
 - Hausaufgaben und Lernen sinnvoll zuordnen: Fächer, die am nächsten Tag dran sind, zuerst. Beispiel: Sonntagabend Englisch und Geschichte/Biologie vorbereiten, weil Montag.
-- Sportsachen: Freitag immer Sport, Dienstag nur in der A-Woche – dann Sportzeug einpacken.
+- Sportsachen: Dienstag nur in der A-Woche Sportzeug. Freitag ist Schwimmen: Badesachen, Handtuch, Duschgel, Schwimmbrille einpacken, und früher los – um 07:20 am blu sein (Fußweg von zu Hause einplanen, der Bot darf am Donnerstagabend daran erinnern).
 - Ferien, Vertretungen und Ausfälle kennt der Bot nicht; im Zweifel bei Mama oder Papa nachfragen.
