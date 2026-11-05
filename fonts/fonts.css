@@ -1,0 +1,5 @@
+/* Familie Grimm CI – Fira-Familie, lokal gehostet (latin), damit das Lernhub auch offline im CI bleibt */
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:400;font-display:swap;src:url(FiraSansCondensed-400.woff2) format('woff2')}
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(FiraSansCondensed-600.woff2) format('woff2')}
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(FiraSansCondensed-700.woff2) format('woff2')}
+@font-face{font-family:'Fira Code';font-style:normal;font-weight:400;font-display:swap;src:url(FiraCode-400.woff2) format('woff2')}

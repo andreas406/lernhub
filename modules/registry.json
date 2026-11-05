@@ -1,114 +1,38 @@
 [
-  {
-    "id": "ad-hoc-19-mai",
-    "name": "Ad-hoc: Dreiecke, Wiese & Wald",
-    "description": "Dreiecksarten (Mathe), Leben in der Wiese & Lebensgemeinschaft Wald — Lernen + 30 Quizfragen",
-    "icon": "🎯",
-    "path": "modules/ad-hoc-19-mai/index.html",
-    "category": "aktuelles"
-  },
-  {
-    "id": "deutsch-6",
-    "name": "Deutsch",
-    "description": "Satzglieder, Zeitformen, Wortarten, Satzbau, Balladen & Rechtschreibung",
-    "icon": "📖",
-    "path": "modules/deutsch-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "mathe-6",
-    "name": "Mathe",
-    "description": "Winkel, Flächen, Volumen, Daten/Zufall & Dreisatz",
-    "icon": "📐",
-    "path": "modules/mathe-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "englisch-6",
-    "name": "English",
-    "description": "Simple Past, Irregular Verbs, going-to-future, Comparison & Reading",
-    "icon": "🇬🇧",
-    "path": "modules/englisch-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "nawi-6",
-    "name": "NaWi",
-    "description": "Ernährung, Verdauung, Suchtprävention, Stromkreise & Maschinen",
-    "icon": "🔬",
-    "path": "modules/nawi-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "gewi-6",
-    "name": "GeWi",
-    "description": "Europa, EU, Demokratie, Tourismus & Deutschland",
-    "icon": "🌍",
-    "path": "modules/gewi-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "ler-6",
-    "name": "LER",
-    "description": "Identität, Miteinander, Gefühle, Weltbilder & Zukunft",
-    "icon": "🤔",
-    "path": "modules/ler-6/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "mathe-trainer",
-    "name": "Kopfrechnen",
-    "description": "Kopfrechnen üben mit zufälligen Aufgaben",
-    "icon": "🔢",
-    "path": "modules/mathe-trainer/index.html",
-    "category": "lehrplan"
-  },
-  {
-    "id": "geschlechtergerechtigkeit",
-    "name": "Stark ohne Maske",
-    "description": "Geschlechtergerechtigkeit, Männlichkeit & Social Media — 6 Sessions",
-    "icon": "🎭",
-    "path": "modules/geschlechtergerechtigkeit/index.html",
-    "category": "aktuelles"
-  },
-  {
-    "id": "mathe-dezimalbrueche",
-    "name": "Dezimalbrüche-Test",
-    "description": "30 Aufgaben in 20 Minuten: Umwandeln, Vergleichen, Rechnen & Runden",
-    "icon": "🔢",
-    "path": "modules/mathe-dezimalbrueche/index.html",
-    "category": "aktuelles"
-  },
-  {
-    "id": "stadtentwicklung",
-    "name": "Stadtentwicklung",
-    "description": "Standortfaktoren, Phasen, Funktionen & Potsdam",
-    "icon": "🏙️",
-    "path": "modules/stadtentwicklung/index.html",
-    "category": "archiv"
-  },
-  {
-    "id": "stadtentwicklung-v2",
-    "name": "Stadtentwicklung V2",
-    "description": "Erweiterte Version mit mehr Übungen",
-    "icon": "🏰",
-    "path": "modules/stadtentwicklung-v2/index.html",
-    "category": "archiv"
-  },
-  {
-    "id": "mentaltraining",
-    "name": "Mental stark auf dem Platz",
-    "description": "Mentaltraining für junge Sportler",
-    "icon": "💪",
-    "path": "modules/mentaltraining/index.html",
-    "category": "fussball"
-  },
-  {
-    "id": "fussball-sommer",
-    "name": "Fußball-Übungen bis Sommer",
-    "description": "Trainingsplan mit Übungen für Technik, Fitness & Mentalstärke",
-    "icon": "⚽",
-    "path": "modules/fussball-sommer/index.html",
-    "category": "fussball"
-  }
+  { "id": "k7-deutsch", "code": "DE", "name": "Deutsch", "description": "Kurzgeschichte, Inhaltsangabe, Charakterisierung, Argumentieren, Grammatik, Lyrik", "path": "modules/k7-deutsch/index.html", "category": "lehrplan" },
+  { "id": "k7-mathe", "code": "MA", "name": "Mathematik", "description": "Rationale Zahlen, Prozent, Zuordnungen, Gleichungen, Dreiecke, Flächen, Zufall", "path": "modules/k7-mathe/index.html", "category": "lehrplan" },
+  { "id": "k7-englisch", "code": "EN", "name": "Englisch", "description": "Present perfect, past progressive, modals, future, comparison, relative clauses", "path": "modules/k7-englisch/index.html", "category": "lehrplan" },
+  { "id": "k7-franzoesisch", "code": "FR", "name": "Französisch", "description": "Erstes Lernjahr: être/avoir, -er-Verben, Artikel, Fragen, Zahlen, Uhrzeit, aller/faire", "path": "modules/k7-franzoesisch/index.html", "category": "lehrplan" },
+  { "id": "k7-biologie", "code": "BI", "name": "Biologie", "description": "Zelle, Ökosystem, Ernährung und Verdauung, Blut und Atmung, Pubertät", "path": "modules/k7-biologie/index.html", "category": "lehrplan" },
+  { "id": "k7-physik", "code": "PH", "name": "Physik", "description": "Temperatur und Teilchen, Dichte, Kraft, Energie und Arbeit, Wärme", "path": "modules/k7-physik/index.html", "category": "lehrplan" },
+  { "id": "k7-chemie", "code": "CH", "name": "Chemie", "description": "Stoffe und Reaktionen, Verbrennung, Atombau und PSE, Gase, Wasser", "path": "modules/k7-chemie/index.html", "category": "lehrplan" },
+  { "id": "k7-geschichte", "code": "GE", "name": "Geschichte", "description": "Mittelalter, Frühe Neuzeit, Reformation, Absolutismus, Französische Revolution, Industrialisierung", "path": "modules/k7-geschichte/index.html", "category": "lehrplan" },
+  { "id": "k7-geografie", "code": "GEO", "name": "Geografie", "description": "Plattentektonik, Naturgefahren, Bevölkerung und Migration, Tropen, Armut und Reichtum", "path": "modules/k7-geografie/index.html", "category": "lehrplan" },
+  { "id": "k7-politische-bildung", "code": "PB", "name": "Politische Bildung", "description": "Soziale Ungleichheit, Sozialstaat, Globalisierung und Medien, Migration, Rechtsstaat und Jugendrecht", "path": "modules/k7-politische-bildung/index.html", "category": "lehrplan" },
+  { "id": "k7-ler", "code": "LER", "name": "L-E-R", "description": "Identität, Freundschaft und Mobbing, Gefühle, Weltreligionen, Menschenbilder, Zukunft", "path": "modules/k7-ler/index.html", "category": "lehrplan" },
+  { "id": "k7-musik", "code": "MU", "name": "Musik", "description": "Notation, Intervalle, Dur und Moll, Formen, Epochen, Pop und Jazz, Filmmusik", "path": "modules/k7-musik/index.html", "category": "lehrplan" },
+  { "id": "k7-kunst", "code": "KU", "name": "Kunst", "description": "Perspektive, Licht und Schatten, Farbe, Comic, Fotografie, Kunstgeschichte", "path": "modules/k7-kunst/index.html", "category": "lehrplan" },
+  { "id": "k7-sport", "code": "SP", "name": "Sport", "description": "Theorie: Erwärmung, Ausdauer und Kraft, Leichtathletik, Spielregeln, Fairness, Erste Hilfe", "path": "modules/k7-sport/index.html", "category": "lehrplan" },
+  { "id": "k7-wat", "code": "WAT", "name": "Wirtschaft-Arbeit-Technik", "description": "Ernährung und Konsum, Markt und Preis, Wirtschaftskreislauf, Berufe, Technik und Fertigung", "path": "modules/k7-wat/index.html", "category": "lehrplan" },
+  { "id": "k7-informatik", "code": "IF", "name": "Informatik", "description": "EVA-Prinzip, Dateien, Internet und Datenschutz, Binärzahlen, Algorithmen", "path": "modules/k7-informatik/index.html", "category": "lehrplan" },
+
+  { "id": "fussball-die-8", "code": "8", "name": "Die 8 im Fußball", "description": "Richard: linke 8 und LV – Räume, Rolle, Situationen, Attribute, Fußballsprache", "path": "modules/fussball-die-8/index.html", "category": "fussball" },
+  { "id": "fussball-der-linke-iv", "code": "IV", "name": "Der linke IV", "description": "Anton: linker Innenverteidiger – Räume, Rolle, Situationen, Attribute, Fußballsprache", "path": "modules/fussball-der-linke-iv/index.html", "category": "fussball" },
+
+  { "id": "deutsch-6", "code": "DE6", "name": "Deutsch Klasse 6", "description": "Satzglieder, Zeitformen, Wortarten, Satzbau, Balladen und Rechtschreibung", "path": "modules/deutsch-6/index.html", "category": "archiv" },
+  { "id": "mathe-6", "code": "MA6", "name": "Mathe Klasse 6", "description": "Winkel, Flächen, Volumen, Daten/Zufall und Dreisatz", "path": "modules/mathe-6/index.html", "category": "archiv" },
+  { "id": "englisch-6", "code": "EN6", "name": "English Klasse 6", "description": "Simple past, irregular verbs, going-to-future, comparison, reading", "path": "modules/englisch-6/index.html", "category": "archiv" },
+  { "id": "nawi-6", "code": "NW6", "name": "NaWi Klasse 6", "description": "Ernährung, Verdauung, Suchtprävention, Stromkreise und Maschinen", "path": "modules/nawi-6/index.html", "category": "archiv" },
+  { "id": "gewi-6", "code": "GW6", "name": "GeWi Klasse 6", "description": "Europa, EU, Demokratie, Tourismus und Deutschland", "path": "modules/gewi-6/index.html", "category": "archiv" },
+  { "id": "ler-6", "code": "LER6", "name": "LER Klasse 6", "description": "Identität, Miteinander, Gefühle, Weltbilder und Zukunft", "path": "modules/ler-6/index.html", "category": "archiv" },
+  { "id": "mathe-trainer", "code": "KR", "name": "Kopfrechnen", "description": "Kopfrechnen üben mit zufälligen Aufgaben", "path": "modules/mathe-trainer/index.html", "category": "archiv" },
+  { "id": "mathe-dezimalbrueche", "code": "DZ", "name": "Dezimalbrüche-Test", "description": "30 Aufgaben in 20 Minuten: Umwandeln, Vergleichen, Rechnen und Runden", "path": "modules/mathe-dezimalbrueche/index.html", "category": "archiv" },
+  { "id": "ad-hoc-19-mai", "code": "AH", "name": "Ad-hoc: Dreiecke, Wiese und Wald", "description": "Dreiecksarten (Mathe), Leben in der Wiese und Lebensgemeinschaft Wald", "path": "modules/ad-hoc-19-mai/index.html", "category": "archiv" },
+  { "id": "geschlechtergerechtigkeit", "code": "SM", "name": "Stark ohne Maske", "description": "Geschlechtergerechtigkeit, Männlichkeit und Social Media – 6 Sessions", "path": "modules/geschlechtergerechtigkeit/index.html", "category": "archiv" },
+  { "id": "stadtentwicklung", "code": "ST", "name": "Stadtentwicklung", "description": "Standortfaktoren, Phasen, Funktionen und Potsdam", "path": "modules/stadtentwicklung/index.html", "category": "archiv" },
+  { "id": "stadtentwicklung-v2", "code": "ST2", "name": "Stadtentwicklung V2", "description": "Erweiterte Version mit mehr Übungen", "path": "modules/stadtentwicklung-v2/index.html", "category": "archiv" },
+  { "id": "mentaltraining", "code": "MT", "name": "Mental stark auf dem Platz", "description": "Mentaltraining für junge Sportler", "path": "modules/mentaltraining/index.html", "category": "archiv" },
+  { "id": "fussball-sommer", "code": "FS", "name": "Fußball-Übungen bis Sommer", "description": "Trainingsplan mit Übungen für Technik, Fitness und Mentalstärke", "path": "modules/fussball-sommer/index.html", "category": "archiv" },
+  { "id": "fussball-tagebuch", "code": "FT", "name": "Fußball-Tagebuch", "description": "Tagebuch-App für Training und Spiele", "path": "modules/fussball-tagebuch/index.html", "category": "archiv" },
+  { "id": "quiz-demo", "code": "QD", "name": "Quiz-Demo", "description": "Technische Demo des Quiz-Moduls", "path": "modules/quiz-demo/index.html", "category": "archiv" }
 ]

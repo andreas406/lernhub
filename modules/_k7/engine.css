@@ -1,0 +1,114 @@
+/* LernHub Klasse 7 – Engine im Familie-Grimm-CI
+   Fira Sans Condensed + Fira Code, Graphite-Skala, Grimm-Rot nur an Akzentlinie, Eyebrow-Quadrat und als Fehler-Markierung. */
+*{margin:0;padding:0;box-sizing:border-box}
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/FiraSansCondensed-400.woff2) format('woff2')}
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(../../fonts/FiraSansCondensed-600.woff2) format('woff2')}
+@font-face{font-family:'Fira Sans Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(../../fonts/FiraSansCondensed-700.woff2) format('woff2')}
+@font-face{font-family:'Fira Code';font-style:normal;font-weight:400;font-display:swap;src:url(../../fonts/FiraCode-400.woff2) format('woff2')}
+:root{
+  --rot:#CA2011;--ink-hard:#000000;--ink:#444444;--mute:#666666;--line:#EEEEEE;--warm:#F2F2F2;--bg:#FFFFFF;
+  --sans:'Fira Sans Condensed','Arial Narrow',Arial,sans-serif;--mono:'Fira Code','SF Mono',Menlo,Consolas,monospace;
+  --r:6px;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.5;font-size:16px}
+.app{max-width:680px;margin:0 auto;padding:18px 20px 56px}
+h1{font-size:26px;line-height:1.15;color:var(--ink-hard);font-weight:700;margin-bottom:6px}
+h1::after{content:"";display:block;width:80px;height:3px;background:var(--rot);margin-top:10px}
+.subtitle{color:var(--mute);font-size:13px;margin:10px 0 18px}
+.card{background:var(--warm);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.card h2{font-size:18px;color:var(--ink-hard);margin-bottom:8px}
+.card h3{font-size:15px;color:var(--ink-hard);font-weight:700;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+.card h3:first-child{margin-top:0}
+.card p{font-size:16px;margin-bottom:10px}
+.card p:last-child{margin-bottom:0}
+.card ul{padding-left:20px;margin-bottom:10px;font-size:16px}
+.card li{margin-bottom:5px}
+b,strong{font-weight:700;color:var(--ink-hard)}
+u{text-decoration:underline;text-underline-offset:2px}
+.muted{color:var(--mute);font-size:13px}
+.hidden{display:none !important}
+
+/* Abschnitte auf der Startseite */
+.sec{margin-bottom:24px}
+.sec-title{font-size:13px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-hard);display:flex;align-items:center;gap:12px;margin-bottom:10px;padding-top:12px;border-top:1px solid var(--line)}
+.sec-title::before{content:"";width:8px;height:8px;background:var(--rot);flex:none}
+
+/* Fortschritt */
+.progress{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mute)}
+.bar{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--ink-hard);width:0;transition:width .3s}
+
+/* Blockliste */
+.block{display:flex;gap:12px;align-items:flex-start;background:var(--warm);border:none;border-radius:var(--r);padding:14px 16px;margin-bottom:8px;cursor:pointer;width:100%;text-align:left;font-family:inherit;color:inherit}
+.block:active{background:#E2E2E2}
+.block .num{flex-shrink:0;width:36px;height:36px;border-radius:4px;background:var(--bg);color:var(--ink-hard);font-family:var(--mono);font-size:13px;display:flex;align-items:center;justify-content:center}
+.block.done .num{background:var(--ink-hard);color:#fff}
+.block .bt{font-size:16px;font-weight:600;line-height:1.25;color:var(--ink-hard)}
+.block .bm{font-size:12px;color:var(--mute);margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.04em;padding:2px 7px;border-radius:3px;background:var(--bg);color:var(--mute)}
+.block .score{margin-left:auto;flex-shrink:0;font-family:var(--mono);font-size:11px;color:var(--ink-hard);background:var(--bg);padding:4px 8px;border-radius:3px;white-space:nowrap}
+
+/* Buttons */
+.btn{display:inline-block;padding:13px 20px;background:var(--ink-hard);color:#fff;border:none;border-radius:var(--r);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;letter-spacing:.01em}
+.btn:active{background:#333}
+.btn.ghost{background:var(--bg);color:var(--ink-hard);border:1px solid var(--ink-hard)}
+.btn.ghost:active{background:var(--warm)}
+.btn.block-btn{display:block;width:100%}
+.btn.small{padding:8px 14px;font-size:13px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.row .btn{flex:1}
+
+/* Block-Ansicht */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.topbar .back{background:none;border:none;color:var(--ink-hard);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;padding:6px 0}
+.topbar .crumb{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);margin-left:auto;text-align:right}
+.steps{display:flex;gap:6px;margin-bottom:16px}
+.step{flex:1;text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:8px 4px;border-radius:4px;background:var(--warm);color:var(--mute)}
+.step.active{background:var(--ink-hard);color:#fff}
+.step.done{background:var(--bg);color:var(--ink-hard);border:1px solid var(--line)}
+
+.info{background:var(--warm);border-left:3px solid var(--ink-hard);border-radius:0 var(--r) var(--r) 0;padding:12px 14px;font-size:15px;margin-bottom:12px}
+.example{background:var(--bg);border-left:3px solid var(--mute);padding:10px 14px;font-size:15px;margin:8px 0 12px}
+.merk{background:var(--bg);border-radius:4px;padding:12px 14px;font-size:16px;margin-bottom:8px;display:flex;gap:12px}
+.merk .n{font-family:var(--mono);font-size:12px;color:var(--mute);flex-shrink:0;padding-top:3px}
+
+/* Aufgaben */
+.qbar{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mute);margin-bottom:10px}
+.qbar b{color:var(--ink-hard)}
+.dots{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.dot{width:10px;height:10px;border-radius:2px;background:var(--line)}
+.dot.ok{background:var(--ink-hard)}.dot.bad{background:var(--rot)}.dot.cur{background:var(--mute)}
+.question{font-size:18px;font-weight:600;line-height:1.4;margin-bottom:14px;color:var(--ink-hard)}
+.question .ctx{display:block;font-weight:400;font-size:14px;color:var(--mute);margin-top:6px}
+.options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.opt{padding:13px 14px;background:var(--bg);border:1px solid var(--line);border-radius:4px;cursor:pointer;font-size:16px;text-align:left;width:100%;font-family:inherit;color:var(--ink);line-height:1.4}
+.opt.correct{border:2px solid var(--ink-hard);color:var(--ink-hard);font-weight:600}
+.opt.wrong{border:2px solid var(--rot);color:var(--rot);text-decoration:line-through}
+.opt.disabled{pointer-events:none}
+.opt.disabled:not(.correct):not(.wrong){opacity:.45}
+.inputrow{display:flex;gap:8px;margin-bottom:14px}
+.inp{flex:1;padding:12px 14px;border:1px solid var(--line);border-radius:4px;font-size:17px;font-family:inherit;background:var(--bg);color:var(--ink-hard);min-width:0}
+.inp:focus{outline:none;border-color:var(--ink-hard)}
+.inp.correct{border:2px solid var(--ink-hard)}
+.inp.wrong{border:2px solid var(--rot);color:var(--rot)}
+textarea.inp{line-height:1.5}
+.feedback{padding:12px 14px;border-radius:4px;font-size:15px;margin-bottom:12px;line-height:1.5;background:var(--bg)}
+.feedback.correct{border-left:3px solid var(--ink-hard)}
+.feedback.wrong{border-left:3px solid var(--rot)}
+.feedback b{display:block;margin-bottom:2px}
+.feedback.wrong b:first-child{color:var(--rot)}
+
+/* Ergebnis */
+.result{text-align:center;padding:28px 16px}
+.result .big{font-family:var(--mono);font-size:44px;line-height:1;margin-bottom:12px;color:var(--ink-hard)}
+.result h2{font-size:22px;margin-bottom:6px}
+.result p{color:var(--mute);margin-bottom:18px}
+.review{text-align:left;margin-top:18px}
+.review .item{font-size:15px;padding:10px 12px;border-radius:4px;background:var(--bg);margin-bottom:8px;border-left:3px solid var(--rot)}
+.review .item small{color:var(--mute);display:block;margin-top:3px;font-size:13px}
+
+footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--mute);line-height:1.7}
+footer a{color:var(--ink-hard);word-break:break-all}
+@media (min-width:600px){h1{font-size:30px}.app{padding:28px 24px 64px}}

@@ -1,6 +1,5 @@
 (() => {
   const grid = document.getElementById('module-grid');
-  const home = document.getElementById('home');
   const moduleView = document.getElementById('module-view');
   const moduleFrame = document.getElementById('module-frame');
   const moduleTitle = document.getElementById('module-title');
@@ -8,102 +7,83 @@
 
   let modules = [];
 
-  // Category definitions: order, label, icon, subtitle
+  // Kategorien: Reihenfolge, Titel, Untertitel. „archiv“ ist eingeklappt.
   const categories = [
-    { key: 'aktuelles', icon: '📌', title: 'Aktuelles',          subtitle: 'Aktuelle Themen & Tests' },
-    { key: 'fussball',  icon: '⚽', title: 'Fußball',            subtitle: 'Training & Mentalstärke' },
-    { key: 'lehrplan',  icon: '🎓', title: 'Lehrplan 6. Klasse', subtitle: 'Rahmenlehrplan Brandenburg' },
-    { key: 'archiv',    icon: '📦', title: 'Archiv',             subtitle: 'Ältere Module' }
+    { key: 'aktuelles', title: 'Aktuelles', subtitle: 'Tests und Themen der nächsten Wochen' },
+    { key: 'lehrplan',  title: 'Lehrplan Klasse 7', subtitle: 'Gymnasium · Rahmenlehrplan Berlin-Brandenburg' },
+    { key: 'fussball',  title: 'Fußball', subtitle: 'Deine Position, deine Situationen' },
+    { key: 'archiv',    title: 'Archiv', subtitle: 'Ältere Module (Klasse 6 und früher)', collapsed: true }
   ];
+
+  const COLLAPSE_KEY = 'lernhub.collapsed';
+  function loadCollapsed() { try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY) || 'null'); } catch (e) { return null; } }
+  function saveCollapsed(obj) { try { localStorage.setItem(COLLAPSE_KEY, JSON.stringify(obj)); } catch (e) { /* ignore */ } }
+  let collapsed = loadCollapsed();
+  if (!collapsed) { collapsed = {}; categories.forEach(c => { if (c.collapsed) collapsed[c.key] = true; }); }
 
   async function init() {
     try {
-      const res = await fetch('modules/registry.json');
+      const res = await fetch('modules/registry.json', { cache: 'no-cache' });
       modules = await res.json();
       renderGrid();
-      handleHash(); // Open module if URL has #module-id
+      handleHash();
     } catch (e) {
-      grid.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <p>Keine Module gefunden.<br>Füge Module in <code>modules/registry.json</code> hinzu.</p>
-        </div>`;
+      grid.innerHTML = `<div class="empty-state"><p>Keine Module gefunden.<br>Module stehen in <code>modules/registry.json</code>.</p></div>`;
     }
+  }
+
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+  function card(m) {
+    return `<div class="module-card" data-id="${esc(m.id)}" role="button" tabindex="0">
+        <div class="code">${esc(m.code || m.icon || '')}</div>
+        <div class="card-text">
+          <div class="name">${esc(m.name)}</div>
+          <div class="desc">${esc(m.description || '')}</div>
+        </div>
+      </div>`;
   }
 
   function renderGrid() {
     if (modules.length === 0) {
-      grid.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-icon">📭</div>
-          <p>Noch keine Module vorhanden.<br>Füge dein erstes Modul hinzu!</p>
-        </div>`;
+      grid.innerHTML = `<div class="empty-state"><p>Noch keine Module vorhanden.</p></div>`;
       return;
     }
-
     let html = '';
+    const known = new Set(categories.map(c => c.key));
+    const sections = categories.map(c => ({ cat: c, list: modules.filter(m => m.category === c.key) }));
+    const rest = modules.filter(m => !known.has(m.category));
+    if (rest.length) sections.push({ cat: { key: 'sonstiges', title: 'Sonstiges', subtitle: 'Weitere Module' }, list: rest });
 
-    for (const cat of categories) {
-      const catModules = modules.filter(m => m.category === cat.key);
-      if (catModules.length === 0) continue;
-
+    for (const { cat, list } of sections) {
+      if (!list.length) continue;
+      const isCollapsible = cat.key === 'archiv';
+      const isCollapsed = isCollapsible && collapsed[cat.key];
       html += `
-        <div class="section">
-          <div class="section-header">
-            <div class="section-icon ${cat.key}">${cat.icon}</div>
-            <div class="section-label">
-              <div class="section-title">${cat.title}</div>
-              <div class="section-subtitle">${cat.subtitle}</div>
+        <div class="section ${cat.key} ${isCollapsed ? 'collapsed' : ''}" data-key="${cat.key}">
+          <div class="section-header ${isCollapsible ? 'toggle' : ''}">
+            <div>
+              <div class="section-title">${esc(cat.title)}</div>
+              <div class="section-subtitle">${esc(cat.subtitle)}</div>
             </div>
-            <div class="section-line"></div>
+            <div class="section-count">${list.length}${isCollapsible ? `<span class="chev">${isCollapsed ? '[+]' : '[–]'}</span>` : ''}</div>
           </div>
-          <div class="section-grid ${cat.key}">
-            ${catModules.map(m => `
-              <div class="module-card" data-id="${m.id}" role="button" tabindex="0">
-                <div class="icon">${m.icon}</div>
-                <div class="card-text">
-                  <div class="name">${m.name}</div>
-                  <div class="desc">${m.description}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
+          <div class="section-grid">${list.map(card).join('')}</div>
         </div>`;
     }
-
-    // Uncategorized modules (fallback)
-    const uncategorized = modules.filter(m => !m.category || !categories.find(c => c.key === m.category));
-    if (uncategorized.length > 0) {
-      html += `
-        <div class="section">
-          <div class="section-header">
-            <div class="section-icon" style="background:rgba(148,163,184,0.15)">📦</div>
-            <div class="section-label">
-              <div class="section-title">Sonstiges</div>
-              <div class="section-subtitle">Weitere Module</div>
-            </div>
-            <div class="section-line"></div>
-          </div>
-          <div class="section-grid">
-            ${uncategorized.map(m => `
-              <div class="module-card" data-id="${m.id}" role="button" tabindex="0">
-                <div class="icon">${m.icon}</div>
-                <div class="card-text">
-                  <div class="name">${m.name}</div>
-                  <div class="desc">${m.description}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>`;
-    }
-
+    html += `<div class="home-footer"><span>LernHub Familie Grimm</span><span>Richard &amp; Anton</span></div>`;
     grid.innerHTML = html;
 
-    grid.querySelectorAll('.module-card').forEach(card => {
-      card.addEventListener('click', () => openModule(card.dataset.id));
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter') openModule(card.dataset.id);
+    grid.querySelectorAll('.module-card').forEach(el => {
+      el.addEventListener('click', () => openModule(el.dataset.id));
+      el.addEventListener('keydown', e => { if (e.key === 'Enter') openModule(el.dataset.id); });
+    });
+    grid.querySelectorAll('.section-header.toggle').forEach(h => {
+      h.addEventListener('click', () => {
+        const sec = h.closest('.section'); const key = sec.dataset.key;
+        collapsed[key] = !collapsed[key]; saveCollapsed(collapsed);
+        sec.classList.toggle('collapsed', collapsed[key]);
+        h.querySelector('.chev').textContent = collapsed[key] ? '[+]' : '[–]';
       });
     });
   }
@@ -111,43 +91,28 @@
   function openModule(id) {
     const mod = modules.find(m => m.id === id);
     if (!mod) return;
-
     moduleTitle.textContent = mod.name;
     moduleFrame.src = mod.path;
     moduleView.classList.remove('hidden');
     moduleView.classList.add('entering');
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        moduleView.classList.remove('entering');
-      });
-    });
-
-    // Update URL hash for deep linking
-    if (location.hash !== '#' + id) {
-      history.pushState(null, '', '#' + id);
-    }
+    requestAnimationFrame(() => requestAnimationFrame(() => moduleView.classList.remove('entering')));
+    if (location.hash !== '#' + id) history.pushState(null, '', '#' + id);
   }
 
   function closeModule() {
     moduleView.classList.add('hidden');
     moduleFrame.src = 'about:blank';
-
-    // Clear hash without triggering hashchange
-    if (location.hash) {
-      history.pushState(null, '', location.pathname + location.search);
-    }
+    if (location.hash) history.pushState(null, '', location.pathname + location.search);
   }
 
   backBtn.addEventListener('click', closeModule);
 
-  // Handle browser back/forward and initial deep link
   function handleHash() {
     const id = location.hash.replace('#', '');
     if (id && modules.length > 0) {
       const mod = modules.find(m => m.id === id);
       if (mod) { openModule(id); return; }
     }
-    // No valid hash → show home
     if (!moduleView.classList.contains('hidden')) {
       moduleView.classList.add('hidden');
       moduleFrame.src = 'about:blank';
@@ -155,16 +120,9 @@
   }
 
   window.addEventListener('popstate', handleHash);
+  window.addEventListener('message', (e) => { if (e.data && e.data.type === 'lernhub:close') closeModule(); });
 
-  window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 'lernhub:close') {
-      closeModule();
-    }
-  });
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
   init();
 })();

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lernhub-v5';
+const CACHE_NAME = 'lernhub-v6';
 const SHELL_FILES = [
   './',
   './index.html',
@@ -6,10 +6,17 @@ const SHELL_FILES = [
   './js/app.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './fonts/fonts.css',
+  './fonts/FiraSansCondensed-400.woff2',
+  './fonts/FiraSansCondensed-600.woff2',
+  './fonts/FiraSansCondensed-700.woff2',
+  './fonts/FiraCode-400.woff2',
+  './modules/_k7/engine.css',
+  './modules/_k7/engine.js'
 ];
 
-// Install: cache shell files
+// Install: Shell-Dateien cachen
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME)
@@ -18,7 +25,7 @@ self.addEventListener('install', (e) => {
   );
 });
 
-// Activate: clean old caches
+// Activate: alte Caches löschen
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -27,25 +34,9 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch: network first for modules and registry, cache first for shell
+// Fetch: immer erst Netz (damit neue Inhalte sofort da sind), sonst Cache
 self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
-
-  // Registry + module files: always try network first (so new/updated modules appear immediately)
-  if (url.pathname.includes('registry.json') || url.pathname.includes('/modules/')) {
-    e.respondWith(
-      fetch(e.request)
-        .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-          return res;
-        })
-        .catch(() => caches.match(e.request))
-    );
-    return;
-  }
-
-  // All other files: network first, cache as offline fallback
+  if (e.request.method !== 'GET') return;
   e.respondWith(
     fetch(e.request)
       .then(res => {
