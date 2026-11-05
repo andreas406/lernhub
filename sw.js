@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lernhub-v6';
+const CACHE_NAME = 'lernhub-v7';
 const SHELL_FILES = [
   './',
   './index.html',

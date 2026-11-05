@@ -53,7 +53,7 @@ dirs.forEach(d => {
   if (!D) return err(`${d}/data.js: window.K7_DATA fehlt`);
   if (D.id !== d) err(`${d}/data.js: id „${D.id}“ ≠ Ordnername`);
   if (!registry.find(m => m.id === d)) warn(`${d}: nicht in registry.json`);
-  if (!D.quelle || !D.quelle.url) warn(`${d}: keine Quelle`);
+  if (!D.quelle || !D.quelle.titel) warn(`${d}: keine Quelle`);
   const bids = new Set();
   (D.bloecke || []).forEach((b, i) => {
     blocks++;
@@ -64,6 +64,13 @@ dirs.forEach(d => {
     if (!Array.isArray(b.aufgaben) || b.aufgaben.length < 4) err(`${w}: weniger als 4 Aufgaben`);
     (b.aufgaben || []).forEach((t, k) => { tasks++; checkTask(t, `${w} › Aufgabe ${k + 1}`); });
   });
+  if (D.seiten !== undefined) {
+    if (!Array.isArray(D.seiten)) err(`${d}/data.js: seiten ist keine Liste`);
+    else D.seiten.forEach((sd, i) => {
+      if (!sd.titel) err(`${d} › Seite ${i + 1}: ohne titel`);
+      if (!Array.isArray(sd.lesen) || !sd.lesen.length) err(`${d} › Seite ${i + 1} „${sd.titel}“: lesen fehlt`);
+    });
+  }
   const ak = path.join(root, 'modules', d, 'aktuell.js');
   if (fs.existsSync(ak)) {
     try {

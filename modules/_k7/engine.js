@@ -13,12 +13,20 @@
      { typ:'karten',   titel, bis?, karten:[[frage, antwort], ...] }
      { typ:'block',    ...vollständiger Block wie oben... }
    Außerdem: eigene Listen direkt im Handy (localStorage).
+   Optional in K7_DATA (z. B. für Klassenarbeits-Module):
+     titel     – Fenstertitel (Standard: „<fach> – Klasse 7“)
+     labels    – { seiten, aktuell, bloecke } Abschnittstitel der Startseite
+     seiten    – [{ id, titel, code?, untertitel?, lesen:[…] }] reine Leseseiten (Lernplan, Probearbeit, Checkliste)
+     mixAlle   – true: Mix-Quiz zieht auch aus „Aktuell“ (Vokabeln, Lernkarten)
+   In lesen-Abschnitten zusätzlich: tabelle:[[Kopf…],[Zeile…],…] und nach:[…] (Absätze nach der Liste)
 */
 (function () {
   const D = window.K7_DATA;
   const root = document.getElementById('app');
   const KEY = 'lernhub.k7.' + D.id;
   const KEY_EIGENE = KEY + '.eigene';
+  const L = Object.assign({ seiten: 'Plan und Infos', aktuell: 'Aktuell', bloecke: 'Lehrplan Klasse 7' }, D.labels || {});
+  const SEITEN = Array.isArray(D.seiten) ? D.seiten : [];
 
   // ---------- Speicher (localStorage, best-effort) ----------
   function lsGet(k, fallback) { try { const v = localStorage.getItem(k); return v === null ? fallback : JSON.parse(v); } catch (e) { return fallback; } }
@@ -37,7 +45,7 @@
     return String(s).toLowerCase().trim()
       .replace(/\s+/g, ' ')
       .replace(/[„“"'’`´]/g, '')
-      .replace(/^(the|a|an|der|die|das|ein|eine|le|la|les|un|une|des|l) /, '')
+      .replace(/^(the|a|an|to|der|die|das|ein|eine|le|la|les|un|une|des|l) /, '')
       .replace(/\s*\(.*?\)\s*/g, ' ').trim()
       .replace(/\s*([,;:.!?])\s*$/g, '')
       .replace(/(\d),(\d)/g, '$1.$2')
@@ -137,25 +145,34 @@
       <p class="subtitle">${rich(D.untertitel || '')}</p>`;
     if (D.hinweis) html += `<div class="info">${rich(D.hinweis)}</div>`;
 
+    // Leseseiten (optional)
+    if (SEITEN.length) {
+      html += `<div class="sec"><div class="sec-title">${esc(L.seiten)}</div>` + SEITEN.map((sd, k) => `<button class="block seite" data-s="${k}">
+        <div class="num">${esc(sd.code || 'i')}</div>
+        <div style="min-width:0;flex:1"><div class="bt">${esc(sd.titel)}</div>${sd.untertitel ? `<div class="bm">${rich(sd.untertitel)}</div>` : ''}</div>
+      </button>`).join('') + `</div>`;
+    }
+
     // Aktuelles (Vokabeln, Klassenarbeiten, eigene Listen)
-    html += `<div class="sec"><div class="sec-title">Aktuell</div>`;
+    html += `<div class="sec"><div class="sec-title">${esc(L.aktuell)}</div>`;
     if (AKTUELL.length) html += AKTUELL.map((b, i) => blockCard(b, i, '!')).join('');
     else html += `<p class="muted" style="margin:4px 0 10px">Noch nichts Aktuelles – hier erscheinen Vokabeln und Themen für Klassenarbeiten.</p>`;
     html += `<button class="btn small ghost" id="eigene">Eigene Liste eingeben</button></div>`;
 
     // Lehrplan
-    html += `<div class="sec"><div class="sec-title">Lehrplan Klasse 7</div>
+    html += `<div class="sec"><div class="sec-title">${esc(L.bloecke)}</div>
       <div class="progress"><span>${done}/${total} Blöcke geschafft</span><div class="bar"><span style="width:${pct}%"></span></div><span>${pct}%</span></div>`;
     html += D.bloecke.map((b, i) => blockCard(b, AKTUELL.length + i, i + 1)).join('') + `</div>`;
 
     html += `<div class="card" style="margin-top:16px">
         <h2>Mix-Quiz</h2>
-        <p class="muted" style="margin-bottom:10px">10 zufällige Aufgaben aus allen Blöcken – gut zum Wiederholen vor einem Test.</p>
+        <p class="muted" style="margin-bottom:10px">10 zufällige Aufgaben aus allen Blöcken${D.mixAlle ? ' und Vokabellisten' : ''} – gut zum Wiederholen vor einem Test.</p>
         <button class="btn block-btn" id="mix">Mix-Quiz starten</button>
       </div>`;
-    html += `<footer>${D.quelle ? `Quelle: <a href="${esc(D.quelle.url)}" target="_blank" rel="noopener">${esc(D.quelle.titel)}</a>` : ''}${D.stand ? `<br>Stand: ${esc(D.stand)}` : ''}<br><button class="btn small ghost" id="reset" style="margin-top:8px">Fortschritt zurücksetzen</button></footer>`;
+    html += `<footer>${D.quelle ? `Quelle: ${D.quelle.url ? `<a href="${esc(D.quelle.url)}" target="_blank" rel="noopener">${esc(D.quelle.titel)}</a>` : esc(D.quelle.titel)}` : ''}${D.stand ? `<br>Stand: ${esc(D.stand)}` : ''}<br><button class="btn small ghost" id="reset" style="margin-top:8px">Fortschritt zurücksetzen</button></footer>`;
     root.innerHTML = html;
-    root.querySelectorAll('.block').forEach(el => el.addEventListener('click', () => openBlock(+el.dataset.i)));
+    root.querySelectorAll('.block:not(.seite)').forEach(el => el.addEventListener('click', () => openBlock(+el.dataset.i)));
+    root.querySelectorAll('.block.seite').forEach(el => el.addEventListener('click', () => openSeite(+el.dataset.s)));
     document.getElementById('mix').addEventListener('click', startMix);
     document.getElementById('eigene').addEventListener('click', renderEigene);
     document.getElementById('reset').addEventListener('click', () => {
@@ -178,6 +195,28 @@
     document.getElementById('save').addEventListener('click', () => { lsSet(KEY_EIGENE, document.getElementById('txt').value); renderHome(); });
   }
 
+  // ---------- Lesen (Blöcke und Leseseiten) ----------
+  function lesenHtml(lesen) {
+    return `<div class="card">` + lesen.map(sec => {
+      let s = (sec.h ? `<h3>${rich(sec.h)}</h3>` : '') + (sec.p || []).map(p => `<p>${rich(p)}</p>`).join('');
+      if (sec.beispiel) s += `<div class="example">${rich(sec.beispiel)}</div>`;
+      if (sec.tabelle) s += `<div class="tab-wrap"><table class="tab">${sec.tabelle.map((r, k) => `<tr>${r.map(c => k === 0 ? `<th>${rich(c)}</th>` : `<td>${rich(c)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+      if (sec.liste) s += `<ul>${sec.liste.map(li => `<li>${rich(li)}</li>`).join('')}</ul>`;
+      if (sec.nach) s += (sec.nach || []).map(p => `<p>${rich(p)}</p>`).join('');
+      return s;
+    }).join('') + `</div>`;
+  }
+
+  // ---------- Leseseite ----------
+  function openSeite(k) {
+    const sd = SEITEN[k];
+    root.innerHTML = topbar(L.seiten) + `<h1>${esc(sd.titel)}</h1>${sd.untertitel ? `<p class="subtitle">${rich(sd.untertitel)}</p>` : ''}` +
+      lesenHtml(sd.lesen || []) + `<button class="btn block-btn ghost" id="home">‹ Zur Übersicht</button>`;
+    document.getElementById('back').addEventListener('click', renderHome);
+    document.getElementById('home').addEventListener('click', renderHome);
+    scrollTop();
+  }
+
   // ---------- Block ----------
   function openBlock(i) {
     view = { name: 'block', i, step: 0 };
@@ -197,18 +236,13 @@
   function topbar(crumb) {
     return `<div class="topbar"><button class="back" id="back">‹ Übersicht</button><span class="crumb">${esc(crumb)}</span></div>`;
   }
-  function crumbFor(b) { return b.aktuell ? 'Aktuell' : `Block ${view.i - AKTUELL.length + 1} von ${D.bloecke.length}`; }
+  function crumbFor(b) { return b.aktuell ? L.aktuell : `Block ${view.i - AKTUELL.length + 1} von ${D.bloecke.length}`; }
 
   function renderBlock() {
     const b = ALLE[view.i];
     let html = topbar(crumbFor(b)) + `<h1>${esc(b.titel)}</h1><p class="subtitle">${b.minuten || 10} Minuten · ${esc(D.fach)}${b.bis ? ' · bis ' + fmtDate(b.bis) : ''}</p>` + stepsHtml(view.step);
     if (view.step === 0) {
-      html += `<div class="card">` + b.lesen.map(sec => {
-        let s = `<h3>${rich(sec.h)}</h3>` + (sec.p || []).map(p => `<p>${rich(p)}</p>`).join('');
-        if (sec.beispiel) s += `<div class="example">${rich(sec.beispiel)}</div>`;
-        if (sec.liste) s += `<ul>${sec.liste.map(li => `<li>${rich(li)}</li>`).join('')}</ul>`;
-        return s;
-      }).join('') + `</div>
+      html += lesenHtml(b.lesen) + `
       <button class="btn block-btn" id="next">Weiter zu „Merken“ ›</button>`;
     } else if (view.step === 1) {
       html += `<div class="card"><h2>Das musst du dir merken</h2>` +
@@ -243,7 +277,7 @@
 
   function startMix() {
     const all = [];
-    D.bloecke.forEach(b => b.aufgaben.forEach(a => all.push(Object.assign({ _block: b.titel }, a))));
+    (D.mixAlle ? ALLE : D.bloecke).forEach(b => b.aufgaben.forEach(a => all.push(Object.assign({ _block: b.titel }, a))));
     view = { name: 'mix' };
     startQuiz(shuffle(all).slice(0, Math.min(10, all.length)), null);
   }
@@ -347,7 +381,7 @@
   }
 
   // ---------- Start: optionale aktuell.js laden, dann rendern ----------
-  document.title = D.fach + ' – Klasse 7';
+  document.title = D.titel || (D.fach + ' – Klasse 7');
   const s = document.createElement('script');
   s.src = 'aktuell.js?v=' + Date.now();
   s.onload = renderHome; s.onerror = renderHome;

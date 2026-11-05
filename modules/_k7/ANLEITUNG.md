@@ -29,7 +29,7 @@ Die Engine (`modules/_k7/engine.js` und `engine.css`) ist für alle Fächer glei
   ] }
 ```
 
-Daraus baut die Engine: Liste zum Lesen, Merksätze, und Eingabe-Aufgaben in beide Richtungen (Englisch → Deutsch, Deutsch → Englisch). Pro Durchgang werden bis zu 16 zufällige Aufgaben gestellt. Mehrere richtige Antworten trennt man mit `/`: `["to borrow", "ausleihen / leihen"]`. Artikel (the, a, der, die, das, le, la …) und Klammerzusätze werden beim Vergleich ignoriert.
+Daraus baut die Engine: Liste zum Lesen, Merksätze, und Eingabe-Aufgaben in beide Richtungen (Englisch → Deutsch, Deutsch → Englisch). Pro Durchgang werden bis zu 16 zufällige Aufgaben gestellt. Mehrere richtige Antworten trennt man mit `/`: `["to borrow", "ausleihen / leihen"]`. Artikel (the, a, der, die, das, le, la …), ein vorangestelltes „to“ und Klammerzusätze werden beim Vergleich ignoriert.
 
 ### 2. Lernkarten für Klassenarbeiten – Frage und Antwort
 
@@ -73,12 +73,27 @@ Für Klassenarbeiten entsprechend: „Mach aus diesem Hefteintrag/Foto 12 Lernka
 
 Im Modul unter „Aktuell“ gibt es den Button **Eigene Liste eingeben**: eine Zeile pro Eintrag, links die Vokabel oder Frage, rechts die Lösung, getrennt durch `–`, `:` oder `=`. Die Liste bleibt auf dem Handy gespeichert und wird wie ein Vokabel-Block geübt. Das ist der Weg für die Jungs selbst, wenn gerade niemand das Repo pflegt.
 
+## Klassenarbeits-Module (Bereich „Klassenarbeiten“)
+
+Für eine anstehende Klassenarbeit mit Lernplan gibt es ein eigenes Modul, das auf der Startseite ganz oben unter **Klassenarbeiten** steht. Beispiel: `modules/ka-englisch-unit1/` (Englisch Unit 1 „London – city of wonders“, letzte Novemberwoche 2026).
+
+- Ordnername `ka-<fach>-<thema>`, Registry-Kategorie `klassenarbeiten`.
+- `data.js` wie ein Fach-Modul, dazu optional:
+  - `titel` – Fenstertitel,
+  - `labels: { seiten, aktuell, bloecke }` – Abschnittstitel (z. B. „Plan und Infos“, „Vokabeln“, „Grammatik und Skills“),
+  - `seiten: [{ id, code, titel, untertitel, lesen:[…] }]` – reine Leseseiten ohne Aufgaben: Lernplan Tag für Tag, Überblick, Probearbeit, Lösungen, Checkliste,
+  - `mixAlle: true` – das Mix-Quiz zieht auch aus den Vokabellisten.
+  - In `lesen`-Abschnitten gehen zusätzlich `tabelle: [[Kopf…], [Zeile…]]` und `nach: […]` (Absätze nach einer Liste).
+- `aktuell.js` enthält die Vokabellisten der Arbeit (`typ: "vokabeln"`), `bis` = Termin der Arbeit. „Eigene Liste eingeben“ bleibt für fehlende Wörter.
+- Öffentliches Repo: keine Trainingszeiten, Orte, Abwesenheiten oder Uhrzeiten der Jungs in die Module schreiben – neutral formulieren („wer unterwegs ist …“).
+- Nach der Arbeit: in `registry.json` die Kategorie auf `archiv` setzen. Was dauerhaft nützlich ist (Regeln, Aufgaben), kann in `modules/k7-<fach>/data.js` übernommen werden.
+
 ## Neues Fach oder Modul anlegen
 
 1. Ordner `modules/<id>/` anlegen, `index.html` aus einem bestehenden k7-Modul kopieren (nur `<title>` anpassen).
 2. `data.js` mit `window.K7_DATA = { id, fach, icon, untertitel, quelle:{titel,url}, bloecke:[…] }` anlegen (Struktur wie oben, `id` = Ordnername).
 3. Leere `aktuell.js` kopieren.
-4. In `modules/registry.json` einen Eintrag ergänzen: `{ "id", "code" (2–3 Buchstaben für die Kachel), "name", "description", "path", "category" }`. Kategorien: `aktuelles`, `lehrplan`, `fussball`, `archiv`.
+4. In `modules/registry.json` einen Eintrag ergänzen: `{ "id", "code" (2–3 Buchstaben für die Kachel), "name", "description", "path", "category" }`. Kategorien: `klassenarbeiten`, `lehrplan`, `fussball`, `archiv`.
 
 ## Prüfen
 

@@ -1,4 +1,6 @@
 [
+  { "id": "ka-englisch-unit1", "code": "EN", "name": "Englisch: Unit 1 London", "description": "Klassenarbeit letzte Novemberwoche – past progressive, adverbs, Vokabeln, Story, Probearbeit", "path": "modules/ka-englisch-unit1/index.html", "category": "klassenarbeiten" },
+
   { "id": "k7-deutsch", "code": "DE", "name": "Deutsch", "description": "Kurzgeschichte, Inhaltsangabe, Charakterisierung, Argumentieren, Grammatik, Lyrik", "path": "modules/k7-deutsch/index.html", "category": "lehrplan" },
   { "id": "k7-mathe", "code": "MA", "name": "Mathematik", "description": "Rationale Zahlen, Prozent, Zuordnungen, Gleichungen, Dreiecke, Flächen, Zufall", "path": "modules/k7-mathe/index.html", "category": "lehrplan" },
   { "id": "k7-englisch", "code": "EN", "name": "Englisch", "description": "Present perfect, past progressive, modals, future, comparison, relative clauses", "path": "modules/k7-englisch/index.html", "category": "lehrplan" },

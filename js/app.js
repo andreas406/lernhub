@@ -9,7 +9,7 @@
 
   // Kategorien: Reihenfolge, Titel, Untertitel. „archiv“ ist eingeklappt.
   const categories = [
-    { key: 'aktuelles', title: 'Aktuelles', subtitle: 'Tests und Themen der nächsten Wochen' },
+    { key: 'klassenarbeiten', title: 'Klassenarbeiten', subtitle: 'Was als Nächstes geschrieben wird – Lernplan, Übungen, Probearbeit' },
     { key: 'lehrplan',  title: 'Lehrplan Klasse 7', subtitle: 'Gymnasium · Rahmenlehrplan Berlin-Brandenburg' },
     { key: 'fussball',  title: 'Fußball', subtitle: 'Deine Position, deine Situationen' },
     { key: 'archiv',    title: 'Archiv', subtitle: 'Ältere Module (Klasse 6 und früher)', collapsed: true }

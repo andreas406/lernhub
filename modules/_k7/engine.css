@@ -109,6 +109,12 @@ textarea.inp{line-height:1.5}
 .review .item{font-size:15px;padding:10px 12px;border-radius:4px;background:var(--bg);margin-bottom:8px;border-left:3px solid var(--rot)}
 .review .item small{color:var(--mute);display:block;margin-top:3px;font-size:13px}
 
+/* Tabellen in Lesetexten */
+.tab-wrap{overflow-x:auto;margin:8px 0 12px}
+.tab{border-collapse:collapse;width:100%;font-size:15px;background:var(--bg)}
+.tab th,.tab td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.tab th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:400}
+
 footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--mute);line-height:1.7}
 footer a{color:var(--ink-hard);word-break:break-all}
 @media (min-width:600px){h1{font-size:30px}.app{padding:28px 24px 64px}}
