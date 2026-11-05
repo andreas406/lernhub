@@ -1,5 +1,7 @@
 [
   { "id": "ka-englisch-unit1", "code": "EN", "name": "Englisch: Unit 1 London", "description": "Klassenarbeit letzte Novemberwoche – past progressive, adverbs, Vokabeln, Story, Probearbeit", "path": "modules/ka-englisch-unit1/index.html", "category": "klassenarbeiten" },
+  { "id": "ka-mathe-terme", "code": "MA", "name": "Mathe: Rationale Zahlen, Terme, Gleichungen", "description": "Klassenarbeit Ende November – Vorzeichen, Terme, Gleichungen, Sachaufgaben, Probearbeit", "path": "modules/ka-mathe-terme/index.html", "category": "klassenarbeiten" },
+  { "id": "ka-deutsch-erzaehlungen", "code": "DE", "name": "Deutsch: Erzählungen, Hebel, Anekdote", "description": "Klassenarbeit Ende November – Kalendergeschichte, Anekdote, Arten von Erzählungen, Probearbeit", "path": "modules/ka-deutsch-erzaehlungen/index.html", "category": "klassenarbeiten" },
 
   { "id": "k7-deutsch", "code": "DE", "name": "Deutsch", "description": "Kurzgeschichte, Inhaltsangabe, Charakterisierung, Argumentieren, Grammatik, Lyrik", "path": "modules/k7-deutsch/index.html", "category": "lehrplan" },
   { "id": "k7-mathe", "code": "MA", "name": "Mathematik", "description": "Rationale Zahlen, Prozent, Zuordnungen, Gleichungen, Dreiecke, Flächen, Zufall", "path": "modules/k7-mathe/index.html", "category": "lehrplan" },

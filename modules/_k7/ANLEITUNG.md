@@ -75,7 +75,7 @@ Im Modul unter „Aktuell“ gibt es den Button **Eigene Liste eingeben**: eine 
 
 ## Klassenarbeits-Module (Bereich „Klassenarbeiten“)
 
-Für eine anstehende Klassenarbeit mit Lernplan gibt es ein eigenes Modul, das auf der Startseite ganz oben unter **Klassenarbeiten** steht. Beispiel: `modules/ka-englisch-unit1/` (Englisch Unit 1 „London – city of wonders“, letzte Novemberwoche 2026).
+Für eine anstehende Klassenarbeit mit Lernplan gibt es ein eigenes Modul, das auf der Startseite ganz oben unter **Klassenarbeiten** steht. Beispiel: `modules/ka-englisch-unit1/` (Englisch Unit 1 „London – city of wonders“, letzte Novemberwoche 2026). Weitere: `modules/ka-mathe-terme/` (rationale Zahlen, Terme, Gleichungen) und `modules/ka-deutsch-erzaehlungen/` (Kalendergeschichte, Hebel, Anekdote) – beide Ende November 2026, Fachbegriffe als `karten` in `aktuell.js`.
 
 - Ordnername `ka-<fach>-<thema>`, Registry-Kategorie `klassenarbeiten`.
 - `data.js` wie ein Fach-Modul, dazu optional:
