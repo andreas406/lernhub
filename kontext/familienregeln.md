@@ -23,7 +23,7 @@ Richard spielt bei Hertha BSC U13 (Nummer 13) als linke 8 und Linksverteidiger i
 - FLB = Fußball-Landesverband Brandenburg
 - KA = Klassenarbeit
 - Kiefi = Kieferorthopäde
-- „(Fahrer: Papa)" oder „(Fahrerin: Mama)" = wer zum Training fährt; darauf darf der Bot antworten
+- „(Fahrer: Papa)" oder „(Fahrerin: Mama)" bei Richards Training = wer ihn NACH dem Training abholt; hin fährt Richard mit Bahn/Bus. Zu Spielen und Lehrgängen fahren Mama oder Papa, das planen die Eltern.
 - „Hausaufgabenzeit A" = Antons feste Lernzeit, „Hausaufgabenzeit R" = Richards feste Lernzeit
 
 ## Essen rund ums Training (nur wenn danach gefragt wird)
